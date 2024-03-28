@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
 import MapImage from "../images/irelandMap.svg"
+import type { Round, Pin } from '../Types'
 
-type Pin = {
-  x: number;
-  y: number;
-}
+function GameMap(roundDetails: Round) {
+  console.log(roundDetails)
 
-function GameMap() {
-  const athlone = { x: 300, y: 300 };
+  const hardCodedRound: Round = {
+    location: "Athlone",
+    coordinates: { x: 300, y: 300 }
+  }
   const canvasRef = useRef(null);
   // useState to store all pin's coordinates
   const [pins, setPins] = useState<Pin[]>([]);
@@ -27,8 +28,8 @@ function GameMap() {
         const lastPin = pins[pins.length - 1];
         console.log({ lastPin })
         drawPin(context, lastPin.x, lastPin.y);
-        drawHouse(context, athlone.x, athlone.y);
-        drawLineAndDistance(context, athlone, lastPin);
+        drawHouse(context, hardCodedRound.coordinates.x, hardCodedRound.coordinates.y);
+        drawLineAndDistance(context, hardCodedRound.coordinates, lastPin);
       }
     };
   }, [pins]);
