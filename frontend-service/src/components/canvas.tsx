@@ -74,7 +74,7 @@ function GameMap() {
     context.fillText(`${distance} units`, end.x + 10, end.y + 10);
   };
 
-  return <canvas ref={canvasRef} width={600} height={600} onClick={handleCanvasClick} />;
+  return <canvas ref={canvasRef} width={600} height={600} onClick={handleCanvasClick} className="cursor-crosshair" />;
 }
 
 export default GameMap;
