@@ -10,11 +10,11 @@ const hardCordeRounds: Round[] = [
   },
   {
     location: "Dublin",
-    coordinates: { x: 100, y: 100 }
+    coordinates: { x: 490, y: 310 }
   },
   {
     location: "Galway",
-    coordinates: { x: 200, y: 200 }
+    coordinates: { x: 180, y: 320 }
   }
 ]
 
@@ -24,7 +24,7 @@ const hardCordeRounds: Round[] = [
 
 export default function Game() {
   let gameRounds: Round[] = [] 
-  const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(1)
+  const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(3)
   const [pins, setPins] = useState<Pin[]>([])
   const aggregateUserGameScore = 0 // Updates with each round 
 

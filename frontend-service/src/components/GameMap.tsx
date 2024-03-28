@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import MapImage from "../images/irelandMap.svg"
 import type { Round, Pin } from '../Types'
 
-function GameMap(roundDetails: Round) {
-  console.log(roundDetails)
+interface GameMapProps {
+  roundDetails: Round
+}
 
-  const hardCodedRound: Round = {
-    location: "Athlone",
-    coordinates: { x: 300, y: 300 }
-  }
+function GameMap({ roundDetails }: GameMapProps) {
+
   const canvasRef = useRef(null);
   // useState to store all pin's coordinates
   const [pins, setPins] = useState<Pin[]>([]);
@@ -28,8 +27,8 @@ function GameMap(roundDetails: Round) {
         const lastPin = pins[pins.length - 1];
         console.log({ lastPin })
         drawPin(context, lastPin.x, lastPin.y);
-        drawHouse(context, hardCodedRound.coordinates.x, hardCodedRound.coordinates.y);
-        drawLineAndDistance(context, hardCodedRound.coordinates, lastPin);
+        drawHouse(context, roundDetails.coordinates.x, roundDetails.coordinates.y);
+        drawLineAndDistance(context, roundDetails.coordinates, lastPin);
       }
     };
   }, [pins]);
@@ -75,7 +74,14 @@ function GameMap(roundDetails: Round) {
     context.fillText(`${distance} units`, end.x + 10, end.y + 10);
   };
 
-  return <canvas ref={canvasRef} width={600} height={600} onClick={handleCanvasClick} className="cursor-crosshair" />;
+  return (
+    <>
+      <h1>Guess the location of {roundDetails.location}</h1>
+      <canvas ref={canvasRef} width={600} height={600} onClick={handleCanvasClick} className="cursor-crosshair" />;
+    </>
+  )
+  
+  
 }
 
 export default GameMap;
