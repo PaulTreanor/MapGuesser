@@ -18,27 +18,29 @@ const hardCordeRounds: Round[] = [
   }
 ]
 
-// const generateRounds = (): Round[] => {
-//   return 
-// }
-
 export default function Game() {
   let gameRounds: Round[] = [] 
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(3)
   const [pins, setPins] = useState<Pin[]>([])
   const aggregateUserGameScore = 0 // Updates with each round 
 
-  // onLoad generate rounds 
-  useEffect(() => {
-    gameRounds = hardCordeRounds
-
-  }, [])
+  const handleGuess = (pin: Pin, distance:number) => {
+    // setPins([...pins, pin])
+    // if (pins.length === 3) {
+    //   setCurrentRoundIndex(currentRoundIndex + 1)
+    // }
+    console.log({ "pin": pin })
+    console.log({ "distance": distance })
+  }
 
   return (
     <>
       <div>Current round: {currentRoundIndex}/5</div>
       <div>Total score: {aggregateUserGameScore}</div>
-      <GameMap roundDetails={hardCordeRounds[currentRoundIndex - 1]} />
+      <GameMap
+        roundDetails={hardCordeRounds[currentRoundIndex - 1]}
+        onGuess={handleGuess}
+      />
     </>
     
   )

@@ -4,9 +4,10 @@ import type { Round, Pin } from '../Types'
 
 interface GameMapProps {
   roundDetails: Round
+  onGuess: (pin: Pin, distance: number) => void
 }
 
-function GameMap({ roundDetails }: GameMapProps) {
+function GameMap({ roundDetails, onGuess }: GameMapProps) {
 
   const canvasRef = useRef(null);
   // useState to store all pin's coordinates
@@ -18,16 +19,13 @@ function GameMap({ roundDetails }: GameMapProps) {
     const image = new Image();
     image.src = MapImage;
     image.onload = () => {
-      // Clear the canvas before drawing the image again
       context.clearRect(0, 0, canvas.width, canvas.height);
-      // Draw the map image
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      // Draw only the most recent pin, if there is one
       if (pin) {
-        console.log({ pin })
         drawPin(context, pin.x, pin.y);
         drawHouse(context, roundDetails.coordinates.x, roundDetails.coordinates.y);
-        drawLineAndDistance(context, roundDetails.coordinates, pin);
+        const distance = drawLineAndDistance(context, roundDetails.coordinates, pin);
+        onGuess({ x: pin.x, y: pin.y }, distance );
       }
     };
   }, [pin]);
@@ -71,6 +69,7 @@ function GameMap({ roundDetails }: GameMapProps) {
     context.fillStyle = 'black';
     // Positioning the distance text near the pin with an offset
     context.fillText(`${distance} units`, end.x + 10, end.y + 10);
+    return distance;
   };
 
   return (
