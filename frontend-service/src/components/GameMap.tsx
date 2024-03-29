@@ -10,7 +10,7 @@ function GameMap({ roundDetails }: GameMapProps) {
 
   const canvasRef = useRef(null);
   // useState to store all pin's coordinates
-  const [pins, setPins] = useState<Pin[]>([]);
+  const [pin, setPin] = useState<Pin | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -23,21 +23,20 @@ function GameMap({ roundDetails }: GameMapProps) {
       // Draw the map image
       context.drawImage(image, 0, 0, canvas.width, canvas.height);
       // Draw only the most recent pin, if there is one
-      if (pins.length > 0) {
-        const lastPin = pins[pins.length - 1];
-        console.log({ lastPin })
-        drawPin(context, lastPin.x, lastPin.y);
+      if (pin) {
+        console.log({ pin })
+        drawPin(context, pin.x, pin.y);
         drawHouse(context, roundDetails.coordinates.x, roundDetails.coordinates.y);
-        drawLineAndDistance(context, roundDetails.coordinates, lastPin);
+        drawLineAndDistance(context, roundDetails.coordinates, pin);
       }
     };
-  }, [pins]);
+  }, [pin]);
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = canvasRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    setPins(prevPins => [...prevPins, { x, y }]);
+    setPin({ x, y });
   };
 
   const drawHouse = (context: CanvasRenderingContext2D, x: number, y: number) => {
