@@ -14,6 +14,10 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
   const [pin, setPin] = useState<Pin | null>(null)
 
   useEffect(() => {
+    setPin(null);
+  } , [roundDetails]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const image = new Image();
@@ -28,7 +32,7 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
         onGuess({ x: pin.x, y: pin.y }, distance );
       }
     };
-  }, [pin]);
+  }, [pin, roundDetails]);
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const rect = canvasRef.current.getBoundingClientRect();
@@ -71,6 +75,9 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
     context.fillText(`${distance} units`, end.x + 10, end.y + 10);
     return distance;
   };
+
+
+  
 
   return (
     <>
