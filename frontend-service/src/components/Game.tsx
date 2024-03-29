@@ -30,8 +30,6 @@ export default function Game() {
     // if (pins.length === 3) {
     //   setCurrentRoundIndex(currentRoundIndex + 1)
     // }
-    console.log({ "pin": pin })
-    console.log({ "distance": distance })
     // Update the aggregateUserGameScore with the distance
     setAggregateUserGameScore(Number(aggregateUserGameScore) + Number(distance))
     // make it so the user can't make another guess this round 

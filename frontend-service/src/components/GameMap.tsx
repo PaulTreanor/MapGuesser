@@ -12,9 +12,11 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
   const canvasRef = useRef(null);
   // useState to store all pin's coordinates
   const [pin, setPin] = useState<Pin | null>(null)
+  const [canGuess, setCanGuess] = useState(true);
 
   useEffect(() => {
     setPin(null);
+    setCanGuess(true);
   } , [roundDetails]);
 
   useEffect(() => {
@@ -35,10 +37,12 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
   }, [pin, roundDetails]);
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canGuess) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     setPin({ x, y });
+    setCanGuess(false); // Disable further guesses after the current one
   };
 
   const drawHouse = (context: CanvasRenderingContext2D, x: number, y: number) => {
@@ -82,7 +86,12 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
   return (
     <>
       <h1>Guess the location of {roundDetails.location}</h1>
-      <canvas ref={canvasRef} width={600} height={600} onClick={handleCanvasClick} className="cursor-crosshair" />;
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={600}
+        onClick={handleCanvasClick}
+        className={`${!canGuess ? 'cursor-not-allowed' : 'cursor-crosshair'}`} />;
     </>
   )
   
