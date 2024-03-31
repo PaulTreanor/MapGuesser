@@ -1,34 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import type { Pin, Round } from '../Types'
 import GameMap from "../components/GameMap"
-
-
-const hardCordeRounds: Round[] = [
-  {
-    location: "Athlone",
-    coordinates: { x: 300, y: 300 }
-  },
-  {
-    location: "Dublin",
-    coordinates: { x: 490, y: 310 }
-  },
-  {
-    location: "Galway",
-    coordinates: { x: 180, y: 320 }
-  },
-  {
-    location: "Cork",
-    coordinates: { x: 250, y: 400 }
-  },
-  {
-    location: "Limerick",
-    coordinates: { x: 200, y: 350 }
-  }
-]
-
+import roundsData from "../data/rounds.json"
 
 export default function Game() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0)
+  const [rounds, setRounds] = useState<Round[] | null>(null)
   const [roundCompleted, setRoundCompleted] = useState<boolean>(false)
   const [aggregateUserGameScore, setAggregateUserGameScore] = useState<number>(0)
 
@@ -37,12 +14,29 @@ export default function Game() {
     setRoundCompleted(true)
   }
 
+  const generateRounds = () => {
+    // simulate fetching rounds from an API
+    setTimeout(() => {
+      setRounds(roundsData.defaultGame)
+    }, 600)
+  }
+
   const moveToNextRound = () => {
     console.log('Next round')
     if (currentRoundIndex === 4) {
       return
     }
     setCurrentRoundIndex(currentRoundIndex + 1)
+  }
+
+  useEffect(() => {
+    generateRounds()
+  }, [])
+
+  if (!rounds) {
+    return (
+      <div>Loading...</div>
+    )
   }
 
   if (currentRoundIndex === 4 && roundCompleted) {
@@ -61,7 +55,7 @@ export default function Game() {
         disabled={!roundCompleted}
       >Next Round</button>
       <GameMap
-        roundDetails={hardCordeRounds[currentRoundIndex]}
+        roundDetails={rounds[currentRoundIndex]}
         onGuess={handleGuess}
       />
     </>
