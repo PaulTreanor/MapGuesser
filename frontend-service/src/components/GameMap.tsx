@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import MapImage from "../images/irelandMap.svg"
 import type { Round, Pin } from '../Types'
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+
 
 interface GameMapProps {
   roundDetails: Round
@@ -86,12 +88,32 @@ function GameMap({ roundDetails, onGuess }: GameMapProps) {
   return (
     <>
       <h1>Guess the location of {roundDetails.location}</h1>
-      <canvas
-        ref={canvasRef}
-        width={600}
-        height={600}
-        onClick={handleCanvasClick}
-        className={`${!canGuess ? 'cursor-not-allowed' : 'cursor-crosshair'}`} />;
+      <TransformWrapper
+        wheel={{
+          step: 250, // Adjust this value to control zoom speed, higher values for faster zoom
+        }}
+        // You can also adjust pinch options if needed
+        pinch={{
+          disabled: false, // Enable pinch gesture (default: false)
+          step: 0.05 // Adjust pinch speed (default: 0.01)
+        }}
+        // Other props for further customization
+        doubleClick={{
+          disabled: false, // Disable or enable zooming on double click (default: false)
+        }} 
+
+      >
+        <TransformComponent>
+          <canvas
+            ref={canvasRef}
+            width={600}
+            height={600}
+            onClick={handleCanvasClick}
+            className={`${!canGuess ? 'cursor-not-allowed' : 'cursor-crosshair'}`}
+          />;
+        </TransformComponent>
+      </TransformWrapper>
+      
     </>
   )
   
