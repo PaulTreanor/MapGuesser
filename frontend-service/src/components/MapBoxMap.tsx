@@ -11,7 +11,7 @@ interface MapboxMapProps {
 
 const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
   const mapContainerRef = useRef(null);
-  const [lastClick, setLastClick] = useState({ lng: 0, lat: 0 });
+  const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 
     useEffect(() => {
       const map = new mapboxgl.Map({
@@ -20,7 +20,10 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
         attributionControl: false
       });
     
-      const addMarker = (e) => {
+      const addMarker = (e: mapboxgl.MapboxEvent) => {
+        // Immediately remove the event listener to prevent further clicks from being registered
+        map.off(`click`, addMarker)
+
         // Remove existing markers
         document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
 
@@ -34,50 +37,56 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
           .setLngLat(roundDetails.coordinates)
           .addTo(map);
 
-        // const lineCoordinates = [
-        //   [e.lngLat.lng, e.lngLat.lat], // Clicked location
-        //   roundDetails.coordinates
-        // ];
+        const lineCoordinates = [
+          [e.lngLat.lng, e.lngLat.lat], // Clicked location
+          roundDetails.coordinates
+        ];
+
+        const lineId = `${roundDetails.location}-line`
 
         // Create a GeoJSON source with a line feature
-        // map.addSource('line', {
-        //   'type': 'geojson',
-        //   'data': {
-        //     'type': 'Feature',
-        //     'properties': {},
-        //     'geometry': {
-        //       'type': 'LineString',
-        //       'coordinates': lineCoordinates
-        //     }
-        //   }
-        // });
+        map.addSource(lineId, {
+          'type': 'geojson',
+          'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': lineCoordinates
+            }
+          }
+        });
 
         // Add a new layer to visualize the line
-        // map.addLayer({
-        //   'id': 'line',
-        //   'type': 'line',
-        //   'source': 'line',
-        //   'layout': {},
-        //   'paint': {
-        //     'line-width': 2,
-        //     'line-color': '#007cbf'
-        //   }
-        // });
+        map.addLayer({
+          'id': lineId,
+          'type': 'line',
+          'source': lineId,
+          'layout': {},
+          'paint': {
+            'line-width': 2,
+            'line-color': '#007cbf'
+          }
+        });
 
         // Update state with the clicked coordinates
         setLastClick(e.lngLat);
+
+        handleGuess()
       };
     
-
-      map.on('click', addMarker);
+      map.on('click', addMarker)
 
       
 
       // Clean up on unmount
-      return () => map.remove();
-    }, []); // Empty dependency array means this effect will only run once, like componentDidMount
+      return () => {
+        map.off('click', addMarker)
+        map.remove()
+      }
+    }, [roundDetails]); 
 
-    return <div ref={mapContainerRef} style={{ width: '40%', height: '400px' }} />;
+    return <div ref={mapContainerRef} style={{ width: '60%', height: '600px' }} />;
 };
 
 export default MapboxMap;
