@@ -15,10 +15,25 @@ export default function Game() {
   }
 
   const generateRounds = () => {
+    // setRounds(roundsData.simpleGame as any)
+    // console.log({"rounds": rounds})
+
+
+    // Create copy to avoid mutating the original data
+    const generalRoundsList = [...roundsData.generalEurope]
+      const randomRounds = []
+      for (let i = 0; i < 5; i++) {
+        if (generalRoundsList.length === 0) {
+          break; // break if there are no more rounds to select
+        }
+        const randomIndex = Math.floor(Math.random() * generalRoundsList.length)
+        randomRounds.push(generalRoundsList[randomIndex])
+        generalRoundsList.splice(randomIndex, 1) // remove the selected round from the list
+      }
     // TypeScript being stupid, not worth complexity
-    setRounds(roundsData.locations as any)
-    console.log({"rounds": rounds})
+      setRounds(randomRounds as any)
   }
+
 
   const moveToNextRound = () => {
     console.log('Next round')
@@ -43,8 +58,6 @@ export default function Game() {
       <div>Game Over</div>
     )
   }
-
-  console.log(rounds[currentRoundIndex])
 
   return (
     <>
