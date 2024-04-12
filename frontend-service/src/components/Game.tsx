@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import type {Pin, Round } from '../Types'
 import roundsData from "../data/rounds.json"
 import MapboxMap from './MapBoxMap'
+import TopBarGame from './TopBarGame'
 
 
 export default function Game() {
@@ -36,7 +37,7 @@ export default function Game() {
 
 
   const moveToNextRound = () => {
-    console.log('Next round')
+    setRoundCompleted(false)
     if (currentRoundIndex === 4) {
       return
     }
@@ -61,12 +62,12 @@ export default function Game() {
 
   return (
     <>
-      <div>Current round: {currentRoundIndex + 1}/5</div>
-      <button
-        className='disabled:bg-gray-500 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-        onClick={moveToNextRound}
-        disabled={!roundCompleted}
-      >Next Round</button>
+      <TopBarGame
+        score={20}
+        currentRound={currentRoundIndex + 1}
+        roundCompleted={roundCompleted}
+        moveToNextRound={moveToNextRound}
+      />
       <h2 className='text-2xl'>Where is <span className='font-bold'>{rounds[currentRoundIndex].location}</span>?</h2>
       <MapboxMap
         roundDetails={rounds[currentRoundIndex]}
