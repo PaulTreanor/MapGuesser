@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { Pin, Round } from '../Types'
-import GameMap from "../components/GameMap"
 import roundsData from "../data/rounds.json"
+import MapboxMap from './MapBoxMap'
 
 export default function Game() {
   // Login will be handled by a hook with amplfiy, so it doesn't need to be global state
@@ -11,29 +11,13 @@ export default function Game() {
   const [roundCompleted, setRoundCompleted] = useState<boolean>(false)
   const [aggregateUserGameScore, setAggregateUserGameScore] = useState<number>(0)
 
-  const handleGuess = (pin: Pin, distance:number) => {
-    setAggregateUserGameScore(Number(aggregateUserGameScore) + Number(distance))
-    setRoundCompleted(true)
+  const handleGuess = () => {
+    console.log('Guess')
   }
 
   const generateRounds = () => {
-    // simulate fetching rounds from an API
-    if (isUserLoggedIn) {
-      setRounds(roundsData.defaultGame)
-    } else {
-      // Pick 5 random rounds from the generalRoundsList
-      const generalRoundsList = [...roundsData.generalRoundsList] // create a copy of the array to avoid mutating the original
-      const randomRounds = []
-      for (let i = 0; i < 5; i++) {
-        if (generalRoundsList.length === 0) {
-          break; // break if there are no more rounds to select
-        }
-        const randomIndex = Math.floor(Math.random() * generalRoundsList.length)
-        randomRounds.push(generalRoundsList[randomIndex])
-        generalRoundsList.splice(randomIndex, 1) // remove the selected round from the list
-      }
-      setRounds(randomRounds)
-    }
+
+    setRounds(roundsData.locations)
   }
 
   const moveToNextRound = () => {
@@ -60,6 +44,8 @@ export default function Game() {
     )
   }
 
+  console.log(rounds[currentRoundIndex])
+
   return (
     <>
       <div>Current round: {currentRoundIndex + 1}/5</div>
@@ -69,9 +55,9 @@ export default function Game() {
         onClick={moveToNextRound}
         disabled={!roundCompleted}
       >Next Round</button>
-      <GameMap
+      <MapboxMap
         roundDetails={rounds[currentRoundIndex]}
-        onGuess={handleGuess}
+        handleGuess={handleGuess}
       />
     </>
     

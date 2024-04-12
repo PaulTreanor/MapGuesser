@@ -1,7 +1,4 @@
-export type Pin = {
-  x: number;
-  y: number;
-}
+export type Pin = [number, number]
 
 export type Round = {
   location: string;

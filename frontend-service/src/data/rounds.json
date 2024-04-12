@@ -1,82 +1,24 @@
 {
-  "defaultGame": [
+  "locations": [
     {
-      "location": "Athlone",
-      "coordinates": { "x": 300, "y": 300 }
+      "location": "Paris",
+      "coordinates": [ 2.3522, 48.8566]
     },
     {
-      "location": "Dublin",
-      "coordinates": { "x": 490, "y": 310 }
+      "location": "Rome",
+      "coordinates": [12.4964, 41.9028]
     },
     {
-      "location": "Galway",
-      "coordinates": { "x": 180, "y": 320 }
+      "location": "Berlin",
+      "coordinates": [13.4050, 52.5200]
     },
     {
-      "location": "Cork",
-      "coordinates": { "x": 250, "y": 400 }
+      "location": "Madrid",
+      "coordinates": [-3.7038, 40.4168]
     },
     {
-      "location": "Limerick",
-      "coordinates": { "x": 200, "y": 350 }
+      "location": "Athens",
+      "coordinates": [23.7275, 37.9838]
     }
-  ],
-  "generalRoundsList": [
-  {
-    "location": "Waterford",
-    "coordinates": { "x": 260, "y": 410 }
-  },
-  {
-    "location": "Kilkenny",
-    "coordinates": { "x": 280, "y": 390 }
-  },
-  {
-    "location": "Sligo",
-    "coordinates": { "x": 190, "y": 280 }
-  },
-  {
-    "location": "Wexford",
-    "coordinates": { "x": 330, "y": 420 }
-  },
-  {
-    "location": "Donegal",
-    "coordinates": { "x": 160, "y": 250 }
-  },
-  {
-    "location": "Ennis",
-    "coordinates": { "x": 210, "y": 310 }
-  },
-  {
-    "location": "Castlebar",
-    "coordinates": { "x": 130, "y": 290 }
-  },
-  {
-    "location": "Navan",
-    "coordinates": { "x": 410, "y": 330 }
-  },
-  {
-    "location": "Boyle",
-    "coordinates": { "x": 220, "y": 280 }
-  },
-  {
-    "location": "Carrick-on-Shannon",
-    "coordinates": { "x": 240, "y": 260 }
-  }, 
-  {
-    "location": "Belfast",
-    "coordinates": { "x": 330, "y": 180 }
-  },
-  {
-    "location": "Derry",
-    "coordinates": { "x": 290, "y": 160 }
-  },
-  {
-    "location": "Lisburn",
-    "coordinates": { "x": 320, "y": 190 }
-  },
-  {
-    "location": "Newry",
-    "coordinates": { "x": 350, "y": 210 }
-  }
   ]
 }
