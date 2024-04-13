@@ -15,3 +15,16 @@ export function calculateKm(pin1: Pin, pin2: Pin): number {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
   return parseFloat((earthRadiusKm * c).toFixed(0));
 }
+
+export function emojiForDistances(distance: number): string {
+  if (distance === 5) {
+    return "🎯"
+  }
+  if (distance <= 100) {
+    return "👌"
+  }
+  if (distance <= 250) {
+    return "🫤"
+  }
+  return "😳"
+}

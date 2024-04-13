@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Round, Pin } from '../Types'
-import { calculateKm } from '../utils/mapUtils';
+import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 
 mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
 interface MapboxMapProps {
@@ -101,7 +101,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
           el.style.backgroundColor = 'white'; 
           el.style.padding = '5px';
           el.style.borderRadius = '5px';
-          el.innerHTML = `<span style="font-size: 16px;"><b>${distance} km</b></span>`;
+          el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
 
         // Add the custom element as a marker to the map
         new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
