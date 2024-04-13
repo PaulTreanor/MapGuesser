@@ -126,7 +126,12 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       }
     }, [roundDetails]); 
 
-    return <div ref={mapContainerRef} style={{ width: '60%', height: '600px' }} />;
+  return (
+    <div
+      ref={mapContainerRef}
+      className="w-full min-h-full h-full z-10"
+    />
+  );
 };
 
 export default MapboxMap;

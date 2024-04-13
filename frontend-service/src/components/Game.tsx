@@ -61,19 +61,21 @@ export default function Game() {
   }
 
   return (
-    <>
+    <div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
       <TopBarGame
+        roundLocation={rounds[currentRoundIndex].location}
         score={20}
         currentRound={currentRoundIndex + 1}
         roundCompleted={roundCompleted}
         moveToNextRound={moveToNextRound}
       />
-      <h2 className='text-2xl'>Where is <span className='font-bold'>{rounds[currentRoundIndex].location}</span>?</h2>
-      <MapboxMap
-        roundDetails={rounds[currentRoundIndex]}
-        handleGuess={handleGuess}
-      />
-    </>
-    
+      <div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
+ 
+        <MapboxMap
+          roundDetails={rounds[currentRoundIndex]}
+          handleGuess={handleGuess}
+        />
+      </div>
+    </div>
   )
 }

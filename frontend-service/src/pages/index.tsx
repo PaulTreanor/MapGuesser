@@ -5,7 +5,7 @@ import TopBarGame from "../components/TopBarGame"
 
 const IndexPage: React.FC<PageProps> = () => {
   return (
-    <main>
+    <main className="h-full overflow-hidden">
       <Game /> 
     </main>
   )

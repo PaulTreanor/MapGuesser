@@ -6,3 +6,10 @@
 .mapboxgl-ctrl {
   display: none !important;
 }
+
+html, body, #___gatsby, #gatsby-focus-wrapper {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
