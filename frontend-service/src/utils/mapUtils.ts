@@ -17,7 +17,7 @@ export function calculateKm(pin1: Pin, pin2: Pin): number {
 }
 
 export function emojiForDistances(distance: number): string {
-  if (distance === 5) {
+  if (distance < 5) {
     return "🎯"
   }
   if (distance <= 100) {
