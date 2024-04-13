@@ -18,10 +18,6 @@ export default function Game() {
   }
 
   const generateRounds = () => {
-    // setRounds(roundsData.simpleGame as any)
-    // console.log({"rounds": rounds})
-
-
     // Create copy to avoid mutating the original data
     const generalRoundsList = [...roundsData.generalEurope]
       const randomRounds = []

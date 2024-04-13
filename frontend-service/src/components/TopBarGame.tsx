@@ -1,14 +1,14 @@
 import React from 'react'
 
 interface TopBarGameProps {
+  roundLocation: string
   score: number
   currentRound: number
   roundCompleted: boolean
   moveToNextRound: () => void
 }
 
-
-export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound}) {
+export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound}: TopBarGameProps) {
   return (
     <nav className="border-gray-200 pointer-events-none min-h-64">
       <div className="max-w-screen-xl flex flex-col md:flex-row md:flex-wrap items-center justify-between mx-auto py-4 pointer-events-auto">
