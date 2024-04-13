@@ -9,9 +9,11 @@ export default function Game() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0)
   const [rounds, setRounds] = useState<Round[] | null>(null)
   const [roundCompleted, setRoundCompleted] = useState<boolean>(false)
+  const [score, setScore] = useState<number>(0)
 
-  const handleGuess = () => {
-    console.log('Guess')
+  const handleGuess = (distance: number) => {
+    console.log('Guess', distance)
+    setScore(score + distance)
     setRoundCompleted(true)
   }
 
@@ -54,7 +56,7 @@ export default function Game() {
     )
   }
 
-  if (currentRoundIndex === 4 && roundCompleted) {
+  if (currentRoundIndex === 5 && roundCompleted) {
     return (
       <div>Game Over</div>
     )
@@ -64,7 +66,7 @@ export default function Game() {
     <div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
       <TopBarGame
         roundLocation={rounds[currentRoundIndex].location}
-        score={20}
+        score={score}
         currentRound={currentRoundIndex + 1}
         roundCompleted={roundCompleted}
         moveToNextRound={moveToNextRound}

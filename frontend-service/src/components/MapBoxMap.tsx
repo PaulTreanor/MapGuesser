@@ -7,7 +7,7 @@ import { calculateKm } from '../utils/mapUtils';
 mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
 interface MapboxMapProps {
   roundDetails: Round;
-  handleGuess: () => void; // Leaving this blank for now 
+  handleGuess: (distance: number) => void;
 }
 
 const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
@@ -111,7 +111,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
         // Update state with the clicked coordinates
         setLastClick(e.lngLat);
 
-        handleGuess()
+        handleGuess(distance)
       };
 
     
