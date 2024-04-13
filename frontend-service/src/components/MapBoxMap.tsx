@@ -24,22 +24,22 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       map.on('load', () => {
         const canvas = map.getCanvas();
     
-        // Change cursor to 'crosshair' when hovering over the map
-        canvas.style.cursor = 'crosshair';
+        // Change cursor to 'default' when hovering over the map
+        canvas.style.cursor = 'default';
     
         // Change cursor to 'grab' when the mouse is down
         map.on('mousedown', () => {
           canvas.style.cursor = 'grab';
         });
     
-        // Revert cursor to 'crosshair' when the mouse is released
+        // Revert cursor to 'default' when the mouse is released
         map.on('mouseup', () => {
-          canvas.style.cursor = 'crosshair';
+          canvas.style.cursor = 'default';
         });
     
-        // Optionally, revert cursor to 'crosshair' when the mouse leaves the map area
+        // Optionally, revert cursor to 'default' when the mouse leaves the map area
         map.on('mouseleave', () => {
-          canvas.style.cursor = 'crosshair';
+          canvas.style.cursor = 'default';
         });
       });
     
