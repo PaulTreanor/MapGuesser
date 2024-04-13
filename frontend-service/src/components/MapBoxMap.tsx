@@ -20,6 +20,29 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
         style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
         attributionControl: false
       });
+
+      map.on('load', () => {
+        const canvas = map.getCanvas();
+    
+        // Change cursor to 'crosshair' when hovering over the map
+        canvas.style.cursor = 'crosshair';
+    
+        // Change cursor to 'grab' when the mouse is down
+        map.on('mousedown', () => {
+          canvas.style.cursor = 'grab';
+        });
+    
+        // Revert cursor to 'crosshair' when the mouse is released
+        map.on('mouseup', () => {
+          canvas.style.cursor = 'crosshair';
+        });
+    
+        // Optionally, revert cursor to 'crosshair' when the mouse leaves the map area
+        map.on('mouseleave', () => {
+          canvas.style.cursor = 'crosshair';
+        });
+      });
+    
     
       const addMarker = (e: mapboxgl.MapboxEvent) => {
         // Immediately remove the event listener to prevent further clicks from being registered
@@ -75,7 +98,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
         const el = document.createElement('div');
           el.className = 'custom-text-marker';
-          el.style.backgroundColor = 'white';
+          el.style.backgroundColor = 'white'; 
           el.style.padding = '5px';
           el.style.borderRadius = '5px';
           el.innerHTML = `<span style="font-size: 16px;"><b>${distance} km</b></span>`;
@@ -90,6 +113,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
         handleGuess()
       };
+
     
       map.on('click', addMarker)
 
