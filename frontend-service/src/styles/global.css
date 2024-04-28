@@ -1,3 +1,15 @@
+
+
+
+@font-face {
+  font-family: 'TitilliumWeb';
+  src: url('fonts/TitilliumWeb-Bold.ttf') format('truetype');
+  font-weight: bold; 
+  font-style: normal;
+}
+
+
+
 @import "leaflet/dist/leaflet.css";
 @tailwind base;
 @tailwind components;
@@ -13,3 +25,4 @@ html, body, #___gatsby, #gatsby-focus-wrapper {
   padding: 0;
   overflow: hidden; /* Prevent scrolling */
 }
+
