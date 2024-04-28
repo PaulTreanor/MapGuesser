@@ -34,3 +34,6 @@ html, body, #___gatsby, #gatsby-focus-wrapper {
   font-family: 'Roboto', sans-serif;
 }
 
+.text-shadow {
+  text-shadow: 2px 2px 2px white;
+}
