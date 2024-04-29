@@ -31,10 +31,12 @@ export default function TopBarGame({ roundLocation, score, currentRound, roundCo
         >
           Next Round
         </button>
-        <div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0  shadow-slate-50 shadow-sm'>
-          <p className='z-30'>{score} points</p>
-          <p className='z-30'>{currentRound}/5</p>
-        </div>
+        {currentRound > 1 && (
+          <div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0  shadow-slate-50 shadow-sm'>
+            <p className='z-30'>{score} points</p>
+            <p className='z-30'>{currentRound}/5</p>
+          </div>
+        )}
       </div>
     </nav>
   )
