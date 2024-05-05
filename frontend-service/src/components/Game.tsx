@@ -77,7 +77,11 @@ export default function Game() {
           </p>
           <br />
           <p className="text-lg text-slate-950">
-          Scores are based on how far your guess is from the city's real location, so lower scores are better.  There is 5 rounds per game and you want your final score as close to 0 as possible, like golf.
+          Scores are based on how far your guess is from the city's real location, so lower scores are better. 
+          </p>
+          <br />
+          <p className="text-lg text-slate-950">
+            There is 5 rounds per game and you want your final score as close to 0 as possible, like golf.
           </p>
           <br />
           <p className="text-lg text-slate-950">
