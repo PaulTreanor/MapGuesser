@@ -65,21 +65,42 @@ export default function Game() {
     <>
       { isModalOpen && 
         <Modal onClose={() => setIsModalOpen(false)}>
-          <h1>Modal Title</h1>
-          <p>Modal Content</p>
-          <button onClick={() => setIsModalOpen(false)} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-          Close
-        </button>
+          <h1
+            className="font-titillium text-blue-800 text-4xl font-bold mb-4"
+          >
+            🌎 MapGuesser 
+          <span className="text-slate-400 text-xl font-light ml-2">  Inspired by GeoGuessr!</span>
+          </h1>
+          <br />
+          <p className="text-lg text-slate-950">
+            For each round, try to pinpoint the city on the map. The map supports panning and zooming. 
+          </p>
+          <br />
+          <p className="text-lg text-slate-950">
+          Scores are based on how far your guess is from the city's real location, so lower scores are better.  There is 5 rounds per game and you want your final score as close to 0 as possible, like golf.
+          </p>
+          <br />
+          <p className="text-lg text-slate-950">
+            Please share MapGuesser with your friends if you enjoyed it!
+          </p>
+          <br />
+          <div className="flex justify-end mr-2">
+            <button onClick={() => setIsModalOpen(false)} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
+              Start Game!
+            </button>
+          </div>
         </Modal>
       }
       <div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
-        <TopBarGame
-          roundLocation={rounds[currentRoundIndex].location}
-          score={score}
-          currentRound={currentRoundIndex + 1}
-          roundCompleted={roundCompleted}
-          moveToNextRound={moveToNextRound}
-        />
+        {!isModalOpen && (
+          <TopBarGame
+            roundLocation={rounds[currentRoundIndex].location}
+            score={score}
+            currentRound={currentRoundIndex + 1}
+            roundCompleted={roundCompleted}
+            moveToNextRound={moveToNextRound}
+          />
+        )}
         <div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
   
           <MapboxMap
