@@ -31,6 +31,14 @@ export default function TopBarGame({ roundLocation, score, currentRound, roundCo
         >
           Next Round
         </button>
+        {currentRound === 5 && roundCompleted && (
+          <button
+            className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
+            onClick={() => alert('Game Finished!')}
+          >
+            Finish Game
+          </button>
+        )}
         {currentRound > 1 && (
           <div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0  shadow-slate-50 shadow-sm'>
             <p className='z-30'>{score} points</p>
