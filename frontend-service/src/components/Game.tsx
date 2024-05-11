@@ -4,15 +4,15 @@ import roundsData from "../data/rounds.json"
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
-
+import EndModal from './EndModal'
 
 export default function Game() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0)
   const [rounds, setRounds] = useState<Round[] | null>(null)
   const [roundCompleted, setRoundCompleted] = useState<boolean>(false)
   const [score, setScore] = useState<number>(0)
-  const [isModalOpen, setIsModalOpen] = useState(true); // State to control modal visibility
-
+  const [isStartModalOpen, setIsStartModalOpen] = useState(true); 
+  const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
   const handleGuess = (distance: number) => {
     console.log('Guess', distance)
@@ -63,17 +63,22 @@ export default function Game() {
 
   return (
     <>
-      { isModalOpen && 
-        <StartModal setIsModalOpen={setIsModalOpen} />
+      { isStartModalOpen && 
+        <StartModal setIsStartModalOpen={setIsStartModalOpen} />
+      }
+      { isEndModalOpen && 
+        <EndModal score={score} />
       }
       <div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
-        {!isModalOpen && (
+        {!isStartModalOpen && (
           <TopBarGame
             roundLocation={rounds[currentRoundIndex].location}
             score={score}
             currentRound={currentRoundIndex + 1}
             roundCompleted={roundCompleted}
             moveToNextRound={moveToNextRound}
+            setIsEndModalOpen={setIsEndModalOpen}
+            isEndModalOpen={isEndModalOpen}
           />
         )}
         <div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}

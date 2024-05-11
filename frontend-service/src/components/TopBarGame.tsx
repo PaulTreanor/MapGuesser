@@ -5,10 +5,13 @@ interface TopBarGameProps {
   score: number
   currentRound: number
   roundCompleted: boolean
-  moveToNextRound: () => void
+  moveToNextRound: () => void,
+  setIsEndModalOpen: (value: boolean) => void,
+  isEndModalOpen: boolean
 }
 
-export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound}: TopBarGameProps) {
+export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound, setIsEndModalOpen, isEndModalOpen }: TopBarGameProps) {
+
   return (
     <nav className="border-gray-200 pointer-events-none min-h-64">
       <div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
@@ -24,17 +27,17 @@ export default function TopBarGame({ roundLocation, score, currentRound, roundCo
           </div>
         </div>
         <button
-          hidden={!roundCompleted}
+          hidden={!roundCompleted || currentRound == 5}
           className='disabled:bg-gray-500 bg-rose-700 hover:bg-rose-800 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4  shadow-slate-50 shadow-sm'
           onClick={moveToNextRound}
           disabled={!roundCompleted}
         >
           Next Round
         </button>
-        {currentRound === 5 && roundCompleted && (
+        {currentRound === 5 && roundCompleted && !isEndModalOpen && (
           <button
             className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
-            onClick={() => alert('Game Finished!')}
+            onClick={() => setIsEndModalOpen(true)}
           >
             Finish Game
           </button>

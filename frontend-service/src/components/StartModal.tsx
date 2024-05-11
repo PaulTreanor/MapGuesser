@@ -1,9 +1,9 @@
 import React from 'react'
 import Modal from './Modal'
 
-export default function StartModal({setIsModalOpen}) {
+export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: (value: boolean) => void}) {
   return (
-    <Modal onClose={() => setIsModalOpen(false)}>
+    <Modal onClose={() => setIsStartModalOpen(false)}>
           <h1
             className="font-titillium text-blue-800 text-4xl font-bold md:mb-2 flex flex-col md:flex-row items-baseline"
           >
@@ -32,7 +32,7 @@ export default function StartModal({setIsModalOpen}) {
           </p>
           <br />
           <div className="flex justify-end mr-2">
-            <button onClick={() => setIsModalOpen(false)} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
+            <button onClick={() => setIsStartModalOpen(false)} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
               Start Game!
             </button>
           </div>
