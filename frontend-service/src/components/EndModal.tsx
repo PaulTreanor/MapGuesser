@@ -2,7 +2,12 @@ import React from 'react'
 import Modal from './Modal'
 
 
-export default function EndModal({score}: {score: number}) {
+export default function EndModal({ score }: { score: number }) {
+  
+  const handlePlayAgain = () => {
+    window.location.reload();
+  }
+
   return (
     <Modal onClose={() => alert("closed")}>
           <h1
@@ -18,7 +23,11 @@ export default function EndModal({score}: {score: number}) {
               {"  " + score}
             </span>
           </p>
-          
-        </Modal>
+          <div className="flex justify-center mt-10 mr-2">
+            <button onClick={handlePlayAgain} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
+              Play again
+            </button>
+          </div>
+    </Modal>
   )
 }
