@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
 import Game from "../components/Game"
-import TopBarGame from "../components/TopBarGame"
+import favicon from "../images/favicon.ico"
 
 const IndexPage: React.FC<PageProps> = () => {
   return (
@@ -13,4 +13,10 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage
 
-export const Head: HeadFC = () => <title>MapGusser</title>
+export const Head: HeadFC = () => (
+  <>
+    <title>MapGuesser</title>
+    <link rel="icon" href={favicon} type="image/x-icon" />
+  </>
+)
+

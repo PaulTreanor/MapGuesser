@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Link, HeadFC, PageProps } from "gatsby"
+import favicon from "../images/favicon.ico"
 
 const pageStyles = {
   color: "#232129",
@@ -25,20 +26,11 @@ const codeStyles = {
 
 const NotFoundPage: React.FC<PageProps> = () => {
   return (
-    <main style={pageStyles}>
-      <h1 style={headingStyles}>Page not found</h1>
-      <p style={paragraphStyles}>
-        Sorry 😔, we couldn’t find what you were looking for.
-        <br />
-        {process.env.NODE_ENV === "development" ? (
-          <>
-            <br />
-            Try creating a page in <code style={codeStyles}>src/pages/</code>.
-            <br />
-          </>
-        ) : null}
-        <br />
-        <Link to="/">Go home</Link>.
+    <main>
+      <h1>Page not found</h1>
+      <p>
+        Sorry this page doesn't exist. 
+        <Link to="/" className="text-blue-600 hover:text-blue-800">Go home</Link>.
       </p>
     </main>
   )
@@ -46,4 +38,9 @@ const NotFoundPage: React.FC<PageProps> = () => {
 
 export default NotFoundPage
 
-export const Head: HeadFC = () => <title>Not found</title>
+export const Head: HeadFC = () => (
+  <>
+    <title>Not found</title>
+    <link rel="icon" href={favicon} type="image/x-icon" />
+  </>
+)
