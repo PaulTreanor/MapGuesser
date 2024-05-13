@@ -1,10 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Round, Pin } from '../Types'
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 
 mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
+
+const cursorSetup = (map: mapboxgl.Map) => {
+  const canvas = map.getCanvas();
+  canvas.style.cursor = 'default';
+
+  map.on('mousedown', () => {
+    canvas.style.cursor = 'grab';
+  });
+
+  map.on('mouseup', () => {
+    canvas.style.cursor = 'default';
+  });
+
+  map.on('mouseleave', () => {
+    canvas.style.cursor = 'default';
+  });
+}
 interface MapboxMapProps {
   roundDetails: Round;
   handleGuess: (distance: number) => void;
@@ -14,7 +31,11 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
   const mapContainerRef = useRef(null);
   const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 
-    useEffect(() => {
+  useEffect(() => {
+      if (mapContainerRef.current === null) {
+        return; // Keep TS happy
+      }
+
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
@@ -22,29 +43,11 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       });
 
       map.on('load', () => {
-        const canvas = map.getCanvas();
-    
-        // Change cursor to 'default' when hovering over the map
-        canvas.style.cursor = 'default';
-    
-        // Change cursor to 'grab' when the mouse is down
-        map.on('mousedown', () => {
-          canvas.style.cursor = 'grab';
-        });
-    
-        // Revert cursor to 'default' when the mouse is released
-        map.on('mouseup', () => {
-          canvas.style.cursor = 'default';
-        });
-    
-        // Optionally, revert cursor to 'default' when the mouse leaves the map area
-        map.on('mouseleave', () => {
-          canvas.style.cursor = 'default';
-        });
+        cursorSetup(map)
       });
     
     
-      const addMarker = (e: mapboxgl.MapboxEvent) => {
+      const addMarker = (e: MapMouseEvent) => {
         // Immediately remove the event listener to prevent further clicks from being registered
         map.off(`click`, addMarker)
 
@@ -116,8 +119,6 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
     
       map.on('click', addMarker)
-
-      
 
       // Clean up on unmount
       return () => {
