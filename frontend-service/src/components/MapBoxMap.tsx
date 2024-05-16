@@ -55,8 +55,6 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
   const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 
   const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
-    // Immediately remove the event listener to prevent further clicks from being registered
-    map.off(`click`, addMarker)
 
     // Remove existing markers
     document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
@@ -139,12 +137,18 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
         style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
         attributionControl: false
       });
+    
+      const handleMapClick = (e: MapMouseEvent) => {
+        addMarker(map, e);
+        // Remove the event listener immediately after handling the first click
+        map.off('click', handleMapClick);
+    };
 
       map.on('load', () => {
-        cursorSetup(map)
+          cursorSetup(map);
+          map.on('click', handleMapClick); // Add the event listener
       });
 
-      map.on('click', (e: MapMouseEvent) => addMarker(map, e))
 
       // Clean up on unmount
       return () => {
