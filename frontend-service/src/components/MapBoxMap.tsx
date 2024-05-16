@@ -108,7 +108,8 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
         // Add the custom element as a marker to the map
         new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
-          .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) // Position it between the guess and the actual location
+          // Position it between the guess and the actual location
+          .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
           .addTo(map);
         
         // Update state with the clicked coordinates

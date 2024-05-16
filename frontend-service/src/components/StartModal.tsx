@@ -26,10 +26,10 @@ export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: 
           <p className="text-lg text-slate-950">
             Please share MapGuesser with your friends if you enjoyed it!
           </p>
-          <br />
+          {/* <br />
           <p className="text-lg text-slate-950">
             For more of my stuff visit <a href="http://paultreanor.com" className="text-blue-800 hover:underline">paultreanor.com</a>
-          </p>
+          </p> */}
           <br />
           <div className="flex justify-end mr-2">
             <button onClick={() => setIsStartModalOpen(false)} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
