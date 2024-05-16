@@ -91,7 +91,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
 
     // Add the custom element as a marker to the map
-    new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
+    const customMarker = new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
       // Position it between the guess and the actual location
       .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
       .addTo(map);
@@ -100,6 +100,16 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
     setLastClick(e.lngLat);
 
     handleGuess(distance)
+
+     // If the distance is less than 200km, recentre the map on the custom-text-marker with an animation
+     if (distance < 200) {
+        map.flyTo({
+          center: customMarker.getLngLat(),
+          zoom: map.getZoom() + 1, // Zoom in slightly
+          speed: 0.5, // Make the animation last 1 second
+          essential: true
+        });
+      }
   };
 
   useEffect(() => {
