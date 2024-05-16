@@ -22,6 +22,72 @@ const cursorSetup = (map: mapboxgl.Map) => {
     canvas.style.cursor = 'default';
   });
 }
+
+
+
+const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
+  if (distance < 25) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      zoom: map.getZoom() + 4, // Zoom in 
+      speed: 1.5, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+  if (distance < 75) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      zoom: map.getZoom() + 3, // Zoom in 
+      speed: 1, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+   
+  if (distance < 150) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      zoom: map.getZoom() + 2, // Zoom in 
+      speed: 0.5, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+  if (distance < 300) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      zoom: map.getZoom() + 1, // Zoom in slightly
+      speed: 0.5, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+  if (distance < 6000) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      speed: 0.5, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+  if (distance > 6001 && distance <= 8000) {
+    map.flyTo({
+      center: customMarker.getLngLat(),
+      zoom: map.getZoom() - 1,
+      speed: 0.5, // Make the animation last 1 second
+      essential: true
+    });
+    return
+  }
+  map.flyTo({
+    center: customMarker.getLngLat(),
+    zoom: map.getZoom() - 2,
+    speed: 0.5, // Make the animation last 1 second
+    essential: true
+  });
+}
+
 interface MapboxMapProps {
   roundDetails: Round;
   handleGuess: (distance: number) => void;
@@ -101,15 +167,9 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
     handleGuess(distance)
 
-     // If the distance is less than 200km, recentre the map on the custom-text-marker with an animation
-     if (distance < 200) {
-        map.flyTo({
-          center: customMarker.getLngLat(),
-          zoom: map.getZoom() + 1, // Zoom in slightly
-          speed: 0.5, // Make the animation last 1 second
-          essential: true
-        });
-      }
+
+    recentreAndOrZoom(map, customMarker, distance)
+    
   };
 
   useEffect(() => {
