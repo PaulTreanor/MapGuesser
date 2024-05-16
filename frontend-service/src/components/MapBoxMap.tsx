@@ -31,6 +31,77 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
   const mapContainerRef = useRef(null);
   const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 
+  const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
+    // Immediately remove the event listener to prevent further clicks from being registered
+    map.off(`click`, addMarker)
+
+    // Remove existing markers
+    document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+    document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+
+    // Create a new marker and add it to the map at the clicked location
+    new mapboxgl.Marker()
+      .setLngLat([e.lngLat.lng, e.lngLat.lat])
+      .addTo(map);
+    
+
+    new mapboxgl.Marker({ color: "red" })
+      .setLngLat(roundDetails.coordinates)
+      .addTo(map);
+
+    const lineCoordinates = [
+      [e.lngLat.lng, e.lngLat.lat], // Clicked location
+      roundDetails.coordinates
+    ];
+
+    const lineId = `${roundDetails.location}-line`
+
+    // Create a GeoJSON source with a line feature
+    map.addSource(lineId, {
+      'type': 'geojson',
+      'data': {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': 'LineString',
+          'coordinates': lineCoordinates
+        }
+      }
+    });
+
+    // Add a new layer to visualize the line
+    map.addLayer({
+      'id': lineId,
+      'type': 'line',
+      'source': lineId,
+      'layout': {},
+      'paint': {
+        'line-width': 2,
+        'line-color': '#007cbf'
+      }
+    });
+
+    const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
+
+    const el = document.createElement('div');
+      el.className = 'custom-text-marker';
+      el.style.backgroundColor = 'white'; 
+      el.style.padding = '5px';
+      el.style.borderRadius = '5px';
+      el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+
+    // Add the custom element as a marker to the map
+    new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
+      // Position it between the guess and the actual location
+      .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
+      .addTo(map);
+    
+    // Update state with the clicked coordinates
+    setLastClick(e.lngLat);
+
+    handleGuess(distance)
+  };
+
   useEffect(() => {
       if (mapContainerRef.current === null) {
         return; // Keep TS happy
@@ -45,85 +116,12 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       map.on('load', () => {
         cursorSetup(map)
       });
-    
-    
-      const addMarker = (e: MapMouseEvent) => {
-        // Immediately remove the event listener to prevent further clicks from being registered
-        map.off(`click`, addMarker)
 
-        // Remove existing markers
-        document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-        document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
-
-        // Create a new marker and add it to the map at the clicked location
-        new mapboxgl.Marker()
-          .setLngLat([e.lngLat.lng, e.lngLat.lat])
-          .addTo(map);
-        
-
-        new mapboxgl.Marker({ color: "red" })
-          .setLngLat(roundDetails.coordinates)
-          .addTo(map);
-
-        const lineCoordinates = [
-          [e.lngLat.lng, e.lngLat.lat], // Clicked location
-          roundDetails.coordinates
-        ];
-
-        const lineId = `${roundDetails.location}-line`
-
-        // Create a GeoJSON source with a line feature
-        map.addSource(lineId, {
-          'type': 'geojson',
-          'data': {
-            'type': 'Feature',
-            'properties': {},
-            'geometry': {
-              'type': 'LineString',
-              'coordinates': lineCoordinates
-            }
-          }
-        });
-
-        // Add a new layer to visualize the line
-        map.addLayer({
-          'id': lineId,
-          'type': 'line',
-          'source': lineId,
-          'layout': {},
-          'paint': {
-            'line-width': 2,
-            'line-color': '#007cbf'
-          }
-        });
-
-        const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
-
-        const el = document.createElement('div');
-          el.className = 'custom-text-marker';
-          el.style.backgroundColor = 'white'; 
-          el.style.padding = '5px';
-          el.style.borderRadius = '5px';
-          el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
-
-        // Add the custom element as a marker to the map
-        new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
-          // Position it between the guess and the actual location
-          .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
-          .addTo(map);
-        
-        // Update state with the clicked coordinates
-        setLastClick(e.lngLat);
-
-        handleGuess(distance)
-      };
-
-    
-      map.on('click', addMarker)
+      map.on('click', (e: MapMouseEvent) => addMarker(map, e))
 
       // Clean up on unmount
       return () => {
-        map.off('click', addMarker)
+        map.off('click', (e: MapMouseEvent) => addMarker(map, e))
         map.remove()
       }
     }, [roundDetails]); 
