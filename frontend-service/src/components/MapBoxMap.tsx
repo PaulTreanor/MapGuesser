@@ -26,67 +26,24 @@ const cursorSetup = (map: mapboxgl.Map) => {
 
 
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
-  if (distance < 25) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      zoom: map.getZoom() + 4, // Zoom in 
-      speed: 1.5, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
-  if (distance < 75) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      zoom: map.getZoom() + 3, // Zoom in 
-      speed: 1, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
-   
-  if (distance < 150) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      zoom: map.getZoom() + 2, // Zoom in 
-      speed: 0.5, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
-  if (distance < 300) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      zoom: map.getZoom() + 1, // Zoom in slightly
-      speed: 0.5, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
-  if (distance < 6000) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      speed: 0.5, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
-  if (distance > 6001 && distance <= 8000) {
-    map.flyTo({
-      center: customMarker.getLngLat(),
-      zoom: map.getZoom() - 1,
-      speed: 0.5, // Make the animation last 1 second
-      essential: true
-    });
-    return
-  }
+  const zoomLevels = [
+    { maxDistance: 25, zoomChange: 4, speed: 1.5 },
+    { maxDistance: 75, zoomChange: 3, speed: 1 },
+    { maxDistance: 150, zoomChange: 2, speed: 0.5 },
+    { maxDistance: 300, zoomChange: 1, speed: 0.5 },
+    { maxDistance: 6000, zoomChange: 0, speed: 0.5 },
+    { maxDistance: 8000, zoomChange: -1, speed: 0.5 },
+  ];
+
+  const { zoomChange, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomChange: -2, speed: 0.5 };
+
   map.flyTo({
     center: customMarker.getLngLat(),
-    zoom: map.getZoom() - 2,
-    speed: 0.5, // Make the animation last 1 second
+    zoom: map.getZoom() + zoomChange,
+    speed: speed,
     essential: true
   });
-}
+};
 
 interface MapboxMapProps {
   roundDetails: Round;
