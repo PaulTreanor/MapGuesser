@@ -22,7 +22,24 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .mapboxgl-ctrl {
+  display: none !important;
+}
+
+.mapboxgl-ctrl-group {
+  display: block !important;
+}
+
+.mapboxgl-ctrl-zoom-in {
+  display: block !important;
+}
+
+.mapboxgl-ctrl-zoom-out {
+  display: block !important;
+}
+
+.mapboxgl-ctrl-compass {
   display: none !important;
 }
 

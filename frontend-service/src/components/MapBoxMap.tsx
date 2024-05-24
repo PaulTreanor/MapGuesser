@@ -3,7 +3,6 @@ import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Round, Pin } from '../Types'
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
-
 mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
 
 const cursorSetup = (map: mapboxgl.Map) => {
@@ -137,7 +136,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
         style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
         attributionControl: false
       });
-    
+        
       const handleMapClick = (e: MapMouseEvent) => {
         addMarker(map, e);
         // Remove the event listener immediately after handling the first click
@@ -146,6 +145,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
 
       map.on('load', () => {
           cursorSetup(map);
+          map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
           map.on('click', handleMapClick); // Add the event listener
       });
 
