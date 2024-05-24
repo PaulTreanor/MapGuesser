@@ -27,20 +27,22 @@
   display: none !important;
 }
 
-.mapboxgl-ctrl-group {
-  display: block !important;
-}
+@media (min-width: 1280px) {
+  .mapboxgl-ctrl-group {
+    display: block !important;
+  }
 
-.mapboxgl-ctrl-zoom-in {
-  display: block !important;
-}
+  .mapboxgl-ctrl-zoom-in {
+    display: block !important;
+  }
 
-.mapboxgl-ctrl-zoom-out {
-  display: block !important;
-}
+  .mapboxgl-ctrl-zoom-out {
+    display: block !important;
+  }
 
-.mapboxgl-ctrl-compass {
-  display: none !important;
+  .mapboxgl-ctrl-compass {
+    display: none !important;
+  }
 }
 
 html, body, #___gatsby, #gatsby-focus-wrapper {

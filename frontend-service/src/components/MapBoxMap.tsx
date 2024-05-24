@@ -26,19 +26,51 @@ const cursorSetup = (map: mapboxgl.Map) => {
 
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
   const zoomLevels = [
-    { maxDistance: 25, zoomChange: 4, speed: 1.5 },
-    { maxDistance: 75, zoomChange: 3, speed: 1 },
-    { maxDistance: 150, zoomChange: 2, speed: 0.5 },
-    { maxDistance: 300, zoomChange: 1, speed: 0.5 },
-    { maxDistance: 6000, zoomChange: 0, speed: 0.5 },
-    { maxDistance: 8000, zoomChange: -1, speed: 0.5 },
+    { maxDistance: 10, zoomLevel: 10, speed: 1.5 },
+    { maxDistance: 25, zoomLevel: 9, speed: 1.5 },
+    { maxDistance: 75, zoomLevel: 8, speed: 1 },
+    { maxDistance: 150, zoomLevel: 7, speed: 0.5 },
+    { maxDistance: 300, zoomLevel: 6.5, speed: 0.5 },
+    { maxDistance: 1000, zoomLevel: 3, speed: 0.5 },
+    { maxDistance: 1500, zoomLevel: 2.5, speed: 0.5 },
+    { maxDistance: 6000, zoomLevel: 2, speed: 0.5 },
+    { maxDistance: 8000, zoomLevel: 1, speed: 0.5 },
   ];
 
-  const { zoomChange, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomChange: -2, speed: 0.5 };
+  const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
+
+  // Prevent zooming in further if the map is already zoomed in more than the desired level
+  
+  
+  const calculateTargetZoom = (zoomLevel: number) => {
+    const currentZoom = map.getZoom()
+    if (zoomLevel > 6) {
+      const targetZoom = currentZoom > zoomLevel
+        ? currentZoom
+        : zoomLevel
+      return targetZoom
+    }
+    if ([5, 6].includes(zoomLevel)) {
+      return currentZoom
+    }
+    if (zoomLevel < 5 ) {
+      const targetZoom = currentZoom > zoomLevel
+        ? currentZoom
+        : zoomLevel
+      return targetZoom
+    }
+    
+  }
+
+  const targetZoom = calculateTargetZoom(zoomLevel)
+  
+  
+
+  console.log({})
 
   map.flyTo({
     center: customMarker.getLngLat(),
-    zoom: map.getZoom() + zoomChange,
+    zoom: targetZoom,
     speed: speed,
     essential: true
   });
@@ -134,6 +166,8 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
         style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
+        center: [6, 54], 
+        zoom: 5,
         attributionControl: false
       });
         
