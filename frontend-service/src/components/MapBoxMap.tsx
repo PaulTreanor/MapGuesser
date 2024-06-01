@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { Round, Pin } from '../Types'
+import type { Round, Pin, GameRound } from '../Types'
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
 
@@ -38,9 +38,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
   ];
 
   const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
-
-  // Prevent zooming in further if the map is already zoomed in more than the desired level
-  
   
   const calculateTargetZoom = (zoomLevel: number) => {
     const currentZoom = map.getZoom()
@@ -63,10 +60,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
   }
 
   const targetZoom = calculateTargetZoom(zoomLevel)
-  
-  
-
-  console.log({})
 
   map.flyTo({
     center: customMarker.getLngLat(),
@@ -77,8 +70,8 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 };
 
 interface MapboxMapProps {
-  roundDetails: Round;
-  handleGuess: (distance: number) => void;
+  roundDetails: GameRound;
+  handleGuess: (distance: number, position: Pin) => void;
 }
 
 const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
@@ -98,15 +91,15 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
     
 
     new mapboxgl.Marker({ color: "red" })
-      .setLngLat(roundDetails.coordinates)
+      .setLngLat(roundDetails.round.coordinates)
       .addTo(map);
 
     const lineCoordinates = [
       [e.lngLat.lng, e.lngLat.lat], // Clicked location
-      roundDetails.coordinates
+      roundDetails.round.coordinates
     ];
 
-    const lineId = `${roundDetails.location}-line`
+    const lineId = `${roundDetails.round.location}-line`
 
     // Create a GeoJSON source with a line feature
     map.addSource(lineId, {
@@ -133,7 +126,7 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
       }
     });
 
-    const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
+    const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.round.coordinates[0], roundDetails.round.coordinates[1]])
 
     const el = document.createElement('div');
       el.className = 'custom-text-marker';
@@ -145,13 +138,13 @@ const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
     // Add the custom element as a marker to the map
     const customMarker = new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
       // Position it between the guess and the actual location
-      .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
+      .setLngLat([(e.lngLat.lng + roundDetails.round.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.round.coordinates[1]) / 2]) 
       .addTo(map);
     
     // Update state with the clicked coordinates
     setLastClick(e.lngLat);
 
-    handleGuess(distance)
+    handleGuess(distance, [e.lngLat.lng, e.lngLat.lat])
 
 
     recentreAndOrZoom(map, customMarker, distance)

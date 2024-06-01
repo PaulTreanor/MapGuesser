@@ -1,12 +1,18 @@
 import React from 'react'
 import Modal from './Modal'
+import type { GameRound } from '../Types'
 
+interface EndModalProps {
+  score: number;
+  gameRounds: GameRound[];
+}
 
-export default function EndModal({ score }: { score: number }) {
+export default function EndModal({ score, gameRounds }: EndModalProps) {
   
   const handlePlayAgain = () => {
     window.location.reload();
   }
+
 
   return (
     <Modal onClose={() => alert("closed")}>
