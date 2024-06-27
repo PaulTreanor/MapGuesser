@@ -1,5 +1,6 @@
 # Frontend Service
 
+*Note: This info is entirely for myself because I forget this stuff*
 - DNS managed by Porkbun 
 - Hosted by Vercel
 
@@ -19,6 +20,6 @@ npx vitest
 
 ## Tech 
 - Gatsby, TypeScript, Tailwind
-- Mapbox 
+- Mapbox
 - Vitest, React Testing Library
 
