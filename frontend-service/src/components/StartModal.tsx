@@ -26,6 +26,10 @@ export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: 
           <p className="text-lg text-slate-950">
             Please share MapGuesser with your friends if you enjoyed it!
           </p>
+          <br />
+          <p className="text-lg text-slate-950">
+            For more of my work checkout my <a href="http://paultreanor.com" className="text-blue-800 hover:underline">website</a>.
+          </p>
           {/* <br />
           <p className="text-lg text-slate-950">
             For more of my stuff visit <a href="http://paultreanor.com" className="text-blue-800 hover:underline">paultreanor.com</a>
