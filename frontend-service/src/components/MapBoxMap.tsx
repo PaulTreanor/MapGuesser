@@ -3,7 +3,9 @@ import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { Round, Pin } from '../Types'
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
-mapboxgl.accessToken = "pk.eyJ1IjoicGF1bHRyZWFub3IiLCJhIjoiY2x1dTk2MGZ6MDd5MTJrc3RheHl6ZGE1cCJ9.i2IJpqtnJjbclBOLbaVnXw";
+
+mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
+
 
 const cursorSetup = (map: mapboxgl.Map) => {
   const canvas = map.getCanvas();
@@ -81,7 +83,8 @@ interface MapboxMapProps {
   handleGuess: (distance: number) => void;
 }
 
-const MapboxMap = ({roundDetails, handleGuess}: MapboxMapProps) => {
+const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
+  console.log(process.env.GATSBY_MAPBOX_ACCESS_TOKEN)
   const mapContainerRef = useRef(null);
   const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 

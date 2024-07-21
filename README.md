@@ -4,7 +4,9 @@
 
 Scores are based on how far your guess is from the city's real location, so lower scores are better. There is 5 rounds per game and you want your final score as close to 0 as possible, like golf.
 
-# Services 
-## Frontend 
-- Gatsby.js frontend (AWS Amplify Auth?) 
-- DNS and hosting details
+## Running locally
+- Create `.env.development` file in `./frontend-service`
+- Add MapBox public key to `GATSBY_MAPBOX_ACCESS_TOKEN` variable in `.env.development`. 
+- `npm install`
+- `npm run dev`
+- Deleting `cache` helps with occassional local dev hicups.
