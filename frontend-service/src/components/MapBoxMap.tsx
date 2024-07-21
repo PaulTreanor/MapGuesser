@@ -66,9 +66,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 
   const targetZoom = calculateTargetZoom(zoomLevel)
   
-  
-
-  console.log({})
 
   map.flyTo({
     center: customMarker.getLngLat(),
@@ -84,7 +81,6 @@ interface MapboxMapProps {
 }
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
-  console.log(process.env.GATSBY_MAPBOX_ACCESS_TOKEN)
   const mapContainerRef = useRef(null);
   const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
 

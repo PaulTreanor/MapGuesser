@@ -15,7 +15,6 @@ export default function Game() {
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
   const handleGuess = (distance: number) => {
-    console.log('Guess', distance)
     setScore(score + distance)
     setRoundCompleted(true)
   }
