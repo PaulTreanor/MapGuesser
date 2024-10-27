@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { calculateKm } from '../../utils/mapUtils';
-import type { Pin } from '../../Types';
+import type { Pin } from '../../components/Game.types';
 
 test('Same coordinates distance is 0km', () => {
 	const northPoleCoords: Pin = [0, 90]

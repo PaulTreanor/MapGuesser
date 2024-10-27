@@ -1,5 +1,5 @@
 import roundsData from "../data/rounds.json"
-import type {Round } from '../Types'
+import type {Round } from '../components/Game.types'
 
 // Swap this out once the locations API is ready. 
 const fetchRounds = (): Round[]  => {

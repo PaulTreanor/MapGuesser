@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { fetchRounds } from '../utils/gameUtils'
-import type {Round } from '../Types'
+import type {Round } from './Game.types'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'

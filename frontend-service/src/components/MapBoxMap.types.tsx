@@ -1,4 +1,4 @@
-import type { Round } from "../Types";
+import type { Round } from "./Game.types";
 
 interface MapboxMapProps {
 	roundDetails: Round;

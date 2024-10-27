@@ -1,4 +1,4 @@
-import { Pin } from '../Types';
+import { Pin } from '../components/Game.types';
 import { distance } from '@turf/distance';
 
 export function calculateKm(pin1: Pin, pin2: Pin): number {
