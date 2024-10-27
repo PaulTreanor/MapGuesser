@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import type {Pin, Round } from '../Types'
-import roundsData from "../data/rounds.json"
+import { fetchRounds } from '../utils/gameUtils'
+import type {Round } from '../Types'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
+
 
 export default function Game() {
   const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0)
@@ -19,23 +20,6 @@ export default function Game() {
     setRoundCompleted(true)
   }
 
-  const generateRounds = () => {
-    // Create copy to avoid mutating the original data
-    const generalRoundsList = [...roundsData.generalEurope]
-      const randomRounds = []
-      for (let i = 0; i < 5; i++) {
-        if (generalRoundsList.length === 0) {
-          break; // break if there are no more rounds to select
-        }
-        const randomIndex = Math.floor(Math.random() * generalRoundsList.length)
-        randomRounds.push(generalRoundsList[randomIndex])
-        generalRoundsList.splice(randomIndex, 1) // remove the selected round from the list
-      }
-    // TypeScript being stupid, not worth complexity
-      setRounds(randomRounds as any)
-  }
-
-
   const moveToNextRound = () => {
     setRoundCompleted(false)
     if (currentRoundIndex === 4) {
@@ -45,7 +29,8 @@ export default function Game() {
   }
 
   useEffect(() => {
-    generateRounds()
+    const initialGameRounds = fetchRounds()
+    setRounds(initialGameRounds)
   }, [])
 
   if (!rounds) {
