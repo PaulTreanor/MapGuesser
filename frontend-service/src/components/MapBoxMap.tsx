@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { Round, Pin } from '../Types'
+import type { Round } from '../Types'
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
-
 
 const cursorSetup = (map: mapboxgl.Map) => {
   const canvas = map.getCanvas();
@@ -24,8 +23,6 @@ const cursorSetup = (map: mapboxgl.Map) => {
   });
 }
 
-
-
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
   const zoomLevels = [
     { maxDistance: 10, zoomLevel: 10, speed: 1.5 },
@@ -42,8 +39,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
   const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
 
   // Prevent zooming in further if the map is already zoomed in more than the desired level
-  
-  
   const calculateTargetZoom = (zoomLevel: number) => {
     const currentZoom = map.getZoom()
     if (zoomLevel > 6) {
@@ -82,8 +77,6 @@ interface MapboxMapProps {
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
   const mapContainerRef = useRef(null);
-  const [lastClick, setLastClick] = useState<mapboxgl.LngLat | null>(null);
-
   const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
 
     // Remove existing markers
@@ -146,15 +139,10 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
       // Position it between the guess and the actual location
       .setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
       .addTo(map);
-    
-    // Update state with the clicked coordinates
-    setLastClick(e.lngLat);
 
     handleGuess(distance)
 
-
     recentreAndOrZoom(map, customMarker, distance)
-    
   };
 
   useEffect(() => {
