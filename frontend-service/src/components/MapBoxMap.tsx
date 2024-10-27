@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { Round } from '../Types'
+import type { MapboxMapProps } from './MapBoxMap.types';
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
+import { zoomLevels } from '../objects/zoomLevels';
 
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
@@ -24,18 +25,6 @@ const cursorSetup = (map: mapboxgl.Map) => {
 }
 
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
-	const zoomLevels = [
-		{ maxDistance: 10, zoomLevel: 10, speed: 1.5 },
-		{ maxDistance: 25, zoomLevel: 9, speed: 1.5 },
-		{ maxDistance: 75, zoomLevel: 8, speed: 1 },
-		{ maxDistance: 150, zoomLevel: 7, speed: 0.5 },
-		{ maxDistance: 300, zoomLevel: 6.5, speed: 0.5 },
-		{ maxDistance: 1000, zoomLevel: 3, speed: 0.5 },
-		{ maxDistance: 1500, zoomLevel: 2.5, speed: 0.5 },
-		{ maxDistance: 6000, zoomLevel: 2, speed: 0.5 },
-		{ maxDistance: 8000, zoomLevel: 1, speed: 0.5 },
-	];
-
 	const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
 
 	// Prevent zooming in further if the map is already zoomed in more than the desired level
@@ -50,7 +39,7 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 		if ([5, 6].includes(zoomLevel)) {
 			return currentZoom
 		}
-		if (zoomLevel < 5 ) {
+		if (zoomLevel < 5) {
 			const targetZoom = currentZoom > zoomLevel
 				? currentZoom
 				: zoomLevel
@@ -60,7 +49,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 	}
 
 	const targetZoom = calculateTargetZoom(zoomLevel)
-	
 
 	map.flyTo({
 		center: customMarker.getLngLat(),
@@ -69,11 +57,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 		essential: true
 	});
 };
-
-interface MapboxMapProps {
-	roundDetails: Round;
-	handleGuess: (distance: number) => void;
-}
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null);
