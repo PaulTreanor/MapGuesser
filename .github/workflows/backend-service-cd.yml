@@ -1,9 +1,12 @@
 name: backend-service Continuous deployment
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      # - 3-endpoint-and-healthcheck
+      - main
+    paths:
+      - 'backend-service/**'
   workflow_dispatch:
 
 jobs:
@@ -25,9 +28,8 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i id_rsa $SSH_USER@$SSH_HOST << 'EOF'
           cd MapGuesser/
           git pull origin main
-          git checkout 3-endpoint-and-healthcheck
           cd backend-service/
           docker stop api
           docker build -t mapguesser_api:latest . 
-          docker run -d -p 3000:3000 --name api mapguesser_api:latest
+          docker run -d --rm -p 3000:3000 --name api mapguesser_api:latest
         EOF
