@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import request from 'supertest';
-import app from '../app';
+import app from '../app.js';
 
 test('Health check', async () => {
   const response = await request(app).get('/health');
