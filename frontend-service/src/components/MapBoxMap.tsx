@@ -3,11 +3,14 @@ import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { MapboxMapProps } from './MapBoxMap.types';
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
-import { cursorSetup, recentreAndOrZoom } from '../utils/mapboxUtils';
+import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap } from '../utils/mapboxUtils';
+import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null);
+
+	// this method seems to add marker and handle guess and do the recenter stuff - break it up
 	const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
 
 		// Remove existing markers
@@ -32,29 +35,10 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		const lineId = `${roundDetails.location}-line`
 
 		// Create a GeoJSON source with a line feature
-		map.addSource(lineId, {
-			'type': 'geojson',
-			'data': {
-				'type': 'Feature',
-				'properties': {},
-				'geometry': {
-					'type': 'LineString',
-					'coordinates': lineCoordinates
-				}
-			}
-		});
+		addLineSourceToMap(map, lineId, lineCoordinates)
 
-		// Add a new layer to visualize the line
-		map.addLayer({
-			'id': lineId,
-			'type': 'line',
-			'source': lineId,
-			'layout': {},
-			'paint': {
-				'line-width': 2,
-				'line-color': '#007cbf'
-			}
-		});
+		// Add a new layer to visualize the line]
+		addLineToMap(map, lineId)
 
 		const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
 
@@ -83,7 +67,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 
 			const map = new mapboxgl.Map({
 				container: mapContainerRef.current,
-				style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
+				style: mapBoxMapStyle,
 				center: [6, 54], 
 				zoom: 5,
 				attributionControl: false

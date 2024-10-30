@@ -51,4 +51,33 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 	});
 };
 
-export { cursorSetup, recentreAndOrZoom };
+
+const addLineToMap = (map: mapboxgl.Map, lineId: string) => {
+	map.addLayer({
+		'id': lineId,
+		'type': 'line',
+		'source': lineId,
+		'layout': {},
+		'paint': {
+			'line-width': 2,
+			'line-color': '#007cbf'
+		}
+	});
+}
+
+// TODO coordinates type?
+const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, coordinates: number[][]) => {
+    map.addSource(lineId, {
+        'type': 'geojson',
+        'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': coordinates
+            }
+        }
+    });
+}
+
+export { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap };
