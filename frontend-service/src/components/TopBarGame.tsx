@@ -1,16 +1,15 @@
 import React from 'react'
+import { TopBarGameProps } from './types/TopBarGame.types'
 
-interface TopBarGameProps {
-	roundLocation: string
-	score: number
-	currentRound: number
-	roundCompleted: boolean
-	moveToNextRound: () => void,
-	setIsEndModalOpen: (value: boolean) => void,
-	isEndModalOpen: boolean
-}
-
-export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound, setIsEndModalOpen, isEndModalOpen }: TopBarGameProps) {
+export default function TopBarGame({
+	roundLocation,
+	score,
+	currentRound,
+	roundCompleted,
+	moveToNextRound,
+	setIsEndModalOpen,
+	isEndModalOpen
+}: TopBarGameProps) {
 
 	return (
 		<nav className="border-gray-200 pointer-events-none min-h-64">

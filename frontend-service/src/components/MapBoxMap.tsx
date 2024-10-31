@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { MapboxMapProps } from './MapBoxMap.types';
+import type { MapboxMapProps } from './types/MapBoxMap.types';
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
