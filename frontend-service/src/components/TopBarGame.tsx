@@ -1,5 +1,6 @@
 import React from 'react'
 import { TopBarGameProps } from './types/TopBarGame.types'
+import { numberOfRoundsInGame, indexOfFinalRound } from '../objects/gameConsts'
 
 export default function TopBarGame({
 	roundLocation,
@@ -28,14 +29,14 @@ export default function TopBarGame({
 					</div>
 				</div>
 				<button
-					hidden={!currentRound.completed || roundNumberAsDisplayed == 5}
+					hidden={!currentRound.completed || roundNumberAsDisplayed == numberOfRoundsInGame}
 					className='disabled:bg-gray-500 bg-rose-700 hover:bg-rose-800 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4  shadow-slate-50 shadow-sm'
 					onClick={moveToNextRound}
 					disabled={!currentRound.completed}
 				>
 					Next Round
 				</button>
-				{roundNumberAsDisplayed === 5 && currentRound.completed && !isEndModalOpen && (
+				{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && !isEndModalOpen && (
 					<button
 						className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
 						onClick={() => setIsEndModalOpen(true)}
@@ -46,7 +47,7 @@ export default function TopBarGame({
 				{roundNumberAsDisplayed > 0 && (
 					<div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0  shadow-slate-50 shadow-sm'>
 						<p className='z-30'>{score} points</p>
-						<p className='z-30'>{roundNumberAsDisplayed}/5</p>
+						<p className='z-30'>{roundNumberAsDisplayed}/{numberOfRoundsInGame}</p>
 					</div>
 				)}
 			</div>

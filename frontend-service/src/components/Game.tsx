@@ -5,6 +5,7 @@ import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
+import { numberOfRoundsInGame, indexOfFinalRound } from '../objects/gameConsts'
 
 export default function Game() {
 	const [currentRound, setCurrentRound] = useState<CurrentRound>({
@@ -25,7 +26,7 @@ export default function Game() {
 	}
 
 	const moveToNextRound = () => {
-		if (currentRound.index === 4) {
+		if (currentRound.index === indexOfFinalRound) {
 			return
 		}
 		setCurrentRound({
@@ -45,7 +46,7 @@ export default function Game() {
 		)
 	}
 
-	if (currentRound.index === 5 && currentRound.completed) {
+	if (currentRound.index === numberOfRoundsInGame && currentRound.completed) {
 		return (
 			<div>Game Over</div>
 		)

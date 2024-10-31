@@ -1,4 +1,4 @@
-import type { ZoomLevel } from "./zoomLevels.type";
+import type { ZoomLevel } from "./types/zoomLevels.type";
 
 const zoomLevels: ZoomLevel[] = [
     { maxDistance: 10, zoomLevel: 10, speed: 1.5 },
