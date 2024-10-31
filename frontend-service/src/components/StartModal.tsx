@@ -1,5 +1,6 @@
 import React from 'react'
 import Modal from './Modal'
+import { numberOfRoundsInGame } from '../objects/gameConsts'
 
 export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: (value: boolean) => void}) {
 	return (
@@ -20,7 +21,7 @@ export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: 
 			</p>
 			<br />
 			<p className="text-lg text-slate-950">
-				There is 5 rounds per game and you want your final score as close to 0 as possible, like golf.
+				There is {numberOfRoundsInGame} rounds per game and you want your final score as close to 0 as possible, like golf.
 			</p>
 			<br />
 			<p className="text-lg text-slate-950">
