@@ -1,6 +1,13 @@
-export type Pin = [number, number]
+type Pin = [number, number]
 
-export type Round = {
+type Round = {
 	location: string;
 	coordinates: Pin;
 }
+
+interface CurrentRound {
+	index: number;
+	completed: boolean;
+}
+
+export type { Round, CurrentRound };

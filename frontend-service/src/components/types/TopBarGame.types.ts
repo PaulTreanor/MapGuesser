@@ -1,8 +1,9 @@
+import type { CurrentRound } from './Game.types'
+
 interface TopBarGameProps {
 	roundLocation: string
 	score: number
-	currentRound: number
-	roundCompleted: boolean
+	currentRound: CurrentRound
 	moveToNextRound: () => void,
 	setIsEndModalOpen: (value: boolean) => void,
 	isEndModalOpen: boolean

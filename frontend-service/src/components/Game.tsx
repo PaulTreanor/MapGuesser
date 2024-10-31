@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react'
 import { fetchRounds } from '../utils/gameUtils'
-import type {Round } from './types/Game.types'
+import type {Round, CurrentRound} from './types/Game.types'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
 
-
 export default function Game() {
-	const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0)
+	const [currentRound, setCurrentRound] = useState<CurrentRound>({
+		index: 0,
+		completed: false
+	});
 	const [rounds, setRounds] = useState<Round[] | null>(null)
-	const [roundCompleted, setRoundCompleted] = useState<boolean>(false)
 	const [score, setScore] = useState<number>(0)
 	const [isStartModalOpen, setIsStartModalOpen] = useState(true); 
 	const [isEndModalOpen, setIsEndModalOpen] = useState(false);
 
 	const handleGuess = (distance: number) => {
 		setScore(score + distance)
-		setRoundCompleted(true)
+		setCurrentRound(prev => ({
+			...prev,
+			completed: true
+		}))
 	}
 
 	const moveToNextRound = () => {
-		setRoundCompleted(false)
-		if (currentRoundIndex === 4) {
+		if (currentRound.index === 4) {
 			return
 		}
-		setCurrentRoundIndex(currentRoundIndex + 1)
+		setCurrentRound({
+			index: currentRound.index + 1,
+			completed: false
+		})
 	}
 
 	useEffect(() => {
@@ -39,7 +45,7 @@ export default function Game() {
 		)
 	}
 
-	if (currentRoundIndex === 5 && roundCompleted) {
+	if (currentRound.index === 5 && currentRound.completed) {
 		return (
 			<div>Game Over</div>
 		)
@@ -56,10 +62,9 @@ export default function Game() {
 			<div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
 				{!isStartModalOpen && (
 					<TopBarGame
-						roundLocation={rounds[currentRoundIndex].location}
+						roundLocation={rounds[currentRound.index].location}
 						score={score}
-						currentRound={currentRoundIndex + 1}
-						roundCompleted={roundCompleted}
+						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
 						setIsEndModalOpen={setIsEndModalOpen}
 						isEndModalOpen={isEndModalOpen}
@@ -68,7 +73,7 @@ export default function Game() {
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
 	
 					<MapboxMap
-						roundDetails={rounds[currentRoundIndex]}
+						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}
 					/>
 				</div>
