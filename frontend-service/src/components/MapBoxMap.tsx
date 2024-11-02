@@ -2,16 +2,18 @@ import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { MapboxMapProps } from './types/MapBoxMap.types';
-import { calculateKm, emojiForDistances } from '../utils/mapUtils';
-import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap } from '../utils/mapboxUtils';
+import { calculateKm } from '../utils/mapUtils';
+import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 import { Pin } from '../components/types/Game.types'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
-	const mapContainerRef = useRef(null);
+	const mapContainerRef = useRef(null)
+	const mapRef = useRef<mapboxgl.Map | null>(null)
+	const currentLineIdRef = useRef<string>(''); // Add this to track the current line ID
 
-	// this method seems to add marker and handle guess and do the recenter stuff - break it up
+	// this method seems to add multiple markers
 	const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
 
 		// Remove existing markers
@@ -34,6 +36,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		];
 
 		const lineId = `${roundDetails.location}-line`
+		currentLineIdRef.current = lineId; // Update the ref with the new line ID
 
 		// Create a GeoJSON source with a line feature
 		addLineSourceToMap(map, lineId, lineCoordinates)
@@ -43,57 +46,81 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 
 		const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
 
-		const el = document.createElement('div');
-			el.className = 'custom-text-marker';
-			el.style.backgroundColor = 'white'; 
-			el.style.padding = '5px';
-			el.style.borderRadius = '5px';
-			el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+		const distanceMakerHtmlElement = createDistanceMarkerElement(distance);
 
-		// Add the custom element as a marker to the map
-		const customMarker = new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
+		// Add the custom distance marker to map
+		const customMarker = new mapboxgl.Marker(distanceMakerHtmlElement, { offset: [0, -30] }) // Adjust offset as needed
 			// Position it between the guess and the actual location
 			.setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
 			.addTo(map);
-
-		handleGuess(distance)
-
-		recentreAndOrZoom(map, customMarker, distance)
+		
+		return {
+			guessDistance: distance,
+			customDistanceMarker: customMarker
+		}
 	};
 
+	// Initialize map only once
 	useEffect(() => {
-			if (mapContainerRef.current === null) {
-				return; // Keep TS happy
-			}
+		if (mapContainerRef.current === null) {
+			return;
+		}
 
-			const map = new mapboxgl.Map({
-				container: mapContainerRef.current,
-				style: mapBoxMapStyle,
-				center: [6, 54], 
-				zoom: 5,
-				attributionControl: false
-			});
-				
-			const handleMapClick = (e: MapMouseEvent) => {
-				addMarker(map, e);
-				// Remove the event listener immediately after handling the first click
-				map.off('click', handleMapClick);
+		const map = new mapboxgl.Map({
+			container: mapContainerRef.current,
+			style: mapBoxMapStyle,
+			center: [6, 54], 
+			zoom: 5,
+			attributionControl: false
+		});
+
+		mapRef.current = map;
+
+		map.on('load', () => {
+			cursorSetup(map);
+			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+		});
+
+		// Clean up on component unmount
+		return () => {
+			map.remove();
+		};
+	}, []); // Empty dependency array - only run once
+
+	// Handle round changes
+	useEffect(() => {
+		if (!mapRef.current) return;
+		const map = mapRef.current;
+
+		// Clear existing markers and popups
+		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+
+		// Remove existing line layer and source using the previous line ID
+		if (currentLineIdRef.current) {
+			if (map.getLayer(currentLineIdRef.current)) {
+				map.removeLayer(currentLineIdRef.current);
+			}
+			if (map.getSource(currentLineIdRef.current)) {
+				map.removeSource(currentLineIdRef.current);
+			}
+		}
+
+		const handleMapClick = (e: MapMouseEvent) => {
+			const lineId = `${roundDetails.location}-line`;
+			currentLineIdRef.current = lineId; // Store the new line ID
+			const { guessDistance, customDistanceMarker } = addMarker(map, e);
+			handleGuess(guessDistance);
+			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
+			map.off('click', handleMapClick);
 		};
 
-			map.on('load', () => {
-					cursorSetup(map);
-					map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-					map.on('click', handleMapClick); // Add the event listener
-			});
+		map.on('click', handleMapClick);
 
-
-			// Clean up on unmount
-			return () => {
-				map.off('click', (e: MapMouseEvent) => addMarker(map, e))
-				map.remove()
-			}
-		}, [roundDetails]); 
-
+		return () => {
+			map.off('click', handleMapClick);
+		};
+	}, [roundDetails]);
 	return (
 		<div
 			ref={mapContainerRef}

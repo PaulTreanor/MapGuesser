@@ -46,12 +46,6 @@ export default function Game() {
 		)
 	}
 
-	if (currentRound.index === numberOfRoundsInGame && currentRound.completed) {
-		return (
-			<div>Game Over</div>
-		)
-	}
-
 	return (
 		<>
 			{ isStartModalOpen && 

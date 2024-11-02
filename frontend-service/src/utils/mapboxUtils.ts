@@ -1,5 +1,6 @@
 import { zoomLevels } from '../objects/zoomLevels';
 import { Pin } from '../components/types/Game.types'
+import { emojiForDistances } from '../utils/mapUtils';
 
 const cursorSetup = (map: mapboxgl.Map) => {
 	const canvas = map.getCanvas();
@@ -57,4 +58,14 @@ const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, lineCoordinates: 
     });
 }
 
-export { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap };
+const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
+	const el = document.createElement('div');
+	el.className = 'custom-text-marker';
+	el.style.backgroundColor = 'white'; 
+	el.style.padding = '5px';
+	el.style.borderRadius = '5px';
+	el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+	return el;
+};
+
+export { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement };
