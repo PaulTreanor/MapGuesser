@@ -72,7 +72,6 @@ export default function Game() {
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
-	
 					<MapboxMap
 						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}

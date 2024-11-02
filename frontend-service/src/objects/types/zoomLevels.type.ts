@@ -1,7 +1,7 @@
 type ZoomLevel = {
     maxDistance: number;
-    zoomLevel: number;
-    speed: number;
+    recommendedZoomLevel: number;
+    animationSpeed: number;
 }
 
 export type { ZoomLevel }

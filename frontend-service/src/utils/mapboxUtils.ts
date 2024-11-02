@@ -18,35 +18,13 @@ const cursorSetup = (map: mapboxgl.Map) => {
 }
 
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
-	const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
-
-	// Prevent zooming in further if the map is already zoomed in more than the desired level
-	const calculateTargetZoom = (zoomLevel: number) => {
-		const currentZoom = map.getZoom()
-		if (zoomLevel > 6) {
-			const targetZoom = currentZoom > zoomLevel
-				? currentZoom
-				: zoomLevel
-			return targetZoom
-		}
-		if ([5, 6].includes(zoomLevel)) {
-			return currentZoom
-		}
-		if (zoomLevel < 5) {
-			const targetZoom = currentZoom > zoomLevel
-				? currentZoom
-				: zoomLevel
-			return targetZoom
-		}
-		
-	}
-
-	const targetZoom = calculateTargetZoom(zoomLevel)
+	const { recommendedZoomLevel, animationSpeed } = zoomLevels.find(level => distance <= level.maxDistance)
+		|| { recommendedZoomLevel: 0.8, animationSpeed: 0.5 };
 
 	map.flyTo({
 		center: customMarker.getLngLat(),
-		zoom: targetZoom,
-		speed: speed,
+		zoom: recommendedZoomLevel,
+		speed: animationSpeed,
 		essential: true
 	});
 };
