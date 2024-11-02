@@ -5,6 +5,7 @@ import type { MapboxMapProps } from './types/MapBoxMap.types';
 import { calculateKm, emojiForDistances } from '../utils/mapUtils';
 import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
+import { Pin } from '../components/types/Game.types'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
@@ -27,7 +28,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 			.setLngLat(roundDetails.coordinates)
 			.addTo(map);
 
-		const lineCoordinates = [
+		const lineCoordinates: Pin[] = [
 			[e.lngLat.lng, e.lngLat.lat], // Clicked location
 			roundDetails.coordinates
 		];

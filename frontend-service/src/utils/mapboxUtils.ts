@@ -1,4 +1,5 @@
 import { zoomLevels } from '../objects/zoomLevels';
+import { Pin } from '../components/types/Game.types'
 
 const cursorSetup = (map: mapboxgl.Map) => {
 	const canvas = map.getCanvas();
@@ -29,7 +30,6 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 	});
 };
 
-
 const addLineToMap = (map: mapboxgl.Map, lineId: string) => {
 	map.addLayer({
 		'id': lineId,
@@ -43,8 +43,7 @@ const addLineToMap = (map: mapboxgl.Map, lineId: string) => {
 	});
 }
 
-// TODO coordinates type?
-const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, coordinates: number[][]) => {
+const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, lineCoordinates: Pin[]) => {
     map.addSource(lineId, {
         'type': 'geojson',
         'data': {
@@ -52,7 +51,7 @@ const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, coordinates: numb
             'properties': {},
             'geometry': {
                 'type': 'LineString',
-                'coordinates': coordinates
+                'coordinates': lineCoordinates
             }
         }
     });

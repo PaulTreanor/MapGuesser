@@ -10,4 +10,4 @@ interface CurrentRound {
 	completed: boolean;
 }
 
-export type { Round, CurrentRound };
+export type { Round, CurrentRound, Pin };
