@@ -11,7 +11,7 @@ mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
-	const currentLineIdRef = useRef<string>(''); // Add this to track the current line ID
+	const currentLineIdRef = useRef<string>(''); 
 
 	// this method seems to add multiple markers
 	const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
@@ -31,12 +31,12 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 			.addTo(map);
 
 		const lineCoordinates: Pin[] = [
-			[e.lngLat.lng, e.lngLat.lat], // Clicked location
+			[e.lngLat.lng, e.lngLat.lat],
 			roundDetails.coordinates
 		];
 
 		const lineId = `${roundDetails.location}-line`
-		currentLineIdRef.current = lineId; // Update the ref with the new line ID
+		currentLineIdRef.current = lineId;
 
 		// Create a GeoJSON source with a line feature
 		addLineSourceToMap(map, lineId, lineCoordinates)
@@ -49,7 +49,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		const distanceMakerHtmlElement = createDistanceMarkerElement(distance);
 
 		// Add the custom distance marker to map
-		const customMarker = new mapboxgl.Marker(distanceMakerHtmlElement, { offset: [0, -30] }) // Adjust offset as needed
+		const customMarker = new mapboxgl.Marker(distanceMakerHtmlElement, { offset: [0, -30] })
 			// Position it between the guess and the actual location
 			.setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
 			.addTo(map);
@@ -60,7 +60,6 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		}
 	};
 
-	// Initialize map only once
 	useEffect(() => {
 		if (mapContainerRef.current === null) {
 			return;
@@ -81,11 +80,10 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 		});
 
-		// Clean up on component unmount
 		return () => {
 			map.remove();
 		};
-	}, []); // Empty dependency array - only run once
+	}, []);
 
 	// Handle round changes
 	useEffect(() => {
@@ -108,7 +106,8 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;
-			currentLineIdRef.current = lineId; // Store the new line ID
+			// Store new line ID 
+			currentLineIdRef.current = lineId;
 			const { guessDistance, customDistanceMarker } = addMarker(map, e);
 			handleGuess(guessDistance);
 			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
@@ -121,6 +120,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 			map.off('click', handleMapClick);
 		};
 	}, [roundDetails]);
+	
 	return (
 		<div
 			ref={mapContainerRef}

@@ -1,12 +1,11 @@
-import type { CurrentRound } from './Game.types'
+import type { CurrentRound, GameState } from './Game.types'
 
+// properly type this
 interface TopBarGameProps {
-	roundLocation: string
-	score: number
+	gameState: GameState
 	currentRound: CurrentRound
 	moveToNextRound: () => void,
-	setIsEndModalOpen: (value: boolean) => void,
-	isEndModalOpen: boolean
+	setGameState: (value: any) => void,
 }
 
 export type { TopBarGameProps };

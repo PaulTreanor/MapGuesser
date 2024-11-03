@@ -1,16 +1,20 @@
 import React from 'react'
 import { TopBarGameProps } from './types/TopBarGame.types'
 import { numberOfRoundsInGame, indexOfFinalRound } from '../objects/gameConsts'
+import { gameStatus} from './types/Game.types'
 
 export default function TopBarGame({
-	roundLocation,
-	score,
+	gameState,
 	currentRound,
 	moveToNextRound,
-	setIsEndModalOpen,
-	isEndModalOpen
+	setGameState,
 }: TopBarGameProps) {
 
+	const { status, score, rounds } = gameState
+
+	// this empty state?
+	const roundLocation = rounds?.[currentRound.index]?.location || 'Unknown Location'
+ 
 	// Rounds indexed from 0 so we don't have confusing "index + 1" code everywhere
 	const roundNumberAsDisplayed = currentRound.index + 1;
 
@@ -36,10 +40,13 @@ export default function TopBarGame({
 				>
 					Next Round
 				</button>
-				{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && !isEndModalOpen && (
+				{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && status !== gameStatus.FINISHED  && (
 					<button
 						className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
-						onClick={() => setIsEndModalOpen(true)}
+						onClick={() => setGameState((prev:any) => ({
+							...prev,
+							status: gameStatus.FINISHED
+						}))}
 					>
 						Finish Game
 					</button>

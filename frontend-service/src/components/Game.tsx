@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { fetchRounds } from '../utils/gameUtils'
-import type {Round, CurrentRound} from './types/Game.types'
+import type { CurrentRound, GameState } from './types/Game.types'
+import { gameStatus} from './types/Game.types'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
@@ -12,13 +13,18 @@ export default function Game() {
 		index: 0,
 		completed: false
 	});
-	const [rounds, setRounds] = useState<Round[] | null>(null)
-	const [score, setScore] = useState<number>(0)
 	const [isStartModalOpen, setIsStartModalOpen] = useState(true); 
-	const [isEndModalOpen, setIsEndModalOpen] = useState(false);
+	const [gameState, setGameState] = useState<GameState>({
+		rounds: null,
+		score: 0,
+		status: gameStatus.NOT_STARTED
+	});
 
 	const handleGuess = (distance: number) => {
-		setScore(score + distance)
+		setGameState(prev => ({
+			...prev,
+			score: prev.score + distance
+		}))
 		setCurrentRound(prev => ({
 			...prev,
 			completed: true
@@ -37,10 +43,13 @@ export default function Game() {
 
 	useEffect(() => {
 		const initialGameRounds = fetchRounds()
-		setRounds(initialGameRounds)
+		setGameState(prev => ({
+			...prev,
+			rounds: initialGameRounds
+		}))
 	}, [])
 
-	if (!rounds) {
+	if (!gameState.rounds) {
 		return (
 			<div>Loading...</div>
 		)
@@ -51,23 +60,22 @@ export default function Game() {
 			{ isStartModalOpen && 
 				<StartModal setIsStartModalOpen={setIsStartModalOpen} />
 			}
-			{ isEndModalOpen && 
-				<EndModal score={score} />
+			{ gameState.status === gameStatus.FINISHED && 
+				<EndModal score={gameState.score} />
 			}
 			<div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
 				{!isStartModalOpen && (
+					// simplify props
 					<TopBarGame
-						roundLocation={rounds[currentRound.index].location}
-						score={score}
+						gameState={gameState}
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
-						setIsEndModalOpen={setIsEndModalOpen}
-						isEndModalOpen={isEndModalOpen}
+						setGameState={setGameState}
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
 					<MapboxMap
-						roundDetails={rounds[currentRound.index]}
+						roundDetails={gameState.rounds[currentRound.index]}
 						handleGuess={handleGuess}
 					/>
 				</div>
