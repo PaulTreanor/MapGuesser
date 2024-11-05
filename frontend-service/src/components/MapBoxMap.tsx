@@ -13,8 +13,45 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>(''); 
 
+	const initialiseMap = () => {
+		if (mapContainerRef.current === null) {
+			return null;
+		}
+
+		const map = new mapboxgl.Map({
+			container: mapContainerRef.current,
+			style: mapBoxMapStyle,
+			center: [6, 54], 
+			zoom: 5,
+			attributionControl: false
+		});
+
+		map.on('load', () => {
+			cursorSetup(map);
+			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+		});
+
+		return map;
+	}
+
+	const clearMap = (map: mapboxgl.Map) => {
+		// Clear existing markers and popups
+		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+
+		// Remove existing line layer and source using the previous line ID
+		if (currentLineIdRef.current) {
+			if (map.getLayer(currentLineIdRef.current)) {
+				map.removeLayer(currentLineIdRef.current);
+			}
+			if (map.getSource(currentLineIdRef.current)) {
+				map.removeSource(currentLineIdRef.current);
+			}
+		}
+	}
+
 	// this method seems to add multiple markers
-	const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
+	const addMarkersAndLine = (map: mapboxgl.Map, e: MapMouseEvent) => {
 
 		// Remove existing markers
 		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
@@ -61,24 +98,10 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	};
 
 	useEffect(() => {
-		if (mapContainerRef.current === null) {
-			return;
-		}
-
-		const map = new mapboxgl.Map({
-			container: mapContainerRef.current,
-			style: mapBoxMapStyle,
-			center: [6, 54], 
-			zoom: 5,
-			attributionControl: false
-		});
-
+		const map = initialiseMap();
+		if (!map) return;
+		
 		mapRef.current = map;
-
-		map.on('load', () => {
-			cursorSetup(map);
-			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-		});
 
 		return () => {
 			map.remove();
@@ -90,30 +113,20 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		if (!mapRef.current) return;
 		const map = mapRef.current;
 
-		// Clear existing markers and popups
-		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
-
-		// Remove existing line layer and source using the previous line ID
-		if (currentLineIdRef.current) {
-			if (map.getLayer(currentLineIdRef.current)) {
-				map.removeLayer(currentLineIdRef.current);
-			}
-			if (map.getSource(currentLineIdRef.current)) {
-				map.removeSource(currentLineIdRef.current);
-			}
-		}
+		clearMap(map)
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;
 			// Store new line ID 
 			currentLineIdRef.current = lineId;
-			const { guessDistance, customDistanceMarker } = addMarker(map, e);
+			const { guessDistance, customDistanceMarker } = addMarkersAndLine(map, e);
 			handleGuess(guessDistance);
 			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
+			// Remove the click event listener
 			map.off('click', handleMapClick);
 		};
 
+		// Add the click event listener
 		map.on('click', handleMapClick);
 
 		return () => {
