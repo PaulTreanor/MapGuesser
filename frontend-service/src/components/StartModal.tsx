@@ -1,10 +1,15 @@
 import React from 'react'
 import Modal from './Modal'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
+import type { GameState } from './types/Game.types'
+import { gameStatus } from '../objects/gameStatuses'
 
-export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: (value: boolean) => void}) {
+export default function StartModal({setGameState}: {setGameState: React.Dispatch<React.SetStateAction<GameState>>}) {
 	return (
-		<Modal onClose={() => setIsStartModalOpen(false)}>
+		<Modal onClose={() => setGameState((prev: GameState) => ({
+			...prev,
+			status: gameStatus.IN_PROGRESS
+		}))}>
 			<h1
 				className="font-titillium text-blue-800 text-4xl font-bold md:mb-2 flex flex-col md:flex-row items-baseline"
 			>
@@ -37,7 +42,13 @@ export default function StartModal({setIsStartModalOpen}: {setIsStartModalOpen: 
 			</p> */}
 			<br />
 			<div className="flex justify-end mr-2">
-				<button onClick={() => setIsStartModalOpen(false)} className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded">
+				<button
+					onClick={() => setGameState((prev: GameState) => ({
+						...prev,
+						status: gameStatus.IN_PROGRESS
+					}))}
+					className="bg-blue-800 hover:bg-blue-900 text-xl text-white font-bold py-2 px-4 rounded"
+				>
 					Start Game!
 				</button>
 			</div>

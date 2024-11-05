@@ -13,7 +13,6 @@ export default function Game() {
 		index: 0,
 		completed: false
 	});
-	const [isStartModalOpen, setIsStartModalOpen] = useState(true); 
 	const [gameState, setGameState] = useState<GameState>({
 		rounds: null,
 		score: 0,
@@ -57,15 +56,14 @@ export default function Game() {
 
 	return (
 		<>
-			{ isStartModalOpen && 
-				<StartModal setIsStartModalOpen={setIsStartModalOpen} />
+			{ gameState.status === gameStatus.NOT_STARTED && 
+				<StartModal setGameState={setGameState} />
 			}
 			{ gameState.status === gameStatus.FINISHED && 
 				<EndModal score={gameState.score} />
 			}
 			<div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
-				{!isStartModalOpen && (
-					// simplify props
+				{gameState.status !== gameStatus.NOT_STARTED && (
 					<TopBarGame
 						gameState={gameState}
 						currentRound={currentRound}
