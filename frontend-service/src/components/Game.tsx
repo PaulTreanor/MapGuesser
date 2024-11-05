@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { fetchRounds } from '../utils/gameUtils'
 import type { CurrentRound, GameState } from './types/Game.types'
-import { gameStatus} from './types/Game.types'
+import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
-import { numberOfRoundsInGame, indexOfFinalRound } from '../objects/gameConsts'
+import { indexOfFinalRound } from '../objects/gameConsts'
 
 export default function Game() {
 	const [currentRound, setCurrentRound] = useState<CurrentRound>({

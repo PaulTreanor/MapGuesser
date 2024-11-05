@@ -1,7 +1,8 @@
 import React from 'react'
+import type { GameState } from './types/Game.types'
 import { TopBarGameProps } from './types/TopBarGame.types'
-import { numberOfRoundsInGame, indexOfFinalRound } from '../objects/gameConsts'
-import { gameStatus} from './types/Game.types'
+import { numberOfRoundsInGame } from '../objects/gameConsts'
+import { gameStatus } from '../objects/gameStatuses'
 
 export default function TopBarGame({
 	gameState,
@@ -43,7 +44,7 @@ export default function TopBarGame({
 				{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && status !== gameStatus.FINISHED  && (
 					<button
 						className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
-						onClick={() => setGameState((prev:any) => ({
+						onClick={() => setGameState((prev: GameState) => ({
 							...prev,
 							status: gameStatus.FINISHED
 						}))}

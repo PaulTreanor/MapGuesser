@@ -20,5 +20,4 @@ type GameState = {
 	status: GameStatus;
 }
 
-export { gameStatus };
-export type { Round, CurrentRound, Pin, GameState };
+export type { Round, CurrentRound, Pin, GameState, GameStatus };
