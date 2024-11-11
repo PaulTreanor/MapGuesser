@@ -28,8 +28,10 @@ jobs:
         ssh -o StrictHostKeyChecking=no -i id_rsa $SSH_USER@$SSH_HOST << 'EOF'
           cd MapGuesser/
           git pull origin main
-          cd backend-service/
-          docker stop api
-          docker build -t mapguesser_api:latest . 
-          docker run -d --rm -p 3000:3000 --name api mapguesser_api:latest
+          docker compose stop backend-service-green
+          docker compose up -d --build backend-service-green
+          docker compose stop backend-service-blue
+          docker compose exec reverse-proxy nginx -s reload
+          docker compose up -d --build backend-service-blue
+          docker compose exec reverse-proxy nginx -s reload
         EOF
