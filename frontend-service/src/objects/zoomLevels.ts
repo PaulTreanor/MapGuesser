@@ -1,15 +1,18 @@
-import type { ZoomLevel } from "./zoomLevels.type";
+import type { ZoomLevel } from "./types/zoomLevels.type";
 
+// Provides mapping between distance of guess and recommended map zoom
+// level and movement animation speed when game "hones in" on guess. 
+// recommendedZoomLevel are basically a feel thing
 const zoomLevels: ZoomLevel[] = [
-    { maxDistance: 10, zoomLevel: 10, speed: 1.5 },
-    { maxDistance: 25, zoomLevel: 9, speed: 1.5 },
-    { maxDistance: 75, zoomLevel: 8, speed: 1 },
-    { maxDistance: 150, zoomLevel: 7, speed: 0.5 },
-    { maxDistance: 300, zoomLevel: 6.5, speed: 0.5 },
-    { maxDistance: 1000, zoomLevel: 3, speed: 0.5 },
-    { maxDistance: 1500, zoomLevel: 2.5, speed: 0.5 },
-    { maxDistance: 6000, zoomLevel: 2, speed: 0.5 },
-    { maxDistance: 8000, zoomLevel: 1, speed: 0.5 },
+    { maxDistance: 10, recommendedZoomLevel: 10, animationSpeed: 1.5 },
+    { maxDistance: 25, recommendedZoomLevel: 9, animationSpeed: 1.5 },
+    { maxDistance: 75, recommendedZoomLevel: 8, animationSpeed: 1 },
+    { maxDistance: 150, recommendedZoomLevel: 7, animationSpeed: 0.5 },
+    { maxDistance: 300, recommendedZoomLevel: 6.5, animationSpeed: 0.6 },
+    { maxDistance: 1000, recommendedZoomLevel: 5, animationSpeed: 0.6 },
+    { maxDistance: 3000, recommendedZoomLevel: 3.3, animationSpeed: 0.6 },
+    { maxDistance: 4500, recommendedZoomLevel: 2.7, animationSpeed: 0.6 },
+    { maxDistance: 8000, recommendedZoomLevel: 1, animationSpeed: 0.6 },
 ];
 
 export { zoomLevels }

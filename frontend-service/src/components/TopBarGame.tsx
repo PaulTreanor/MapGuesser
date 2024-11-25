@@ -1,16 +1,23 @@
 import React from 'react'
+import type { GameState } from './types/Game.types'
+import { TopBarGameProps } from './types/TopBarGame.types'
+import { numberOfRoundsInGame } from '../objects/gameConsts'
+import { gameStatus } from '../objects/gameStatuses'
 
-interface TopBarGameProps {
-	roundLocation: string
-	score: number
-	currentRound: number
-	roundCompleted: boolean
-	moveToNextRound: () => void,
-	setIsEndModalOpen: (value: boolean) => void,
-	isEndModalOpen: boolean
-}
+export default function TopBarGame({
+	gameState,
+	currentRound,
+	moveToNextRound,
+	setGameState,
+}: TopBarGameProps) {
 
-export default function TopBarGame({ roundLocation, score, currentRound, roundCompleted, moveToNextRound, setIsEndModalOpen, isEndModalOpen }: TopBarGameProps) {
+	const { status, score, rounds } = gameState
+
+	// this empty state?
+	const roundLocation = rounds?.[currentRound.index]?.location || 'Unknown Location'
+ 
+	// Rounds indexed from 0 so we don't have confusing "index + 1" code everywhere
+	const roundNumberAsDisplayed = currentRound.index + 1;
 
 	return (
 		<nav className="border-gray-200 pointer-events-none min-h-64">
@@ -27,25 +34,28 @@ export default function TopBarGame({ roundLocation, score, currentRound, roundCo
 					</div>
 				</div>
 				<button
-					hidden={!roundCompleted || currentRound == 5}
+					hidden={!currentRound.completed || roundNumberAsDisplayed == numberOfRoundsInGame}
 					className='disabled:bg-gray-500 bg-rose-700 hover:bg-rose-800 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4  shadow-slate-50 shadow-sm'
 					onClick={moveToNextRound}
-					disabled={!roundCompleted}
+					disabled={!currentRound.completed}
 				>
 					Next Round
 				</button>
-				{currentRound === 5 && roundCompleted && !isEndModalOpen && (
+				{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && status !== gameStatus.FINISHED  && (
 					<button
 						className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm'
-						onClick={() => setIsEndModalOpen(true)}
+						onClick={() => setGameState((prev: GameState) => ({
+							...prev,
+							status: gameStatus.FINISHED
+						}))}
 					>
 						Finish Game
 					</button>
 				)}
-				{currentRound > 1 && (
+				{roundNumberAsDisplayed > 0 && (
 					<div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0  shadow-slate-50 shadow-sm'>
 						<p className='z-30'>{score} points</p>
-						<p className='z-30'>{currentRound}/5</p>
+						<p className='z-30'>{roundNumberAsDisplayed}/{numberOfRoundsInGame}</p>
 					</div>
 				)}
 			</div>

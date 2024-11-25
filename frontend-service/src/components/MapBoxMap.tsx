@@ -1,14 +1,57 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { MapboxMapProps } from './MapBoxMap.types';
-import { calculateKm, emojiForDistances } from '../utils/mapUtils';
-import { cursorSetup, recentreAndOrZoom } from '../utils/mapboxUtils';
+import type { MapboxMapProps } from './types/MapBoxMap.types';
+import { calculateKm } from '../utils/mapUtils';
+import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement } from '../utils/mapboxUtils';
+import { mapBoxMapStyle } from '../objects/mapBoxConsts';
+import { Pin } from '../components/types/Game.types'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
-	const mapContainerRef = useRef(null);
-	const addMarker = (map: mapboxgl.Map, e: MapMouseEvent) => {
+	const mapContainerRef = useRef(null)
+	const mapRef = useRef<mapboxgl.Map | null>(null)
+	const currentLineIdRef = useRef<string>(''); 
+
+	const initialiseMap = () => {
+		if (mapContainerRef.current === null) {
+			return null;
+		}
+
+		const map = new mapboxgl.Map({
+			container: mapContainerRef.current,
+			style: mapBoxMapStyle,
+			center: [6, 54], 
+			zoom: 5,
+			attributionControl: false
+		});
+
+		map.on('load', () => {
+			cursorSetup(map);
+			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+		});
+
+		return map;
+	}
+
+	const clearMap = (map: mapboxgl.Map) => {
+		// Clear existing markers and popups
+		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
+		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+
+		// Remove existing line layer and source using the previous line ID
+		if (currentLineIdRef.current) {
+			if (map.getLayer(currentLineIdRef.current)) {
+				map.removeLayer(currentLineIdRef.current);
+			}
+			if (map.getSource(currentLineIdRef.current)) {
+				map.removeSource(currentLineIdRef.current);
+			}
+		}
+	}
+
+	// this method seems to add multiple markers
+	const addMarkersAndLine = (map: mapboxgl.Map, e: MapMouseEvent) => {
 
 		// Remove existing markers
 		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
@@ -24,91 +67,73 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 			.setLngLat(roundDetails.coordinates)
 			.addTo(map);
 
-		const lineCoordinates = [
-			[e.lngLat.lng, e.lngLat.lat], // Clicked location
+		const lineCoordinates: Pin[] = [
+			[e.lngLat.lng, e.lngLat.lat],
 			roundDetails.coordinates
 		];
 
 		const lineId = `${roundDetails.location}-line`
+		currentLineIdRef.current = lineId;
 
 		// Create a GeoJSON source with a line feature
-		map.addSource(lineId, {
-			'type': 'geojson',
-			'data': {
-				'type': 'Feature',
-				'properties': {},
-				'geometry': {
-					'type': 'LineString',
-					'coordinates': lineCoordinates
-				}
-			}
-		});
+		addLineSourceToMap(map, lineId, lineCoordinates)
 
-		// Add a new layer to visualize the line
-		map.addLayer({
-			'id': lineId,
-			'type': 'line',
-			'source': lineId,
-			'layout': {},
-			'paint': {
-				'line-width': 2,
-				'line-color': '#007cbf'
-			}
-		});
+		// Add a new layer to visualize the line]
+		addLineToMap(map, lineId)
 
 		const distance = calculateKm([e.lngLat.lng, e.lngLat.lat], [roundDetails.coordinates[0], roundDetails.coordinates[1]])
 
-		const el = document.createElement('div');
-			el.className = 'custom-text-marker';
-			el.style.backgroundColor = 'white'; 
-			el.style.padding = '5px';
-			el.style.borderRadius = '5px';
-			el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+		const distanceMakerHtmlElement = createDistanceMarkerElement(distance);
 
-		// Add the custom element as a marker to the map
-		const customMarker = new mapboxgl.Marker(el, { offset: [0, -30] }) // Adjust offset as needed
+		// Add the custom distance marker to map
+		const customMarker = new mapboxgl.Marker(distanceMakerHtmlElement, { offset: [0, -30] })
 			// Position it between the guess and the actual location
 			.setLngLat([(e.lngLat.lng + roundDetails.coordinates[0]) / 2, (e.lngLat.lat + roundDetails.coordinates[1]) / 2]) 
 			.addTo(map);
-
-		handleGuess(distance)
-
-		recentreAndOrZoom(map, customMarker, distance)
+		
+		return {
+			guessDistance: distance,
+			customDistanceMarker: customMarker
+		}
 	};
 
 	useEffect(() => {
-			if (mapContainerRef.current === null) {
-				return; // Keep TS happy
-			}
+		const map = initialiseMap();
+		if (!map) return;
+		
+		mapRef.current = map;
 
-			const map = new mapboxgl.Map({
-				container: mapContainerRef.current,
-				style: "mapbox://styles/paultreanor/cluuaapnv004j01pj5sv1dgx2",
-				center: [6, 54], 
-				zoom: 5,
-				attributionControl: false
-			});
-				
-			const handleMapClick = (e: MapMouseEvent) => {
-				addMarker(map, e);
-				// Remove the event listener immediately after handling the first click
-				map.off('click', handleMapClick);
+		return () => {
+			map.remove();
+		};
+	}, []);
+
+	// Handle round changes
+	useEffect(() => {
+		if (!mapRef.current) return;
+		const map = mapRef.current;
+
+		clearMap(map)
+
+		const handleMapClick = (e: MapMouseEvent) => {
+			const lineId = `${roundDetails.location}-line`;
+			// Store new line ID 
+			currentLineIdRef.current = lineId;
+			const { guessDistance, customDistanceMarker } = addMarkersAndLine(map, e);
+			handleGuess(guessDistance);
+			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
+			// Remove the click event listener
+			map.off('click', handleMapClick);
 		};
 
-			map.on('load', () => {
-					cursorSetup(map);
-					map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-					map.on('click', handleMapClick); // Add the event listener
-			});
+		// Add the click event listener
+		map.on('click', handleMapClick);
 
-
-			// Clean up on unmount
-			return () => {
-				map.off('click', (e: MapMouseEvent) => addMarker(map, e))
-				map.remove()
-			}
-		}, [roundDetails]); 
-
+		return () => {
+			map.off('click', handleMapClick);
+		};
+	}, [roundDetails]);
+	
 	return (
 		<div
 			ref={mapContainerRef}

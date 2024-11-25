@@ -1,4 +1,6 @@
 import { zoomLevels } from '../objects/zoomLevels';
+import { Pin } from '../components/types/Game.types'
+import { emojiForDistances } from '../utils/mapUtils';
 
 const cursorSetup = (map: mapboxgl.Map) => {
 	const canvas = map.getCanvas();
@@ -18,37 +20,52 @@ const cursorSetup = (map: mapboxgl.Map) => {
 }
 
 const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, distance: number) => {
-	const { zoomLevel, speed } = zoomLevels.find(level => distance <= level.maxDistance) || { zoomLevel: 2, speed: 0.5 };
-
-	// Prevent zooming in further if the map is already zoomed in more than the desired level
-	const calculateTargetZoom = (zoomLevel: number) => {
-		const currentZoom = map.getZoom()
-		if (zoomLevel > 6) {
-			const targetZoom = currentZoom > zoomLevel
-				? currentZoom
-				: zoomLevel
-			return targetZoom
-		}
-		if ([5, 6].includes(zoomLevel)) {
-			return currentZoom
-		}
-		if (zoomLevel < 5) {
-			const targetZoom = currentZoom > zoomLevel
-				? currentZoom
-				: zoomLevel
-			return targetZoom
-		}
-		
-	}
-
-	const targetZoom = calculateTargetZoom(zoomLevel)
+	const { recommendedZoomLevel, animationSpeed } = zoomLevels.find(level => distance <= level.maxDistance)
+		|| { recommendedZoomLevel: 0.8, animationSpeed: 0.5 };
 
 	map.flyTo({
 		center: customMarker.getLngLat(),
-		zoom: targetZoom,
-		speed: speed,
+		zoom: recommendedZoomLevel,
+		speed: animationSpeed,
 		essential: true
 	});
 };
 
-export { cursorSetup, recentreAndOrZoom };
+const addLineToMap = (map: mapboxgl.Map, lineId: string) => {
+	map.addLayer({
+		'id': lineId,
+		'type': 'line',
+		'source': lineId,
+		'layout': {},
+		'paint': {
+			'line-width': 2,
+			'line-color': '#007cbf'
+		}
+	});
+}
+
+const addLineSourceToMap = (map: mapboxgl.Map, lineId: string, lineCoordinates: Pin[]) => {
+    map.addSource(lineId, {
+        'type': 'geojson',
+        'data': {
+            'type': 'Feature',
+            'properties': {},
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': lineCoordinates
+            }
+        }
+    });
+}
+
+const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
+	const el = document.createElement('div');
+	el.className = 'custom-text-marker';
+	el.style.backgroundColor = 'white'; 
+	el.style.padding = '5px';
+	el.style.borderRadius = '5px';
+	el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+	return el;
+};
+
+export { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement };
