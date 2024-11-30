@@ -3,7 +3,14 @@ import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { MapboxMapProps } from './types/MapBoxMap.types';
 import { calculateKm } from '../utils/mapUtils';
-import { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement } from '../utils/mapboxUtils';
+import {
+	cursorSetup,
+	recentreAndOrZoom,
+	addLineToMap,
+	addLineSourceToMap,
+	createDistanceMarkerElement,
+	resetMapZoomAndCenter
+} from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 import { Pin } from '../components/types/Game.types'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
@@ -114,6 +121,9 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 		const map = mapRef.current;
 
 		clearMap(map)
+
+		resetMapZoomAndCenter(map)
+
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;

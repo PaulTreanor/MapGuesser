@@ -31,6 +31,15 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 	});
 };
 
+const resetMapZoomAndCenter = (map: mapboxgl.Map) => {
+	map.flyTo({
+		center: [6, 54],
+		zoom: 5,
+		speed: 1,
+		essential: true
+	});
+}
+
 const addLineToMap = (map: mapboxgl.Map, lineId: string) => {
 	map.addLayer({
 		'id': lineId,
@@ -68,4 +77,11 @@ const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
 	return el;
 };
 
-export { cursorSetup, recentreAndOrZoom, addLineToMap, addLineSourceToMap, createDistanceMarkerElement };
+export {
+	cursorSetup,
+	recentreAndOrZoom,
+	addLineToMap,
+	addLineSourceToMap,
+	createDistanceMarkerElement,
+	resetMapZoomAndCenter
+};
