@@ -19,6 +19,7 @@ export default function Game() {
 		status: gameStatus.NOT_STARTED
 	});
 
+	const [error, setError] = useState<string | null>(null);
 	const handleGuess = (distance: number) => {
 		setGameState(prev => ({
 			...prev,
@@ -41,11 +42,19 @@ export default function Game() {
 	}
 
 	useEffect(() => {
-		const initialGameRounds = fetchRounds()
-		setGameState(prev => ({
-			...prev,
-			rounds: initialGameRounds
-		}))
+		try {
+			const initialGameRounds = fetchRounds()
+			setGameState(prev => ({
+				...prev,
+				rounds: initialGameRounds
+			}))
+		} catch (error) {
+			setError(error as string)
+			setGameState(prev => ({
+				...prev,
+				rounds: []
+			}))
+		}
 	}, [])
 
 	if (!gameState.rounds) {
@@ -75,6 +84,7 @@ export default function Game() {
 					<MapboxMap
 						roundDetails={gameState.rounds[currentRound.index]}
 						handleGuess={handleGuess}
+						isDisabled={!gameState.rounds?.length}
 					/>
 				</div>
 			</div>

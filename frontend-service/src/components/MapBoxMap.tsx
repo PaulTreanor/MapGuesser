@@ -15,7 +15,7 @@ import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 import { Pin } from '../components/types/Game.types'
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
-const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
+const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>(''); 
@@ -124,6 +124,11 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 
 		resetMapZoomAndCenter(map)
 
+		if (isDisabled) {
+			map.getCanvas().style.cursor = 'not-allowed';
+			return;
+		}
+
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;
@@ -147,7 +152,7 @@ const MapboxMap = ({ roundDetails, handleGuess }: MapboxMapProps) => {
 	return (
 		<div
 			ref={mapContainerRef}
-			className="w-full min-h-full h-full z-10"
+			className={`w-full min-h-full h-full z-10 ${isDisabled ? 'pointer-events-none' : ''}`}
 		/>
 	);
 };
