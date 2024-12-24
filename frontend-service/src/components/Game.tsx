@@ -75,6 +75,7 @@ export default function Game() {
 					<MapboxMap
 						roundDetails={gameState.rounds[currentRound.index]}
 						handleGuess={handleGuess}
+						isDisabled={!gameState.rounds?.length}
 					/>
 				</div>
 			</div>
