@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Toast from '../../components/Toast.tsx';
+import Toast from '@/components/Toast';
 
 describe('Toast Component', () => {
 	test('renders success toast for success message', () => {
