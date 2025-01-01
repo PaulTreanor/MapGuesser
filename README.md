@@ -10,3 +10,14 @@ Scores are based on how far your guess is from the city's real location, so lowe
 - `npm install`
 - `npm run dev`
 - Deleting `cache` helps with occassional local dev hicups.
+
+## Setting up git hooks 
+The pre-commit test hook is in the `./githooks/pre-commit` file.
+
+### Add the pre-commit hook
+```bash
+cp ./githooks/pre-commit ./.git/hooks/pre-commit
+
+# Make it executable
+chmod +x .git/hooks/pre-commit
+```
