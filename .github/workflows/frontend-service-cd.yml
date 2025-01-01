@@ -27,6 +27,14 @@ jobs:
       
       - name: Install dependencies
         run: npm ci
+
+
+      - name: Debug directory structure
+        run: |
+          pwd
+          ls -la
+          ls -la src/
+          ls -la src/components/
       
       - name: Run tests
         run: npm test
