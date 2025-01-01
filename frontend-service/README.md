@@ -15,7 +15,7 @@ npm run dev
 
 ## Testing 
 ```
-npx vitest
+npm run test
 ```
 
 ## Tech 
