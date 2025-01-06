@@ -6,10 +6,7 @@ import { gameStatus } from '../objects/gameStatuses'
 
 export default function StartModal({setGameState}: {setGameState: React.Dispatch<React.SetStateAction<GameState>>}) {
 	return (
-		<Modal onClose={() => setGameState((prev: GameState) => ({
-			...prev,
-			status: gameStatus.IN_PROGRESS
-		}))}>
+		<Modal>
 			<h1
 				className="font-titillium text-blue-800 text-4xl font-bold md:mb-2 flex flex-col md:flex-row items-baseline"
 			>

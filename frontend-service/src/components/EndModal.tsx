@@ -9,7 +9,7 @@ export default function EndModal({ score }: { score: number }) {
 	}
 
 	return (
-		<Modal onClose={() => alert("closed")}>
+		<Modal>
 			<h1
 				className="font-titillium text-blue-800 text-4xl font-bold md:mb-2 flex flex-col md:flex-row items-baseline"
 			>
