@@ -18,8 +18,17 @@ npm run dev
 npm run test
 ```
 
+## Run Playwright tests
+```
+npx playwright test
+
+# Run in headed mode (for debugging)
+npx playwright test --headed
+```
+
 ## Tech 
 - Gatsby, TypeScript, Tailwind
 - Mapbox
 - Vitest, React Testing Library
+
 
