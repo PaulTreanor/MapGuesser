@@ -3,7 +3,6 @@ import React from 'react'
 import MapboxMap from '../../components/MapBoxMap'
 import { vi, describe, test, expect } from 'vitest'
 
-// Mock mapbox-gl
 vi.mock('mapbox-gl', () => ({
 	default: {
 		Map: vi.fn(() => ({
