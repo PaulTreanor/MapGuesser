@@ -6,10 +6,7 @@ import { gameStatus } from '../objects/gameStatuses'
 
 export default function StartModal({setGameState}: {setGameState: React.Dispatch<React.SetStateAction<GameState>>}) {
 	return (
-		<Modal onClose={() => setGameState((prev: GameState) => ({
-			...prev,
-			status: gameStatus.IN_PROGRESS
-		}))}>
+		<Modal>
 			<h1
 				className="font-titillium text-blue-800 text-4xl font-bold md:mb-2 flex flex-col md:flex-row items-baseline"
 			>
@@ -36,10 +33,6 @@ export default function StartModal({setGameState}: {setGameState: React.Dispatch
 			<p className="text-lg text-slate-950">
 				For more of my work checkout my <a href="http://paultreanor.com" className="text-blue-800 hover:underline">website</a>.
 			</p>
-			{/* <br />
-			<p className="text-lg text-slate-950">
-				For more of my stuff visit <a href="http://paultreanor.com" className="text-blue-800 hover:underline">paultreanor.com</a>
-			</p> */}
 			<br />
 			<div className="flex justify-end mr-2">
 				<button

@@ -6,7 +6,7 @@ interface ToastProps {
 	onClose?: () => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ type, message, onClose }) => {
+const Toast: React.FC<ToastProps> = ({ type, message, onClose = () => {} }) => {
 	const toastConfig = {
 		success: {
 			id: 'toast-success',
@@ -57,7 +57,10 @@ const Toast: React.FC<ToastProps> = ({ type, message, onClose }) => {
 			<button
 				type="button"
 				className="ms-auto -mx-1.5 -my-1.5 bg-white text-slate-500 hover:text-slate-900 rounded-lg focus:ring-2 focus:ring-slate-300 p-1.5 hover:bg-slate-100 inline-flex items-center justify-center h-8 w-8"
-				onClick={() => setIsOpen(false)}
+				onClick={() => {
+					setIsOpen(false);
+					onClose();
+				}}
 				aria-label="Close"
 			>
 				<span className="sr-only">Close</span>

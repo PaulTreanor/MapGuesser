@@ -3,7 +3,7 @@ import type { GameState } from './types/Game.types'
 import { TopBarGameProps } from './types/TopBarGame.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
-import Toast from './toast'
+import Toast from './Toast'
 export default function TopBarGame({
 	gameState,
 	currentRound,
@@ -13,7 +13,6 @@ export default function TopBarGame({
 
 	const { status, score, rounds } = gameState
 
-	// this empty state?
 	const roundLocation = rounds?.[currentRound.index]?.location || null
  
 	// Rounds indexed from 0 so we don't have confusing "index + 1" code everywhere

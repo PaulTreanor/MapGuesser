@@ -4,7 +4,4 @@ public
 src/gatsby-types.d.ts
 .nyc_output/
 .env.*
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
+.vite/
