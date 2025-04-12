@@ -73,7 +73,12 @@ const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
 	el.style.backgroundColor = 'white'; 
 	el.style.padding = '5px';
 	el.style.borderRadius = '5px';
-	el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distance} km</b></span>`;
+	
+	const distanceText = distance === 0 
+		? 'Perfect Guess!' 
+		: `${distance} km`;
+	
+	el.innerHTML = `<span style="font-size: 16px;"><b>${emojiForDistances(distance)} ${distanceText}</b></span>`;
 	return el;
 };
 

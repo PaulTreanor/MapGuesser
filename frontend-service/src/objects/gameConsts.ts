@@ -1,4 +1,7 @@
 const numberOfRoundsInGame = 5;
 const indexOfFinalRound = numberOfRoundsInGame - 1;
 
-export { numberOfRoundsInGame, indexOfFinalRound };
+// Distance buffer (in km) for guesses - see GitHub issue #9
+const cityBufferKm = 2;
+
+export { numberOfRoundsInGame, indexOfFinalRound, cityBufferKm };
