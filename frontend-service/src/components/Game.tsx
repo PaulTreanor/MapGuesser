@@ -42,19 +42,23 @@ export default function Game() {
 	}
 
 	useEffect(() => {
-		try {
-			const initialGameRounds = fetchRounds()
-			setGameState(prev => ({
-				...prev,
-				rounds: initialGameRounds
-			}))
-		} catch (error) {
-			setError(error as string)
-			setGameState(prev => ({
-				...prev,
-				rounds: []
-			}))
+		const initializeRounds = async () => {
+			try {
+				const initialGameRounds = await fetchRounds()
+				setGameState(prev => ({
+					...prev,
+					rounds: initialGameRounds
+				}))
+			} catch (error) {
+				setError(error as string)
+				setGameState(prev => ({
+					...prev,
+					rounds: []
+				}))
+			}
 		}
+
+		initializeRounds()
 	}, [])
 
 	if (!gameState.rounds) {
