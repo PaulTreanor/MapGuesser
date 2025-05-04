@@ -26,7 +26,7 @@ describe('TopBarGame Component', () => {
         setGameState: vi.fn() as React.Dispatch<React.SetStateAction<GameState>>,
     }
 
-    test('should render the MapGuesser icon and title', () => {
+    test.only('should render the MapGuesser icon and title', () => {
         render(
             <TopBarGame
                 {...minProps}
