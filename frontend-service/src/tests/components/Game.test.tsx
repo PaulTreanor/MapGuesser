@@ -2,26 +2,31 @@ import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Game from '../../components/Game';
-import * as gameUtils from '../../utils/gameUtils';
 import { Round } from '@/components/types/Game.types';
+import * as useFetchHook from '../../hooks/useFetch';
 
 vi.mock('../../components/MapBoxMap', () => ({
 	default: vi.fn(() => <div data-testid="mock-mapbox">🌎</div>)
 }));
 
-vi.mock('../../utils/gameUtils');
-
+vi.mock('../../hooks/useFetch', () => ({
+	useFetch: vi.fn()
+}));
 
 const mockRounds = [
 	{ location: 'Test Location', coordinates: [0, 0] } as Round
 ];
 
+const mockResponse = {
+	data: { data: mockRounds },
+	isPending: false,
+	error: null
+};
 
 describe('Game Component', () => {
-
 	beforeEach(() => {
 		vi.clearAllMocks();
-		vi.mocked(gameUtils.fetchRounds).mockResolvedValue(mockRounds);
+		vi.mocked(useFetchHook.useFetch).mockReturnValue(mockResponse);
 	});
 
 	test('should render mapbox map component', async () => {
@@ -65,24 +70,39 @@ describe('Game Component', () => {
 		expect(nextRoundButton).not.toBeInTheDocument();
 	});
 
-	test('should render empty state if fetchRounds returns []', async () => {
-		vi.mocked(gameUtils.fetchRounds).mockResolvedValue([]);
+	test('should render error state if useFetch returns empty array', async () => {
+		vi.mocked(useFetchHook.useFetch).mockReturnValue({
+			data: { data: [] },
+			isPending: false,
+			error: null
+		});
 
 		render(<Game />);
 		
 		await waitFor(() => {
-			expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+			expect(screen.getByText("Error loading game data. Please try again later.")).toBeInTheDocument();
 		});
-		
-		const startButton = screen.getByRole('button', { name: 'Start Game!' });
-		fireEvent.click(startButton);
+	});
+	
+	test('should render error state if useFetch returns error', () => {
+		// Mock the hook to return isPending: false initially
+		vi.mocked(useFetchHook.useFetch).mockReturnValue({
+			data: null,
+			isPending: false,
+			error: "Network error"
+		});
 
-		expect(screen.getByText("There's been a problem, our server didn't return a location 🤕")).toBeInTheDocument();
+		render(<Game />);
+		
+		expect(screen.getByText("Error loading game data. Please try again later.")).toBeInTheDocument();
 	});
 
-	test('should render loading state if fetchRounds is pending', () => {
-		// Use a Promise that never resolves to keep the component in loading state
-		vi.mocked(gameUtils.fetchRounds).mockReturnValue(new Promise(() => {}));
+	test('should render loading state if useFetch is pending', () => {
+		vi.mocked(useFetchHook.useFetch).mockReturnValue({
+			data: null,
+			isPending: true,
+			error: null
+		});
 
 		render(<Game />);
 
