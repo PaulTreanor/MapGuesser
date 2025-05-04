@@ -42,6 +42,9 @@ npx playwright test
 npx playwright test --headed
 ```
 
+# Custom helpers in codebase
+### Data fetching 
+- use the `useFetch()` hook in `src/hooks/useFetch.ts` to fetch data. It's basically a simpler version of Tanstack Query. 
 
 
 
