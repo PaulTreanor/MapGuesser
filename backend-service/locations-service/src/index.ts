@@ -1,7 +1,30 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { locationsDatabase } from './locations-data'
 
 const app = new Hono()
+
+app.use('*', cors({
+  origin: (origin, _c) => {
+    if (!origin) return '*'
+
+    const allowedDomains = ['localhost', '127.0.0.1', 'mapguesser.com']
+
+    try {
+      const { hostname } = new URL(origin)
+      const isAllowed = allowedDomains.some(domain =>
+        hostname === domain || hostname.endsWith(`.${domain}`)
+      )
+
+      return isAllowed ? origin : null
+    } catch {
+      return null
+    }
+  },
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['*'],
+}))
+
 
 const getRandomLocations = (locations: any[], count: number) => {
   const locationsCopy = [...locations];
