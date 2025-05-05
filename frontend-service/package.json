@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "gatsby develop",
+    "dev:local": "GATSBY_ACTIVE_ENV=local gatsby develop",
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@turf/distance": "^7.0.0",
     "autoprefixer": "^10.4.19",
+    "dotenv": "^16.5.0",
     "gatsby": "^5.13.3",
     "gatsby-plugin-postcss": "^6.13.1",
     "leaflet": "^1.9.4",

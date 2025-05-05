@@ -31,6 +31,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Don't add comments to a piece of code if a reasonably competant junior engineer could just read the code and understand what it does. If a piece of code is not obvious then add a comment
 - Use tabs, not spaces
 
+## Backend services 
+- When possible write code in a module testable way
+- When possible write code in a way that lends itself to being run locally quite easily
+
 ## React
 - In general seperate individual components into separate files 
 - For TS React components add types in this style: 

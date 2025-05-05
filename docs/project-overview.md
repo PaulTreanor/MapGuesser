@@ -12,4 +12,4 @@ Currently the frontend part of the project is developed to the point where it is
 
 ## Tech stack 
 - Frontend: React, Gatsby, MapBox, TailwindCSS, (in process of moving custom components to ShadCN but currently using custom components). Vitest, React testing library, Playwright
-- Backend: Not currently implemented
+- Locations servce: Cloudflare workers, Hono

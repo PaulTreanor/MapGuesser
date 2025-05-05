@@ -18,35 +18,29 @@ Query Parameters:
 
 ## Development
 
-```txt
+```bash
 npm install
 npm run dev
+# available at http://localhost:8787
 ```
 
 ## Testing
 
-Tests are written with Vitest and located in the `src/tests` directory.
+Tests use Vitest and are in the `src/tests`.
 
-```txt
-# Run tests
+```bash
 npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
 ```
 
 ## Deployment
 
-```txt
+```bash
 npm run deploy
 ```
 
 [For generating/synchronizing types based on your Worker configuration run](https://developers.cloudflare.com/workers/wrangler/commands/#types):
 
-```txt
+```bash
 npm run cf-typegen
 ```
 
