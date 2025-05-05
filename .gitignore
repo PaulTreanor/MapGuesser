@@ -5,4 +5,3 @@ src/gatsby-types.d.ts
 .nyc_output/
 .env.*
 .vite/
-CLAUDE.md
