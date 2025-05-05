@@ -1,27 +1,29 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { Env, Location } from './types'
 
-const app = new Hono()
+// Create app with proper type
+const app = new Hono<{ Bindings: Env }>()
 
 app.use('*', cors({
-  origin: (origin, _c) => {
-    if (!origin) return '*'
+	origin: (origin, _c) => {
+		if (!origin) return '*'
 
-    const allowedDomains = ['localhost', '127.0.0.1', 'mapguesser.com']
+		const allowedDomains = ['localhost', '127.0.0.1', 'mapguesser.com']
 
-    try {
-      const { hostname } = new URL(origin)
-      const isAllowed = allowedDomains.some(domain =>
-        hostname === domain || hostname.endsWith(`.${domain}`)
-      )
+		try {
+			const { hostname } = new URL(origin)
+			const isAllowed = allowedDomains.some(domain =>
+				hostname === domain || hostname.endsWith(`.${domain}`)
+			)
 
-      return isAllowed ? origin : null
-    } catch {
-      return null
-    }
-  },
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['*'],
+			return isAllowed ? origin : null
+		} catch {
+			return null
+		}
+	},
+	allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	allowHeaders: ['*'],
 }))
 
 /**
@@ -38,12 +40,12 @@ app.get('/health', (c) => {
  * 
  * @returns {Response} A JSON response containing an array of locations or an error.
  */
-app.get('/locations', async (c: any) => {
-	const { results } = await c.env.LOCATIONS_DB.prepare(
+app.get('/locations', async (c) => {
+	const result = await c.env.LOCATIONS_DB.prepare(
 		"SELECT id, location, latitude, longitude FROM locations"
-	).all();
+	).all<Location>();
 	
-	return c.json({ data: results });
+	return c.json({ data: result.results || [] });
 });
 
 /**
@@ -55,7 +57,7 @@ app.get('/locations', async (c: any) => {
  *
  * @returns {Response} A JSON response containing an array of locations or an error.
  */
-app.get('/locations/random', async (c:any) => {
+app.get('/locations/random', async (c) => {
 	const count = parseInt(c.req.query('count') || '1', 10);
 	
 	if (isNaN(count) || count < 1) {
@@ -64,14 +66,18 @@ app.get('/locations/random', async (c:any) => {
 		}, 400);
 	}
 	
-	const { results } = await c.env.LOCATIONS_DB.prepare(
+	const result = await c.env.LOCATIONS_DB.prepare(
 		"SELECT id, location, latitude, longitude FROM locations ORDER BY RANDOM() LIMIT ?"
-	).bind(count).all();
+	).bind(count).all<Location>();
 	
-	return c.json({ data: results.map((loc: { location: any; longitude: any; latitude: any }) => ({
-		location: loc.location,
-		coordinates: [loc.longitude, loc.latitude]
-	})) });
+	const locations = result.results || [];
+	
+	return c.json({ 
+		data: locations.map((loc: Location) => ({
+			location: loc.location,
+			coordinates: [loc.longitude, loc.latitude]
+		}))
+	});
 });
 
 export default app
