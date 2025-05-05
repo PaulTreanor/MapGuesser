@@ -23,6 +23,21 @@ npm install
 npm run dev
 ```
 
+## Testing
+
+Tests are written with Vitest and located in the `src/tests` directory.
+
+```txt
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
 ## Deployment
 
 ```txt
