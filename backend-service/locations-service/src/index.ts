@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { locationsDatabase } from './locations-data'
 
 const app = new Hono()
 
@@ -25,21 +24,6 @@ app.use('*', cors({
   allowHeaders: ['*'],
 }))
 
-
-const getRandomLocations = (locations: any[], count: number) => {
-  const locationsCopy = [...locations];
-  const randomLocations = [];
-
-  for (let i = 0; i < count; i++) {
-    if (locationsCopy.length === 0) { break };
-    const randomIndex = Math.floor(Math.random() * locationsCopy.length);
-    randomLocations.push(locationsCopy[randomIndex]);
-    locationsCopy.splice(randomIndex, 1);
-  }
-
-  return randomLocations;
-}
-
 /**
  * GET /health
  * @description Simple health check endpoint
@@ -54,11 +38,13 @@ app.get('/health', (c) => {
  * 
  * @returns {Response} A JSON response containing an array of locations or an error.
  */
-app.get('/locations', (c) => {
-  console.log("h")
-  console.log({locationsDatabase})
-  return c.json({ data: locationsDatabase });
-})
+app.get('/locations', async (c: any) => {
+	const { results } = await c.env.LOCATIONS_DB.prepare(
+		"SELECT id, location, latitude, longitude FROM locations"
+	).all();
+	
+	return c.json({ data: results });
+});
 
 /**
  * GET /locations/random
@@ -69,21 +55,23 @@ app.get('/locations', (c) => {
  *
  * @returns {Response} A JSON response containing an array of locations or an error.
  */
-app.get('/locations/random', (c) => {
-  const count = parseInt(c.req.query('count') || '1', 10);
-
-  if (isNaN(count) || count < 1) {
-    return c.json({
-      error: 'Invalid count parameter. Must be positive number.',
-    }, 400)
-  }
-
-  // Thinking that in future I should pass entire object of params into 
-  // this method for SQL query but that is for another time!
-  const randomLocations = getRandomLocations(locationsDatabase, count);
-  return c.json({ data: randomLocations });
-})
-
-
+app.get('/locations/random', async (c:any) => {
+	const count = parseInt(c.req.query('count') || '1', 10);
+	
+	if (isNaN(count) || count < 1) {
+		return c.json({
+			error: 'Invalid count parameter. Must be positive number.',
+		}, 400);
+	}
+	
+	const { results } = await c.env.LOCATIONS_DB.prepare(
+		"SELECT id, location, latitude, longitude FROM locations ORDER BY RANDOM() LIMIT ?"
+	).bind(count).all();
+	
+	return c.json({ data: results.map((loc: { location: any; longitude: any; latitude: any }) => ({
+		location: loc.location,
+		coordinates: [loc.longitude, loc.latitude]
+	})) });
+});
 
 export default app

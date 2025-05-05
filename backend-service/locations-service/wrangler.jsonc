@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "locations-service",
   "main": "src/index.ts",
-  "compatibility_date": "2025-05-03"
+  "compatibility_date": "2025-05-03",
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],
@@ -21,13 +21,13 @@
   //     "bucket_name": "my-bucket"
   //   }
   // ],
-  // "d1_databases": [
-  //   {
-  //     "binding": "MY_DB",
-  //     "database_name": "my-database",
-  //     "database_id": ""
-  //   }
-  // ],
+  "d1_databases": [
+    {
+      "binding": "LOCATIONS_DB",
+      "database_name": "locations-db",
+      "database_id": "4e2d60d4-b411-41c2-bf61-6eae2e5cc96f",
+    },
+  ],
   // "ai": {
   //   "binding": "AI"
   // },
