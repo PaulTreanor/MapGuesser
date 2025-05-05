@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { fetchRounds } from '../utils/gameUtils'
-import type { CurrentRound, GameState } from './types/Game.types'
+import React, { useState } from 'react'
+import type { CurrentRound, GameState, Round } from './types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
 import TopBarGame from './TopBarGame'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
 import { indexOfFinalRound } from '../objects/gameConsts'
+import { useFetch } from '../hooks/useFetch'
+import { endpoints } from '../objects/endpoints'
+
+interface LocationsResponse {
+  data: Round[];
+}
 
 export default function Game() {
 	const [currentRound, setCurrentRound] = useState<CurrentRound>({
@@ -19,7 +24,16 @@ export default function Game() {
 		status: gameStatus.NOT_STARTED
 	});
 
-	const [error, setError] = useState<string | null>(null);
+	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
+	
+	// Update gameState when data is fetched
+	if (data && !gameState.rounds) {
+		setGameState(prev => ({
+			...prev,
+			rounds: data.data
+		}));
+	}
+
 	const handleGuess = (distance: number) => {
 		setGameState(prev => ({
 			...prev,
@@ -41,23 +55,14 @@ export default function Game() {
 		})
 	}
 
-	useEffect(() => {
-		try {
-			const initialGameRounds = fetchRounds()
-			setGameState(prev => ({
-				...prev,
-				rounds: initialGameRounds
-			}))
-		} catch (error) {
-			setError(error as string)
-			setGameState(prev => ({
-				...prev,
-				rounds: []
-			}))
-		}
-	}, [])
-
-	if (!gameState.rounds) {
+	if (error || (data && data.data.length === 0)) {
+		console.error("Failed to fetch locations:", error);
+		return (
+			<div>Error loading game data. Please try again later.</div>
+		)
+	}
+	
+	if (isPending || !gameState.rounds) {
 		return (
 			<div>Loading...</div>
 		)

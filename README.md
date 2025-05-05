@@ -6,10 +6,9 @@ Scores are based on how far your guess is from the city's real location, so lowe
 
 
 ## Running locally
-Currently the game is frontend only. 
+Running frontend locally: [Frontend README.md](./frontend-service/README.md)
 
-Instructions for running this locally can be found in the [Frontend README.md](./frontend-service/README.md)
-
+Running locations service Locally: [Locations Service README.md](./backend-service/locations-service/README.md)
 
 ## Setting up git hooks 
 The pre-commit test hook is in the `./githooks/pre-commit` file.

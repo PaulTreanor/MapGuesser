@@ -5,4 +5,4 @@ src/gatsby-types.d.ts
 .nyc_output/
 .env.*
 .vite/
-CLAUDE.md
+backend-service/locations-service/test-results/.last-run.json

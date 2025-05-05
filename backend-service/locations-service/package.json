@@ -1,0 +1,22 @@
+{
+  "name": "locations-service",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "generate-seed": "node scripts/generate-seed.js",
+    "seed": "npm run generate-seed && wrangler d1 execute locations-db --local --file=scripts/seed.sql",
+    "seed:remote": "npm run generate-seed && wrangler d1 execute locations-db --remote --file=scripts/seed.sql"
+  },
+  "dependencies": {
+    "hono": "^4.7.8"
+  },
+  "devDependencies": {
+    "wrangler": "^4.4.0",
+    "vitest": "^3.1.3",
+    "@vitest/coverage-v8": "^3.1.3"
+  }
+}
