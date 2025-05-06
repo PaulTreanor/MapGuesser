@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import type { GameState } from './types/Game.types'
 import { TopBarGameProps } from './types/TopBarGame.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
-import Toast from './Toast'
 import { Button } from './ui/button'
-import { Heading, Subheading, Paragraph } from './typography/Typography'
+import { Heading, Paragraph } from './typography/Typography'
+import { notify } from '../context/NotificationContext'
 
 export default function TopBarGame({
 	gameState,
@@ -17,7 +17,18 @@ export default function TopBarGame({
 	const { status, score, rounds } = gameState
 
 	const roundLocation = rounds?.[currentRound.index]?.location || null
- 
+	
+	// Use the notification system to show error when no location is available
+	useEffect(() => {
+		if (!roundLocation) {
+			notify({ 
+				type: 'error', 
+				message: "There's been a problem, our server didn't return a location 🤕",
+				duration: 10000 // Show longer since it's an important error
+			});
+		}
+	}, [roundLocation]);
+
 	// Rounds indexed from 0 so we don't have confusing "index + 1" code everywhere
 	const roundNumberAsDisplayed = currentRound.index + 1;
 
@@ -67,9 +78,9 @@ export default function TopBarGame({
 				</div>
 			</nav>
 		) : (
-			// zIndex must be hardcoded to avoid being overridden
-			<div className="fixed inset-x-0 top-10 flex justify-center" style={{ zIndex: 99999 }}>
-				<Toast type="danger" message="There's been a problem, our server didn't return a location 🤕" />
+			// Return empty container; notification will be shown via the global notification system
+			<div className="p-4">
+				<Heading>Loading...</Heading>
 			</div>
 		)
 	)
