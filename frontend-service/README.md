@@ -40,6 +40,10 @@ npm run dev
 ### Issues
 Deleting the Gatsby `./cache` directory helps with occasional local dev hiccups
 
+# Components and Styling
+
+See the [Components Documentation](./docs/components.md) for information on UI components and the [Style Guide](./docs/style-guide.md) for design patterns.
+
 # Running tests
 There are component/unit tests (RTL and Vitest) and E2E tests with Playwright. 
 
