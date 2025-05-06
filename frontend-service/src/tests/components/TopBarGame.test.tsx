@@ -1,13 +1,25 @@
 import React from 'react';
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import TopBarGame from '../../components/TopBarGame';
 import { gameStatus } from '../../objects/gameStatuses';
 import { GameState, Pin } from '@/components/types/Game.types';
-import { numberOfRoundsInGame } from '../../objects/gameConsts'
+import { numberOfRoundsInGame } from '../../objects/gameConsts';
+import * as NotificationContext from '../../context/NotificationContext';
 
 
 describe('TopBarGame Component', () => {
+    const notifySpy = vi.fn();
+    
+    beforeEach(() => {
+        // Mock the notify function
+        vi.spyOn(NotificationContext, 'notify').mockImplementation(notifySpy);
+    });
+    
+    afterEach(() => {
+        vi.clearAllMocks();
+    });
+    
     const sampleRounds = Array(5).fill({
         location: 'New York',
         coordinates: [40.7128, -74.0060] as Pin,
@@ -26,7 +38,7 @@ describe('TopBarGame Component', () => {
         setGameState: vi.fn() as React.Dispatch<React.SetStateAction<GameState>>,
     }
 
-    test.only('should render the MapGuesser icon and title', () => {
+    test('should render the MapGuesser icon and title', () => {
         render(
             <TopBarGame
                 {...minProps}
@@ -64,15 +76,15 @@ describe('TopBarGame Component', () => {
         expect(screen.getByText("0 points")).toBeInTheDocument();
     });
 
-    test('should hide the next round button if the current round is not completed', () => {
+    test('should not render the next round button if the current round is not completed', () => {
 		render(
 			<TopBarGame
 				{...minProps}
 			/>
 		);
 	
-        const button = screen.getByText("Next Round");
-		expect(button).toHaveStyle({ display: 'none' });
+        // Button should not be in the document when round is not completed
+        expect(screen.queryByText("Next Round")).not.toBeInTheDocument();
 	});
 
 	test('should render the next round button if the current round is completed and not the last round', () => {
@@ -124,7 +136,7 @@ describe('TopBarGame Component', () => {
         expect(screen.getByText("Finish Game")).toBeInTheDocument();
     });
 
-    test('should render error message if current round is null', () => {
+    test('should show error notification if current round is null', () => {
         render(
             <TopBarGame
                 {...minProps}
@@ -135,6 +147,15 @@ describe('TopBarGame Component', () => {
                 }}
             />
         );
-        expect(screen.getByText("There's been a problem, our server didn't return a location 🤕")).toBeInTheDocument();
+        
+        // Verify the loading message is shown
+        expect(screen.getByText("Loading...")).toBeInTheDocument();
+        
+        // Verify notification was called with the correct arguments
+        expect(notifySpy).toHaveBeenCalledWith({
+            type: 'error',
+            message: "There's been a problem, our server didn't return a location 🤕",
+            duration: 10000
+        });
     });
 });
