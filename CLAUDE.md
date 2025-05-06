@@ -53,6 +53,7 @@ const myComponent = ({
 - Never use inline styles
 - Use TailwindCSS to specify styles
 - Use TailwindCSS in a clean well-structured idiomatic way. ie. utilise CSS variables found in global.css
+- pay attention to frontend-service/docs for more styling information
 
 ## Testing 
 - All components and utils files must have a corresponding test file in the src/tests directory. 

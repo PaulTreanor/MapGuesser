@@ -37,47 +37,14 @@ import { Button } from "@/components/ui/button"
 </Button>
 ```
 
-#### Design Notes
-
-These variants consolidate previously ad-hoc button styling across the application:
-
-1. Primary actions (blue): Start Game, Play Again, Go Home
-2. Danger actions (rose/red): Next Round
-3. Success actions (green): Finish Game
-4. Close buttons (white): Toast close button
-
 ### Typography Components
 
 The Typography components provide consistent text styling across the application.
 
-#### Import
-
 ```tsx
-import { Heading, Subheading, Paragraph } from "@/components/typography/Typography"
+import { Heading, Subheading, Paragraph, MapGuesserHeading } from "@/components/typography/Typography"
 ```
 
-#### Components
-
-- **Heading** - Top level heading (h1) with consistent styling
-  - Default styles: `font-titillium text-blue-800 text-4xl font-bold md:mb-2`
-  
-- **Subheading** - Second level heading (h2) with consistent styling
-  - Default styles: `font-titillium text-2xl text-slate-800 font-bold`
-  
-- **Paragraph** - Standard paragraph text with consistent styling
-  - Default styles: `text-lg text-slate-950`
-
-#### Usage Example
-
-```tsx
-<Heading>Main Page Title</Heading>
-<Subheading>Section Title</Subheading>
-<Paragraph>
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-</Paragraph>
-```
-
-- **MapGuesserHeading** - Special heading for the application logo
 
 ### Game-specific Components
 
@@ -92,7 +59,3 @@ import { Heading, Subheading, Paragraph } from "@/components/typography/Typograp
 ### Layout Components
 
 - **Modal** - Generic modal container with consistent styling and positioning
-
-## Future Documentation
-
-Additional component documentation will be added as components are refactored and standardized. 
