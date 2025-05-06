@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Button } from './ui/button'
 interface ToastProps {
 	type: 'success' | 'danger' | 'warning';
 	message: string;
@@ -54,9 +54,10 @@ const Toast: React.FC<ToastProps> = ({ type, message, onClose = () => {} }) => {
 				<span className="sr-only">{config.srText}</span>
 			</div>
 			<div className="ms-3 text-sm font-normal">{message}</div>
-			<button
+			<Button
 				type="button"
-				className="ms-auto -mx-1.5 -my-1.5 bg-white text-slate-500 hover:text-slate-900 rounded-lg focus:ring-2 focus:ring-slate-300 p-1.5 hover:bg-slate-100 inline-flex items-center justify-center h-8 w-8"
+				variant="mapguesserClose"
+				className="ms-auto -mx-1.5 -my-1.5 inline-flex items-center justify-center h-8 w-8"
 				onClick={() => {
 					setIsOpen(false);
 					onClose();
@@ -67,7 +68,7 @@ const Toast: React.FC<ToastProps> = ({ type, message, onClose = () => {} }) => {
 				<svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
 					<path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
 				</svg>
-			</button>
+			</Button>
 		</div>
 	);
 };
