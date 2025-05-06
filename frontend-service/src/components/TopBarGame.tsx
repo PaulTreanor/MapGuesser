@@ -18,13 +18,12 @@ export default function TopBarGame({
 
 	const roundLocation = rounds?.[currentRound.index]?.location || null
 	
-	// Use the notification system to show error when no location is available
 	useEffect(() => {
 		if (!roundLocation) {
 			notify({ 
 				type: 'error', 
 				message: "There's been a problem, our server didn't return a location 🤕",
-				duration: 10000 // Show longer since it's an important error
+				duration: 10000 
 			});
 		}
 	}, [roundLocation]);
@@ -78,7 +77,7 @@ export default function TopBarGame({
 				</div>
 			</nav>
 		) : (
-			// Return empty container; notification will be shown via the global notification system
+			// Notification will be shown via notification system
 			<div className="p-4">
 				<Heading>Loading...</Heading>
 			</div>

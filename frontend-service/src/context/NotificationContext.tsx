@@ -86,7 +86,6 @@ export const useNotification = (): NotificationContextType => {
 	return context;
 };
 
-// Global notify function
 let globalNotify: (notification: Omit<Notification, 'id'>) => string = () => {
 	console.warn('Notification system not initialized yet');
 	return '';

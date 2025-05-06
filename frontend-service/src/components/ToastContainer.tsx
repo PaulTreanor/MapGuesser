@@ -5,12 +5,10 @@ import { useNotification, setGlobalNotify } from '../context/NotificationContext
 const ToastContainer: React.FC = () => {
 	const { notifications, notify, removeNotification } = useNotification();
 	
-	// Register the global notify function when the component mounts
 	useEffect(() => {
 		setGlobalNotify(notify);
 		
 		return () => {
-			// Reset global notify on unmount
 			setGlobalNotify(() => {
 				console.warn('Notification system not available');
 				return '';
@@ -18,7 +16,6 @@ const ToastContainer: React.FC = () => {
 		};
 	}, [notify]);
 
-	// Map notification types to Toast component types
 	const mapNotificationTypeToToastType = (type: string): 'success' | 'danger' | 'warning' => {
 		switch (type) {
 			case 'success':
@@ -29,7 +26,7 @@ const ToastContainer: React.FC = () => {
 				return 'warning';
 			case 'info':
 			default:
-				return 'success'; // Using success toast for info notifications
+				return 'success';
 		}
 	};
 
