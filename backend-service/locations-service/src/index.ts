@@ -59,20 +59,37 @@ app.get('/locations', async (c) => {
  */
 app.get('/locations/random', async (c) => {
 	const count = parseInt(c.req.query('count') || '1', 10);
-	
+
 	if (isNaN(count) || count < 1) {
 		return c.json({
 			error: 'Invalid count parameter. Must be positive number.',
 		}, 400);
 	}
-	
-	const result = await c.env.LOCATIONS_DB.prepare(
-		"SELECT id, location, latitude, longitude FROM locations ORDER BY RANDOM() LIMIT ?"
-	).bind(count).all<Location>();
-	
-	const locations = result.results || [];
-	
-	return c.json({ 
+
+	// Step 1: Fetch all IDs (add filters here in the future)
+	const idResult = await c.env.LOCATIONS_DB.prepare(
+		"SELECT id FROM locations"
+	).all<{ id: number }>();
+
+	const allIds = idResult.results?.map(row => row.id) || [];
+
+	if (allIds.length === 0) {
+		return c.json({ data: [] });
+	}
+
+	// Step 2: Randomly select the requested number of IDs
+	const shuffled = allIds.sort(() => Math.random() - 0.5);
+	const selectedIds = shuffled.slice(0, Math.min(count, allIds.length));
+
+	// Step 3: Fetch those locations
+	const placeholders = selectedIds.map(() => '?').join(',');
+	const locationResult = await c.env.LOCATIONS_DB.prepare(
+		`SELECT id, location, latitude, longitude FROM locations WHERE id IN (${placeholders})`
+	).bind(...selectedIds).all<Location>();
+
+	const locations = locationResult.results || [];
+
+	return c.json({
 		data: locations.map((loc: Location) => ({
 			location: loc.location,
 			coordinates: [loc.longitude, loc.latitude]
