@@ -66,7 +66,7 @@ app.get('/locations/random', async (c) => {
 		}, 400);
 	}
 
-	// Step 1: Fetch all IDs (add filters here in the future)
+	// Fetch DB IDs (add filters here in the future)
 	const idResult = await c.env.LOCATIONS_DB.prepare(
 		"SELECT id FROM locations"
 	).all<{ id: number }>();
@@ -77,11 +77,11 @@ app.get('/locations/random', async (c) => {
 		return c.json({ data: [] });
 	}
 
-	// Step 2: Randomly select the requested number of IDs
+	// Randomly select the requested number of DB IDs
 	const shuffled = allIds.sort(() => Math.random() - 0.5);
 	const selectedIds = shuffled.slice(0, Math.min(count, allIds.length));
 
-	// Step 3: Fetch those locations
+	// Fetch location information of random IDs
 	const placeholders = selectedIds.map(() => '?').join(',');
 	const locationResult = await c.env.LOCATIONS_DB.prepare(
 		`SELECT id, location, latitude, longitude FROM locations WHERE id IN (${placeholders})`
