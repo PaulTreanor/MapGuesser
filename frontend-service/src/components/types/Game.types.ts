@@ -20,4 +20,8 @@ type GameState = {
 	status: GameStatus;
 }
 
-export type { Round, CurrentRound, Pin, GameState, GameStatus };
+interface LocationsResponse {
+	data: Round[];
+}
+
+export type { Round, CurrentRound, Pin, GameState, GameStatus, LocationsResponse };

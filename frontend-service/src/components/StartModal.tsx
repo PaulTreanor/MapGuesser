@@ -1,14 +1,11 @@
 import React from 'react'
 import Modal from './Modal'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
-import type { GameState } from './types/Game.types'
-import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
 import { Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
 
-
-export default function StartModal({setGameState}: {setGameState: React.Dispatch<React.SetStateAction<GameState>>}) {
+export default function StartModal({setGameState}: {setGameState: () => void}) {
 	return (
 		<Modal>
 			<MapGuesserHeading />
@@ -35,10 +32,7 @@ export default function StartModal({setGameState}: {setGameState: React.Dispatch
 			<br />
 			<div className="flex justify-end mr-2">
 				<Button
-					onClick={() => setGameState((prev: GameState) => ({
-						...prev,
-						status: gameStatus.IN_PROGRESS
-					}))}
+					onClick={setGameState}
 					variant="mapguesser"
 					size="xl"
 				>

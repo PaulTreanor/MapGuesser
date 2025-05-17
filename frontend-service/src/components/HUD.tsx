@@ -1,18 +1,24 @@
 import React, { useEffect } from 'react'
-import type { GameState } from './types/Game.types'
-import { TopBarGameProps } from './types/TopBarGame.types'
+import type { GameState, CurrentRound } from './types/Game.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
 import { Heading, Paragraph } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
 
-export default function TopBarGame({
+interface HUDProps {
+	gameState: GameState;
+	currentRound: CurrentRound;
+	moveToNextRound: () => void;
+	setGameState: () => void;
+}
+
+export default function HUD({
 	gameState,
 	currentRound,
 	moveToNextRound,
 	setGameState,
-}: TopBarGameProps) {
+}: HUDProps) {
 
 	const { status, score, rounds } = gameState
 
@@ -59,10 +65,7 @@ export default function TopBarGame({
 					{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && status !== gameStatus.FINISHED  && (
 						<Button
 							variant="mapguesserSuccess"
-							onClick={() => setGameState((prev: GameState) => ({
-								...prev,
-								status: gameStatus.FINISHED
-							}))}
+							onClick={setGameState}
 							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm"
 						>
 							Finish Game

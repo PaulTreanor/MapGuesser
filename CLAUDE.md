@@ -8,8 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Serve build: `cd frontend-service && npm run serve`
 
 ## Test Commands
-- Run all tests: `cd frontend-service && npm test` (runs both Vitest and Playwright)
-- Run unit tests: `cd frontend-service && npx vitest`
+Prefer running unit tests because `npm run test` and playwright tests require local dev env to be running. 
+
+- Run unit tests: `cd frontend-service && npm run test:components` 
 - Run single unit test: `cd frontend-service && npx vitest -t "test name pattern"`
 - Run e2e tests: `cd frontend-service && npx playwright test`
 - Run single e2e test: `cd frontend-service && npx playwright test game-run-through.test.ts`

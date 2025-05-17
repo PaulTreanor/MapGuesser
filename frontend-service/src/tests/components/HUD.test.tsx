@@ -1,14 +1,14 @@
 import React from 'react';
-import { describe, test, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import TopBarGame from '../../components/HUD';
+import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import HUD from '../../components/HUD';
 import { gameStatus } from '../../objects/gameStatuses';
-import { GameState, Pin } from '@/components/types/Game.types';
+import { Pin } from '@/components/types/Game.types';
 import { numberOfRoundsInGame } from '../../objects/gameConsts';
 import * as NotificationContext from '../../context/NotificationContext';
 
 
-describe('TopBarGame Component', () => {
+describe('HUD Component', () => {
     const notifySpy = vi.fn();
     
     beforeEach(() => {
@@ -35,12 +35,12 @@ describe('TopBarGame Component', () => {
             completed: false,
         },
         moveToNextRound: vi.fn(),
-        setGameState: vi.fn() as React.Dispatch<React.SetStateAction<GameState>>,
+        setGameState: vi.fn(),
     }
 
     test('should render the MapGuesser icon and title', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
             />
         );
@@ -51,7 +51,7 @@ describe('TopBarGame Component', () => {
 
     test('should render the current round number', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
             />
         );
@@ -60,7 +60,7 @@ describe('TopBarGame Component', () => {
 
     test('should render the current round location', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
             />
         );
@@ -69,7 +69,7 @@ describe('TopBarGame Component', () => {
 
     test('should render the users score', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
             />
         );
@@ -78,7 +78,7 @@ describe('TopBarGame Component', () => {
 
     test('should not render the next round button if the current round is not completed', () => {
 		render(
-			<TopBarGame
+			<HUD
 				{...minProps}
 			/>
 		);
@@ -89,7 +89,7 @@ describe('TopBarGame Component', () => {
 
 	test('should render the next round button if the current round is completed and not the last round', () => {
 		render(
-			<TopBarGame
+			<HUD
 				{...minProps}
 				currentRound={{
 					index: 0,
@@ -104,7 +104,7 @@ describe('TopBarGame Component', () => {
 
 	test('should not render the next round button on the last round', () => {
 		render(
-			<TopBarGame
+			<HUD
 				{...minProps}
 				currentRound={{
 					index: numberOfRoundsInGame,
@@ -118,14 +118,14 @@ describe('TopBarGame Component', () => {
     
     test('should not render the finish game button if the current round is the last round and the game is in progress', () => {
         render(
-            <TopBarGame {...minProps} />
+            <HUD {...minProps} />
         );
         expect(screen.queryByText("Finish Game")).not.toBeInTheDocument();
     });
 
     test('should render the finish game button if the current round is the last round and the game is in progress', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
                 currentRound={{
                     index: numberOfRoundsInGame - 1,
@@ -138,7 +138,7 @@ describe('TopBarGame Component', () => {
 
     test('should show error notification if current round is null', () => {
         render(
-            <TopBarGame
+            <HUD
                 {...minProps}
                 gameState={{
                     status: gameStatus.IN_PROGRESS,

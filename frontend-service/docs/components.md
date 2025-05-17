@@ -50,7 +50,7 @@ import { Heading, Subheading, Paragraph, MapGuesserHeading } from "@/components/
 
 - **StartModal** - Initial game instructions and start button
 - **EndModal** - Game results and play again option
-- **TopBarGame** - Navigation and game status bar
+- **HUD** - Navigation and game status bar
 - **Toast** - Notification component with variants:
   - `success` - Green confirmation messages
   - `danger` - Red error messages
