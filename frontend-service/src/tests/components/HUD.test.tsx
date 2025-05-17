@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import TopBarGame from '../../components/TopBarGame';
+import TopBarGame from '../../components/HUD';
 import { gameStatus } from '../../objects/gameStatuses';
 import { GameState, Pin } from '@/components/types/Game.types';
 import { numberOfRoundsInGame } from '../../objects/gameConsts';
