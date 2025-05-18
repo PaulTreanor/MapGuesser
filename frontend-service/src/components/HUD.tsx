@@ -10,6 +10,7 @@ import CountDownProgressBar from './countDownProgressBar'
 interface HUDProps {
 	gameState: GameState;
 	currentRound: CurrentRound;
+	roundEndTimeStamp: number | null;
 	moveToNextRound: () => void;
 	setGameState: () => void;
 }
@@ -17,6 +18,7 @@ interface HUDProps {
 export default function HUD({
 	gameState,
 	currentRound,
+	roundEndTimeStamp,
 	moveToNextRound,
 	setGameState,
 }: HUDProps) {
@@ -41,10 +43,12 @@ export default function HUD({
 	return (
 		roundLocation ? (
 			<nav className="border-gray-200 pointer-events-none min-h-64">
-				<CountDownProgressBar 
-					progressBarFullTimeStamp={Date.now() + 30000} // 30 seconds from now
-					className="w-full fixed top-0 left-0 z-50"
-				/>
+				{roundEndTimeStamp && (
+					<CountDownProgressBar 
+						progressBarFullTimeStamp={roundEndTimeStamp}
+						className="w-full fixed top-0 left-0 z-50"
+					/>
+				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
 						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">

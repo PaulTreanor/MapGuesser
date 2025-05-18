@@ -10,6 +10,8 @@ import { endpoints } from '../objects/endpoints'
 import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 
+const ROUND_TIME_MS = 30000;
+
 export default function Game() {
 	// Get state and actions from stores
 	const { 
@@ -70,6 +72,7 @@ export default function Game() {
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
 						setGameState={finishGame}
+						roundEndTimeStamp={null} // this needs to be generateRoundEndTimeStamp OR null depending on if rounds have timers
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
