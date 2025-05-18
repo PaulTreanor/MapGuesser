@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import type { LocationsResponse } from './types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
@@ -9,10 +9,14 @@ import { useFetch } from '../hooks/useFetch'
 import { endpoints } from '../objects/endpoints'
 import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
+import { notify } from '../context/NotificationContext'
+import { generateRoundEndTimeStamp, isTimerExpired } from '../utils/timerUtils'
+import { MAX_SCORE } from '../objects/gameConsts'
 
-// Just placing these here for now as it keeps testing easier. Eventually I'll move this out into the GameStore. 
-const doesGameHaveTimer = false;
-const ROUND_TIME_MS = 30000;
+// Just placing these here for now as it keeps testing easier. Eventually I'll move this out into the GameStore.
+// These should really be set from player choice at start
+const doesGameHaveTimer = true;
+const ROUND_TIME_MS = 15000;
 
 export default function Game() {
 	// Get state and actions from stores
@@ -28,8 +32,10 @@ export default function Game() {
 	
 	const {
 		currentRound,
+		roundEndTimeStamp,
 		completeRound,
-		moveToNextRound
+		moveToNextRound,
+		setRoundEndTimeStamp
 	} = useRoundStore();
 
 	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
@@ -40,6 +46,45 @@ export default function Game() {
 			setRounds(data.data);
 		}
 	}, [data, rounds, setRounds]);
+
+	const handleTimeExpired = useCallback(() => {
+		if (!currentRound.completed) {
+			notify({
+				type: 'warning',
+				message: "Time's up! Moving to the next round...",
+				duration: 5000
+			});
+			
+			updateScore(MAX_SCORE);
+			completeRound();
+		}
+	}, [currentRound.completed, completeRound, updateScore]);
+
+	// Set up timer for the round
+	useEffect(() => {
+		if (doesGameHaveTimer && status === gameStatus.IN_PROGRESS && !currentRound.completed) {
+			// Only generate a new timestamp if we don't have one yet
+			// This ensures we don't reset the timer when a round is marked as completed
+			if (!roundEndTimeStamp) {
+				const newEndTimeStamp = generateRoundEndTimeStamp(ROUND_TIME_MS);
+				setRoundEndTimeStamp(newEndTimeStamp);
+			}
+		}
+	}, [status, currentRound.index, currentRound.completed, roundEndTimeStamp, setRoundEndTimeStamp]);
+
+	// Check if timer expired
+	useEffect(() => {
+		if (!roundEndTimeStamp || currentRound.completed) return;
+
+		const checkTimerInterval = setInterval(() => {
+			if (isTimerExpired(roundEndTimeStamp)) {
+				handleTimeExpired();
+				clearInterval(checkTimerInterval);
+			}
+		}, 1000);
+
+		return () => clearInterval(checkTimerInterval);
+	}, [roundEndTimeStamp, currentRound.completed, handleTimeExpired]);
 
 	const handleGuess = (distance: number) => {
 		updateScore(distance);
@@ -74,15 +119,14 @@ export default function Game() {
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
 						setGameState={finishGame}
-						// Need to adjust this to depend on actually generated roundEndTimeStamp
-						roundEndTimeStamp={doesGameHaveTimer ? Date.now() + ROUND_TIME_MS: null}
+						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
 					<MapboxMap
 						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}
-						isDisabled={!rounds?.length}
+						isDisabled={!rounds?.length || currentRound.completed}
 					/>
 				</div>
 			</div>

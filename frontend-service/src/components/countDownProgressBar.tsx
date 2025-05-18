@@ -6,16 +6,19 @@ import { interpolateColor } from '../utils/colorUtils'
 
 interface CountDownProgressBarProps {
 	progressBarFullTimeStamp: number,
-	className?: string
+	className?: string,
+	isPaused?: boolean
 }
 
 const CountDownProgressBar = ({
 	progressBarFullTimeStamp,
-	className
+	className,
+	isPaused = false
 }: CountDownProgressBarProps) => {
 	const [progress, setProgress] = useState(0)
 	const [color, setColor] = useState(colors.sky)
 	const [shouldPulse, setShouldPulse] = useState(false)
+	const [pausedTimeRemaining, setPausedTimeRemaining] = useState<number | null>(null)
 
     // useState instead of const so startTime doesn't get reset on rerenders
 	const [startTime] = useState(Date.now())
@@ -61,34 +64,59 @@ const CountDownProgressBar = ({
 		return false
 	}
 	
+	// When the isPaused prop changes, store the current time remaining
 	useEffect(() => {
+		if (isPaused && pausedTimeRemaining === null) {
+			setPausedTimeRemaining(progressBarFullTimeStamp - Date.now());
+		} else if (!isPaused) {
+			setPausedTimeRemaining(null);
+		}
+	}, [isPaused, progressBarFullTimeStamp, pausedTimeRemaining]);
+	
+	useEffect(() => {
+		// Don't run the timer if paused
+		if (isPaused) return;
+		
 		// Update progress every 50ms for smooth animation
 		const interval = setInterval(() => {
-			const now = Date.now()
-			const totalDuration = progressBarFullTimeStamp - now
+			const now = Date.now();
+			const totalDuration = progressBarFullTimeStamp - now;
 
 			if (totalDuration <= 0) {
-				// Timer is complete
-				setProgress(100)
-				setColor(timerStyleMap[0].color)
-				setShouldPulse(timerStyleMap[0].pulse)
-				clearInterval(interval)
-				return
+				setProgress(100);
+				setColor(timerStyleMap[0].color);
+				setShouldPulse(timerStyleMap[0].pulse);
+				clearInterval(interval);
+				return;
 			}
 
             // Calculate progress (0-100)
-			const remainingSeconds = totalDuration / 1000
-			const totalOriginalDuration = progressBarFullTimeStamp - startTime
-			const elapsedDuration = now - startTime
-			const currentProgress = Math.min(100, (elapsedDuration / totalOriginalDuration) * 100)
+			const remainingSeconds = totalDuration / 1000;
+			const totalOriginalDuration = progressBarFullTimeStamp - startTime;
+			const elapsedDuration = now - startTime;
+			const currentProgress = Math.min(100, (elapsedDuration / totalOriginalDuration) * 100);
 			
-			setProgress(currentProgress)
-			setColor(calculateColor(remainingSeconds))
-			setShouldPulse(calculatePulse(remainingSeconds))
-		}, 50)
+			setProgress(currentProgress);
+			setColor(calculateColor(remainingSeconds));
+			setShouldPulse(calculatePulse(remainingSeconds));
+		}, 50);
 
-		return () => clearInterval(interval)
-	}, [progressBarFullTimeStamp, startTime])
+		return () => clearInterval(interval);
+	}, [progressBarFullTimeStamp, startTime, isPaused]);
+
+	// If paused, render the timer with the frozen state
+	if (isPaused && pausedTimeRemaining !== null) {		
+		return (
+			<Progress
+				value={progress}
+				color={color}
+				backgroundColor={color}
+				pulse={false}
+				className={className}
+				style={{ transition: 'all 0.2s ease-in-out' }}
+			/>
+		);
+	}
 
 	return (
 		<Progress
@@ -99,7 +127,7 @@ const CountDownProgressBar = ({
 			className={className}
 			style={{ transition: 'all 0.2s ease-in-out' }}
 		/>
-	)
-}
+	);
+};
 
 export default CountDownProgressBar

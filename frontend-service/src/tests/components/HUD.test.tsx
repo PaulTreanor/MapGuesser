@@ -34,6 +34,7 @@ describe('HUD Component', () => {
             index: 0,
             completed: false,
         },
+        roundEndTimeStamp: null,
         moveToNextRound: vi.fn(),
         setGameState: vi.fn(),
     }
@@ -75,6 +76,37 @@ describe('HUD Component', () => {
         );
         expect(screen.getByText("0 points")).toBeInTheDocument();
     });
+    
+    test('should render the timer when roundEndTimeStamp is provided', () => {
+        // Mock Date.now to return a consistent value for testing
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date(2023, 1, 1, 0, 0, 0));
+        
+        const propsWithTimer = {
+            ...minProps,
+            roundEndTimeStamp: Date.now() + 30000 // 30 seconds in the future
+        };
+        
+        render(<HUD {...propsWithTimer} />);
+        
+        // The progress bar should be in the document
+        const progressBar = document.querySelector('[role="progressbar"]');
+        expect(progressBar).toBeInTheDocument();
+        
+        vi.useRealTimers();
+    });
+
+    test('should not render timer when roundEndTimeStamp is not provided', () => {
+		const propsWithoutTimer = {
+			...minProps,
+			roundEndTimeStamp: null
+		};
+		
+		render(<HUD {...propsWithoutTimer} />);
+		
+		const progressBar = document.querySelector('[role="progressbar"]');
+		expect(progressBar).not.toBeInTheDocument();
+	});
 
     test('should not render the next round button if the current round is not completed', () => {
 		render(
