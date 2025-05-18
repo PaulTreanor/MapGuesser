@@ -63,7 +63,16 @@ module.exports = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
-  		}
+  		},
+      keyframes: {
+        breathe: {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
+        },
+      },
+      animation: {
+        breathe: 'breathe 1s infinite ease-in-out',
+      },
   	}
   },
   plugins: [require("tailwindcss-animate")],

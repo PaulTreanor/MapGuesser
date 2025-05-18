@@ -46,7 +46,8 @@ export default function HUD({
 					value={(currentRound.index / numberOfRoundsInGame) * 100} 
 					className="w-full fixed top-0 left-0 z-50"
 					color='#EF4444'
-					backgroundColor='#3B82F6'
+					backgroundColor='#EF4444'
+					pulse={true}
 				/>
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">

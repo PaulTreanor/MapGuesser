@@ -1,3 +1,10 @@
+/**
+ * An enhanced version of the shadcn Progress component with the following additional features:
+ * 
+ * - Custom color support: Specify any valid CSS color for both the indicator and background
+ * - Pulse effect: Optional glowing animation that creates a gradient fade below the progress bar
+ */
+
 import * as React from "react"
 import * as ProgressPrimitive from "@radix-ui/react-progress"
 
@@ -6,34 +13,57 @@ import { cn } from "@/lib/utils"
 interface ColorfulProgressProps extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
   color?: string
   backgroundColor?: string
+  pulse?: boolean
 }
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   ColorfulProgressProps
->(({ className, value, color, backgroundColor, ...props }, ref) => {
+>(({ className, value, color, backgroundColor, pulse = false, ...props }, ref) => {
   // Default colors
   const indicatorColor = color || 'var(--primary)'
   const bgColor = backgroundColor || 'var(--primary-light)'
   
   return (
-    <ProgressPrimitive.Root
-      ref={ref}
-      className={cn(
-        "relative h-2 w-full overflow-hidden rounded-full",
-        className
+    <div className="relative">
+      {pulse && (
+        <div className="absolute w-full top-0 left-0 overflow-visible" style={{ height: '16px' }}>
+          {/* Smooth gradient glow */}
+          <div 
+            /* breathe animation defined in tailwind.config.js */
+            className="absolute w-full top-0 left-0 rounded-b-3xl animate-breathe"
+            style={{ 
+              height: '30px',
+              background: `linear-gradient(to bottom, ${indicatorColor} 0%, ${indicatorColor}00 100%)`,
+              opacity: 0.7,
+              filter: 'blur(10px)'
+            }}
+          />
+        </div>
       )}
-      style={{ backgroundColor: `${bgColor}33` }} // Apply 20% opacity to background
-      {...props}
-    >
-      <ProgressPrimitive.Indicator
-        className="h-full w-full flex-1 transition-all"
+      
+      <ProgressPrimitive.Root
+        ref={ref}
+        className={cn(
+          "relative h-3 w-full overflow-hidden",
+          pulse ? "z-10" : "",
+          className
+        )}
         style={{ 
-          transform: `translateX(-${100 - (value || 0)}%)`,
-          backgroundColor: indicatorColor
+          backgroundColor: `${bgColor}33` // Apply 20% opacity to background
         }}
-      />
-    </ProgressPrimitive.Root>
+        {...props}
+      >
+        <ProgressPrimitive.Indicator
+          className="h-full w-full flex-1 transition-all"
+          style={{ 
+            transform: `translateX(-${100 - (value || 0)}%)`,
+            backgroundColor: indicatorColor,
+            boxShadow: pulse ? `0 0 8px 2px ${indicatorColor}` : 'none'
+          }}
+        />
+      </ProgressPrimitive.Root>
+    </div>
   )
 })
 
