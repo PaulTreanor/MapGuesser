@@ -1,15 +1,27 @@
 import React from "react";
 import * as Slider from "@radix-ui/react-slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const DESKTOP_OPTIONS = ["5 seconds", "10 seconds", "20 seconds", "30 seconds", "50 seconds", "No timer"];
-const MOBILE_OPTIONS = ["5s", "10s", "20s", "50s", "No timer"];
+// Timer options data structure
+export const TIMER_OPTIONS = [
+	{ timeMs: 5000, desktopLabel: "5 seconds", mobileLabel: "5s" },
+	{ timeMs: 10000, desktopLabel: "10 seconds", mobileLabel: "10s" },
+	{ timeMs: 20000, desktopLabel: "20 seconds", mobileLabel: "20s" },
+	{ timeMs: 30000, desktopLabel: "30 seconds", mobileLabel: "30s" },
+	{ timeMs: 50000, desktopLabel: "50 seconds", mobileLabel: "50s" },
+	{ timeMs: 0, desktopLabel: "No timer", mobileLabel: "No timer" }, // 0 means no timer
+];
 
-export default function DiscreteTimeSlider() {
-    const [index, setIndex] = useState(0);
+interface TimeSliderProps {
+	onChange: (hasTimer: boolean, timeMs: number) => void;
+}
+
+export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
+    // Default to last index which is "No timer"
+    const [index, setIndex] = useState(TIMER_OPTIONS.length - 1);
     const [isMobile, setIsMobile] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
@@ -19,14 +31,18 @@ export default function DiscreteTimeSlider() {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    const OPTIONS = isMobile ? MOBILE_OPTIONS : DESKTOP_OPTIONS;
+    useEffect(() => {
+        const { timeMs } = TIMER_OPTIONS[index];
+        const hasTimer = timeMs > 0;
+        onChange(hasTimer, timeMs);
+    }, [index, onChange]);
 
     return (
         <div className="w-full p-4 bg-background rounded-lg border border-border shadow-sm">
             <Slider.Root
                 className="relative flex items-center select-none touch-none w-full h-6"
                 min={0}
-                max={OPTIONS.length - 1}
+                max={TIMER_OPTIONS.length - 1}
                 step={1}
                 value={[index]}
                 onValueChange={([i]) => setIndex(i)}
@@ -38,12 +54,12 @@ export default function DiscreteTimeSlider() {
             </Slider.Root>
 
             <div className="flex justify-between mt-3 text-muted-foreground text-sm">
-                {OPTIONS.map((label, i) => (
+                {TIMER_OPTIONS.map((option, i) => (
                     <span 
                         key={i} 
                         className={`text-center px-1 ${index === i ? "text-foreground font-medium" : ""}`}
                     >
-                        {label}
+                        {isMobile ? option.mobileLabel : option.desktopLabel}
                     </span>
                 ))}
             </div>

@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Modal from './Modal'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { Button } from './ui/button'
 import { Subheading, Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
 import TimeSlider from './roundTimerSelectionSlider'
+import { useGameStore } from '../store/gameStore'
 
 export default function StartModal({setGameState}: {setGameState: () => void}) {
+	const { setDoesGameHaveTimer, setRoundTimeMs } = useGameStore();
+
+	const handleTimerChange = useCallback((hasTimer: boolean, timeMs: number) => {
+		setDoesGameHaveTimer(hasTimer);
+		setRoundTimeMs(timeMs);
+	}, [setDoesGameHaveTimer, setRoundTimeMs]);
+
 	return (
 		<Modal>
 			<MapGuesserHeading />
@@ -31,7 +39,7 @@ export default function StartModal({setGameState}: {setGameState: () => void}) {
 				Do you want a timer for each round?
 			</Subheading>
 			<br />
-			<TimeSlider />
+			<TimeSlider onChange={handleTimerChange} />
 			<br />
 			<div className="flex justify-end mr-2">
 				<Button
