@@ -5,6 +5,8 @@ import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
 import { Heading, Paragraph } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
+import { Progress } from './ui/colorfulProgress'
+
 
 interface HUDProps {
 	gameState: GameState;
@@ -40,6 +42,12 @@ export default function HUD({
 	return (
 		roundLocation ? (
 			<nav className="border-gray-200 pointer-events-none min-h-64">
+				<Progress 
+					value={(currentRound.index / numberOfRoundsInGame) * 100} 
+					className="w-full fixed top-0 left-0 z-50"
+					color='#EF4444'
+					backgroundColor='#3B82F6'
+				/>
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
 						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">
