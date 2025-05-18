@@ -10,6 +10,8 @@ import { endpoints } from '../objects/endpoints'
 import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 
+// Just placing these here for now as it keeps testing easier. Eventually I'll move this out into the GameStore. 
+const doesGameHaveTimer = false;
 const ROUND_TIME_MS = 30000;
 
 export default function Game() {
@@ -72,7 +74,8 @@ export default function Game() {
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
 						setGameState={finishGame}
-						roundEndTimeStamp={null} // this needs to be generateRoundEndTimeStamp OR null depending on if rounds have timers
+						// Need to adjust this to depend on actually generated roundEndTimeStamp
+						roundEndTimeStamp={doesGameHaveTimer ? Date.now() + ROUND_TIME_MS: null}
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
