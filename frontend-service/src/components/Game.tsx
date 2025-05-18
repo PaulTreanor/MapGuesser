@@ -13,17 +13,14 @@ import { notify } from '../context/NotificationContext'
 import { generateRoundEndTimeStamp, isTimerExpired } from '../utils/timerUtils'
 import { MAX_SCORE } from '../objects/gameConsts'
 
-// Just placing these here for now as it keeps testing easier. Eventually I'll move this out into the GameStore.
-// These should really be set from player choice at start
-const doesGameHaveTimer = true;
-const ROUND_TIME_MS = 15000;
-
 export default function Game() {
 	// Get state and actions from stores
 	const { 
+		doesGameHaveTimer,
 		rounds, 
 		score, 
 		status,
+		roundTimeMs,
 		startGame,
 		finishGame, 
 		updateScore,
@@ -66,7 +63,7 @@ export default function Game() {
 			// Only generate a new timestamp if we don't have one yet
 			// This ensures we don't reset the timer when a round is marked as completed
 			if (!roundEndTimeStamp) {
-				const newEndTimeStamp = generateRoundEndTimeStamp(ROUND_TIME_MS);
+				const newEndTimeStamp = generateRoundEndTimeStamp(roundTimeMs);
 				setRoundEndTimeStamp(newEndTimeStamp);
 			}
 		}
