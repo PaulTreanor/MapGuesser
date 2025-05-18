@@ -2,8 +2,9 @@ import React from 'react'
 import Modal from './Modal'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { Button } from './ui/button'
-import { Paragraph } from './typography/Typography'
+import { Subheading, Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
+import TimeSlider from './roundTimerSelectionSlider'
 
 export default function StartModal({setGameState}: {setGameState: () => void}) {
 	return (
@@ -23,12 +24,14 @@ export default function StartModal({setGameState}: {setGameState: () => void}) {
 			</Paragraph>
 			<br />
 			<Paragraph>
-				Please share MapGuesser with your friends if you enjoyed it!
-			</Paragraph>
-			<br />
-			<Paragraph>
 				For more of my work checkout my <a href="http://paultreanor.com" className="text-blue-800 hover:underline">website</a>.
 			</Paragraph>
+			<br />
+			<Subheading>
+				Do you want a timer for each round?
+			</Subheading>
+			<br />
+			<TimeSlider />
 			<br />
 			<div className="flex justify-end mr-2">
 				<Button

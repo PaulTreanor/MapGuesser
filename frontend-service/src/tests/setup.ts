@@ -5,6 +5,15 @@ import * as matchers from '@testing-library/jest-dom/matchers';
 
 expect.extend(matchers);
 
+// Mock ResizeObserver
+class ResizeObserverMock {
+	observe() {}
+	unobserve() {}
+	disconnect() {}
+}
+
+global.ResizeObserver = ResizeObserverMock;
+
 afterEach(() => {
 	cleanup();
 });
