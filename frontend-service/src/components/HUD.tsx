@@ -5,8 +5,7 @@ import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
 import { Heading, Paragraph } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
-import { Progress } from './ui/colorfulProgress'
-
+import CountDownProgressBar from './countDownProgressBar'
 
 interface HUDProps {
 	gameState: GameState;
@@ -42,12 +41,9 @@ export default function HUD({
 	return (
 		roundLocation ? (
 			<nav className="border-gray-200 pointer-events-none min-h-64">
-				<Progress 
-					value={(currentRound.index / numberOfRoundsInGame) * 100} 
+				<CountDownProgressBar 
+					progressBarFullTimeStamp={Date.now() + 30000} // 30 seconds from now
 					className="w-full fixed top-0 left-0 z-50"
-					color='#EF4444'
-					backgroundColor='#EF4444'
-					pulse={true}
 				/>
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">

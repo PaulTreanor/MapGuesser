@@ -14,12 +14,13 @@ interface ColorfulProgressProps extends React.ComponentPropsWithoutRef<typeof Pr
   color?: string
   backgroundColor?: string
   pulse?: boolean
+  style?: React.CSSProperties
 }
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   ColorfulProgressProps
->(({ className, value, color, backgroundColor, pulse = false, ...props }, ref) => {
+>(({ className, value, color, backgroundColor, pulse = false, style, ...props }, ref) => {
   // Default colors
   const indicatorColor = color || 'var(--primary)'
   const bgColor = backgroundColor || 'var(--primary-light)'
@@ -36,7 +37,8 @@ const Progress = React.forwardRef<
               height: '30px',
               background: `linear-gradient(to bottom, ${indicatorColor} 0%, ${indicatorColor}00 100%)`,
               opacity: 0.7,
-              filter: 'blur(10px)'
+              filter: 'blur(10px)',
+              transition: 'background 0.3s ease'
             }}
           />
         </div>
@@ -50,7 +52,9 @@ const Progress = React.forwardRef<
           className
         )}
         style={{ 
-          backgroundColor: `${bgColor}33` // Apply 20% opacity to background
+          backgroundColor: `${bgColor}33`, // Apply 20% opacity to background
+          transition: 'background-color 0.3s ease',
+          ...style
         }}
         {...props}
       >
@@ -59,7 +63,8 @@ const Progress = React.forwardRef<
           style={{ 
             transform: `translateX(-${100 - (value || 0)}%)`,
             backgroundColor: indicatorColor,
-            boxShadow: pulse ? `0 0 8px 2px ${indicatorColor}` : 'none'
+            boxShadow: pulse ? `0 0 8px 2px ${indicatorColor}` : 'none',
+            transition: 'background-color 0.3s ease, box-shadow 0.3s ease'
           }}
         />
       </ProgressPrimitive.Root>
