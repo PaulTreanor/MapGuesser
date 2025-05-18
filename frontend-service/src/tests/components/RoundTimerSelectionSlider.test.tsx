@@ -3,6 +3,16 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import DiscreteTimeSlider, { TIMER_OPTIONS } from '../../components/roundTimerSelectionSlider';
 
+// Mock the userPreferences module
+vi.mock('../../services/userPreferences', () => ({
+	getTimerPreferences: vi.fn(() => ({
+		roundTimerIndex: 5, // Default to "No timer"
+		roundTimeMs: 0,
+		hasTimer: false
+	})),
+	saveTimerPreferences: vi.fn(() => true)
+}));
+
 describe('DiscreteTimeSlider Component', () => {
 	// Mock window.innerWidth for testing responsive behavior
 	const mockWindowInnerWidth = (width: number) => {

@@ -1,6 +1,7 @@
 import React from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { useState, useEffect } from "react";
+import { getTimerPreferences, saveTimerPreferences } from "../services/userPreferences";
 
 // Timer options data structure
 export const TIMER_OPTIONS = [
@@ -17,8 +18,11 @@ interface TimeSliderProps {
 }
 
 export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
-    // Default to last index which is "No timer"
-    const [index, setIndex] = useState(TIMER_OPTIONS.length - 1);
+    // Get saved preferences or default to "No timer"
+    const savedPrefs = getTimerPreferences();
+    const defaultIndex = savedPrefs.roundTimerIndex;
+
+    const [index, setIndex] = useState(defaultIndex);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -34,6 +38,15 @@ export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
     useEffect(() => {
         const { timeMs } = TIMER_OPTIONS[index];
         const hasTimer = timeMs > 0;
+        
+        // Save preferences when they change
+        saveTimerPreferences({
+            roundTimerIndex: index,
+            roundTimeMs: timeMs,
+            hasTimer
+        });
+        
+        // Notify parent component
         onChange(hasTimer, timeMs);
     }, [index, onChange]);
 
