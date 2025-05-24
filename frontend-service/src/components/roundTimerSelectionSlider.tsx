@@ -2,22 +2,13 @@ import React from "react";
 import * as Slider from "@radix-ui/react-slider";
 import { useState, useEffect } from "react";
 import { getTimerPreferences, saveTimerPreferences } from "../services/userPreferences";
-
-// Timer options data structure
-export const TIMER_OPTIONS = [
-	{ timeMs: 5000, desktopLabel: "5 seconds", mobileLabel: "5s" },
-	{ timeMs: 10000, desktopLabel: "10 seconds", mobileLabel: "10s" },
-	{ timeMs: 20000, desktopLabel: "20 seconds", mobileLabel: "20s" },
-	{ timeMs: 30000, desktopLabel: "30 seconds", mobileLabel: "30s" },
-	{ timeMs: 50000, desktopLabel: "50 seconds", mobileLabel: "50s" },
-	{ timeMs: 0, desktopLabel: "No timer", mobileLabel: "No timer" }, // 0 means no timer
-];
+import { TIMER_OPTIONS } from "../objects/roundTimerSliderOptions";
 
 interface TimeSliderProps {
 	onChange: (hasTimer: boolean, timeMs: number) => void;
 }
 
-export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
+const roundTimerSelectionSlider = ({ onChange }: TimeSliderProps) => {
     // Get saved preferences or default to "No timer"
     const savedPrefs = getTimerPreferences();
     const defaultIndex = savedPrefs.roundTimerIndex;
@@ -35,20 +26,19 @@ export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    useEffect(() => {
+    const handleSliderValueChange = ([index]: number[]) => {
+        setIndex(index);
         const { timeMs } = TIMER_OPTIONS[index];
         const hasTimer = timeMs > 0;
-        
-        // Save preferences when they change
+
         saveTimerPreferences({
             roundTimerIndex: index,
             roundTimeMs: timeMs,
             hasTimer
         });
-        
-        // Notify parent component
+
         onChange(hasTimer, timeMs);
-    }, [index, onChange]);
+    };
 
     return (
         <div className="w-full p-4 bg-background rounded-lg border border-border shadow-sm">
@@ -58,7 +48,7 @@ export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
                 max={TIMER_OPTIONS.length - 1}
                 step={1}
                 value={[index]}
-                onValueChange={([i]) => setIndex(i)}
+                onValueChange={handleSliderValueChange}
             >
                 <Slider.Track className="bg-blue-300 relative grow rounded-full h-[0.375rem]">
                     <Slider.Range className="absolute bg-blue-800 rounded-full h-full" />
@@ -79,3 +69,5 @@ export default function DiscreteTimeSlider({ onChange }: TimeSliderProps) {
         </div>
     );
 }
+
+export default roundTimerSelectionSlider

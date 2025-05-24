@@ -4,7 +4,7 @@ import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { Button } from './ui/button'
 import { Subheading, Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
-import TimeSlider from './roundTimerSelectionSlider'
+import RoundTimerSelectionSlider from './roundTimerSelectionSlider'
 import { useGameStore } from '../store/gameStore'
 
 export default function StartModal({setGameState}: {setGameState: () => void}) {
@@ -39,7 +39,7 @@ export default function StartModal({setGameState}: {setGameState: () => void}) {
 				Do you want a timer for each round?
 			</Subheading>
 			<br />
-			<TimeSlider onChange={handleTimerChange} />
+			<RoundTimerSelectionSlider onChange={handleTimerChange} />
 			<br />
 			<div className="flex justify-end mr-2">
 				<Button

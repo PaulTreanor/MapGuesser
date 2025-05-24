@@ -13,7 +13,6 @@ export interface ColorStop {
 /**
  * Defines how the timer should appear at different remaining time thresholds
  * The color and pulse effect will be applied when the remaining time is less than or equal to the threshold
- * Thresholds should be in descending order (largest to smallest)
  */
 export const timerStyleMap: ColorStop[] = [
 	{ threshold: 2, color: colors.red, pulse: true },

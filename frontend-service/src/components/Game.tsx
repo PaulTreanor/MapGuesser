@@ -6,21 +6,19 @@ import HUD from './HUD'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
 import { useFetch } from '../hooks/useFetch'
+import { useRoundTimer } from '../hooks/useRoundTimer'
 import { endpoints } from '../objects/endpoints'
 import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
-import { generateRoundEndTimeStamp, isTimerExpired } from '../utils/timerUtils'
 import { MAX_SCORE } from '../objects/gameConsts'
 
 export default function Game() {
 	// Get state and actions from stores
 	const { 
-		doesGameHaveTimer,
 		rounds, 
 		score, 
 		status,
-		roundTimeMs,
 		startGame,
 		finishGame, 
 		updateScore,
@@ -31,18 +29,17 @@ export default function Game() {
 		currentRound,
 		roundEndTimeStamp,
 		completeRound,
-		moveToNextRound,
-		setRoundEndTimeStamp
+		moveToNextRound
 	} = useRoundStore();
 
 	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
 	
-	// Update gameState when data is fetched
+	// Update gameState with rounds when data is fetched
 	useEffect(() => {
 		if (data?.data && !rounds) {
 			setRounds(data.data);
 		}
-	}, [data, rounds, setRounds]);
+	}, [data]);
 
 	const handleTimeExpired = useCallback(() => {
 		if (!currentRound.completed) {
@@ -52,36 +49,13 @@ export default function Game() {
 				duration: 5000
 			});
 			
-			updateScore(MAX_SCORE);
-			completeRound();
+			handleGuess(MAX_SCORE);
 		}
-	}, [currentRound.completed, completeRound, updateScore]);
+	}, [currentRound.completed]);
 
-	// Set up timer for the round
-	useEffect(() => {
-		if (doesGameHaveTimer && status === gameStatus.IN_PROGRESS && !currentRound.completed) {
-			// Only generate a new timestamp if we don't have one yet
-			// This ensures we don't reset the timer when a round is marked as completed
-			if (!roundEndTimeStamp) {
-				const newEndTimeStamp = generateRoundEndTimeStamp(roundTimeMs);
-				setRoundEndTimeStamp(newEndTimeStamp);
-			}
-		}
-	}, [status, currentRound.index, currentRound.completed, roundEndTimeStamp, setRoundEndTimeStamp]);
-
-	// Check if timer expired
-	useEffect(() => {
-		if (!roundEndTimeStamp || currentRound.completed) return;
-
-		const checkTimerInterval = setInterval(() => {
-			if (isTimerExpired(roundEndTimeStamp)) {
-				handleTimeExpired();
-				clearInterval(checkTimerInterval);
-			}
-		}, 1000);
-
-		return () => clearInterval(checkTimerInterval);
-	}, [roundEndTimeStamp, currentRound.completed, handleTimeExpired]);
+	// Custom hook that manages round timer setup and expiration checking
+	// Automatically starts timer when round begins and calls handleTimeExpired when time runs out
+	useRoundTimer({ handleTimeExpired });
 
 	const handleGuess = (distance: number) => {
 		updateScore(distance);

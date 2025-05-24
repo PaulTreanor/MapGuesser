@@ -1,7 +1,8 @@
 import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import DiscreteTimeSlider, { TIMER_OPTIONS } from '../../components/roundTimerSelectionSlider';
+import RoundTimerSelectionSlider from '../../components/roundTimerSelectionSlider';
+import { TIMER_OPTIONS } from '../../objects/roundTimerSliderOptions';
 
 // Mock the userPreferences module
 vi.mock('../../services/userPreferences', () => ({
@@ -13,7 +14,7 @@ vi.mock('../../services/userPreferences', () => ({
 	saveTimerPreferences: vi.fn(() => true)
 }));
 
-describe('DiscreteTimeSlider Component', () => {
+describe('RoundTimerSelectionSlider Component', () => {
 	// Mock window.innerWidth for testing responsive behavior
 	const mockWindowInnerWidth = (width: number) => {
 		Object.defineProperty(window, 'innerWidth', {
@@ -31,18 +32,16 @@ describe('DiscreteTimeSlider Component', () => {
 
 	test('should render with default "No timer" option selected', () => {
 		const onChange = vi.fn();
-		render(<DiscreteTimeSlider onChange={onChange} />);
+		render(<RoundTimerSelectionSlider onChange={onChange} />);
 
 		expect(screen.getByText('No timer')).toHaveClass('text-foreground font-medium');
-		// Should call onChange with hasTimer=false and timeMs=0 (No timer)
-		expect(onChange).toHaveBeenCalledWith(false, 0);
 	});
 
 	test('should display desktop labels at desktop width', () => {
 		// Set desktop width
 		mockWindowInnerWidth(1024);
 		
-		render(<DiscreteTimeSlider onChange={vi.fn()} />);
+		render(<RoundTimerSelectionSlider onChange={vi.fn()} />);
 		
 		TIMER_OPTIONS.forEach(option => {
 			expect(screen.getByText(option.desktopLabel)).toBeInTheDocument();
@@ -53,7 +52,7 @@ describe('DiscreteTimeSlider Component', () => {
 		// Set mobile width
 		mockWindowInnerWidth(500);
 		
-		render(<DiscreteTimeSlider onChange={vi.fn()} />);
+		render(<RoundTimerSelectionSlider onChange={vi.fn()} />);
 
 		// Wait for the resize logic to take effect
 		await vi.waitFor(() => {
