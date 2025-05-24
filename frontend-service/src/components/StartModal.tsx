@@ -5,10 +5,13 @@ import { Button } from './ui/button'
 import { Subheading, Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
 import RoundTimerSelectionSlider from './roundTimerSelectionSlider'
-import { useGameStore } from '../store/gameStore'
+interface StartModalProps {
+	setGameState: () => void
+	setDoesGameHaveTimer: (hasTimer: boolean) => void
+	setRoundTimeMs: (timeMs: number) => void
+}
 
-export default function StartModal({setGameState}: {setGameState: () => void}) {
-	const { setDoesGameHaveTimer, setRoundTimeMs } = useGameStore();
+export default function StartModal({setGameState, setDoesGameHaveTimer, setRoundTimeMs}: StartModalProps) {
 
 	const handleTimerChange = useCallback((hasTimer: boolean, timeMs: number) => {
 		setDoesGameHaveTimer(hasTimer);

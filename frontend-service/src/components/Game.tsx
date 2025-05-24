@@ -7,30 +7,34 @@ import StartModal from './StartModal'
 import EndModal from './EndModal'
 import { useFetch } from '../hooks/useFetch'
 import { useRoundTimer } from '../hooks/useRoundTimer'
+import { useGameMachine } from '../hooks/useGameMachine'
 import { endpoints } from '../objects/endpoints'
-import { useGameStore } from '../store/gameStore'
-import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
 import { MAX_SCORE } from '../objects/gameConsts'
 
 export default function Game() {
-	// Get state and actions from stores
-	const { 
-		rounds, 
-		score, 
-		status,
-		startGame,
-		finishGame, 
-		updateScore,
-		setRounds
-	} = useGameStore();
-	
+	// Get state and actions from state machine
 	const {
+		// Game state
+		rounds,
+		score,
+		status,
+		doesGameHaveTimer,
+		roundTimeMs,
+		// Round state
 		currentRound,
 		roundEndTimeStamp,
-		completeRound,
-		moveToNextRound
-	} = useRoundStore();
+		// Actions
+		startGame,
+		finishGame,
+		updateScore,
+		setRounds,
+		moveToNextRound,
+		setRoundEndTimeStamp,
+		setDoesGameHaveTimer,
+		setRoundTimeMs,
+		handleTimeExpired: machineHandleTimeExpired
+	} = useGameMachine();
 
 	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
 	
@@ -49,17 +53,24 @@ export default function Game() {
 				duration: 5000
 			});
 			
-			handleGuess(MAX_SCORE);
+			machineHandleTimeExpired(MAX_SCORE);
 		}
-	}, [currentRound.completed]);
+	}, [currentRound.completed, machineHandleTimeExpired]);
 
 	// Custom hook that manages round timer setup and expiration checking
 	// Automatically starts timer when round begins and calls handleTimeExpired when time runs out
-	useRoundTimer({ handleTimeExpired });
+	useRoundTimer({ 
+		handleTimeExpired,
+		doesGameHaveTimer,
+		status,
+		roundTimeMs,
+		currentRound,
+		roundEndTimeStamp,
+		setRoundEndTimeStamp
+	});
 
 	const handleGuess = (distance: number) => {
 		updateScore(distance);
-		completeRound();
 	}
 
 	if (error || (data && data.data.length === 0)) {
@@ -78,7 +89,11 @@ export default function Game() {
 	return (
 		<>
 			{ status === gameStatus.NOT_STARTED && 
-				<StartModal setGameState={startGame} />
+				<StartModal 
+					setGameState={startGame} 
+					setDoesGameHaveTimer={setDoesGameHaveTimer}
+					setRoundTimeMs={setRoundTimeMs}
+				/>
 			}
 			{ status === gameStatus.FINISHED && 
 				<EndModal score={score} />
