@@ -1,12 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { render, fireEvent } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import ToastContainer from '../../components/ToastContainer';
-import { NotificationProvider, notify, setGlobalNotify } from '../../context/NotificationContext';
+import { NotificationProvider, notify } from '../../context/NotificationContext';
 
 // Mock the Toast component
 vi.mock('../../components/Toast', () => ({
-	default: ({ type, message, onClose }) => (
+	default: ({ type, message, onClose }: { type: string; message: string; onClose: () => void }) => (
 		<div data-testid={`toast-${type}`} className="mock-toast" onClick={onClose}>
 			{message}
 			<button data-testid={`close-${type}`} onClick={onClose}>Close</button>
@@ -70,14 +70,14 @@ describe('ToastContainer', () => {
 		const { getByTestId, queryByTestId } = renderToastContainer();
 		
 		// Initially no toasts
-		expect(queryByTestId('toast-success')).not.toBeInTheDocument();
+		expect(queryByTestId('toast-info')).not.toBeInTheDocument();
 		
-		// Trigger info notification (maps to 'success' type in ToastContainer)
+		// Trigger info notification
 		fireEvent.click(getByTestId('show-info'));
 		
 		// Toast should be visible
-		expect(getByTestId('toast-success')).toBeInTheDocument();
-		expect(getByTestId('toast-success')).toHaveTextContent('Info message');
+		expect(getByTestId('toast-info')).toBeInTheDocument();
+		expect(getByTestId('toast-info')).toHaveTextContent('Info message');
 	});
 
 	it('should render a success notification when triggered', () => {
@@ -103,8 +103,8 @@ describe('ToastContainer', () => {
 		
 		fireEvent.click(getByTestId('show-error'));
 		
-		expect(getByTestId('toast-danger')).toBeInTheDocument();
-		expect(getByTestId('toast-danger')).toHaveTextContent('Error message');
+		expect(getByTestId('toast-error')).toBeInTheDocument();
+		expect(getByTestId('toast-error')).toHaveTextContent('Error message');
 	});
 
 	it('should remove notification when close button is clicked', () => {
