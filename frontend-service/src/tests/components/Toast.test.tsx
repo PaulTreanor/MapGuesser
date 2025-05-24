@@ -9,15 +9,23 @@ describe('Toast Component', () => {
 		
 		expect(screen.getByRole('alert')).toBeInTheDocument();
 		expect(screen.getByText('Operation successful')).toBeInTheDocument();
-		expect(screen.getByText('Check icon')).toBeInTheDocument();
+		expect(screen.getByText('Success')).toBeInTheDocument();
 	});
 
-	test('renders danger toast for error message', () => {
-		render(<Toast type="danger" message="Error occurred" />);
+	test('renders error toast for error message', () => {
+		render(<Toast type="error" message="Error occurred" />);
 		
 		expect(screen.getByRole('alert')).toBeInTheDocument();
 		expect(screen.getByText('Error occurred')).toBeInTheDocument();
-		expect(screen.getByText('Error icon')).toBeInTheDocument();
+		expect(screen.getByText('Error')).toBeInTheDocument();
+	});
+
+	test('renders info toast for info message', () => {
+		render(<Toast type="info" message="Info message" />);
+		
+		expect(screen.getByRole('alert')).toBeInTheDocument();
+		expect(screen.getByText('Info message')).toBeInTheDocument();
+		expect(screen.getByText('Info')).toBeInTheDocument();
 	});
 
 	test('renders warning toast for warning message', () => {
@@ -25,7 +33,7 @@ describe('Toast Component', () => {
 		
 		expect(screen.getByRole('alert')).toBeInTheDocument();
 		expect(screen.getByText('Warning message')).toBeInTheDocument();
-		expect(screen.getByText('Warning icon')).toBeInTheDocument();
+		expect(screen.getByText('Warning')).toBeInTheDocument();
 	});
 
 	test('closes toast when close button is clicked', () => {

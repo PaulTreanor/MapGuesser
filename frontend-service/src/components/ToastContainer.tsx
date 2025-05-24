@@ -16,17 +16,18 @@ const ToastContainer: React.FC = () => {
 		};
 	}, [notify]);
 
-	const mapNotificationTypeToToastType = (type: string): 'success' | 'danger' | 'warning' => {
+	const mapNotificationTypeToToastType = (type: string): 'info' | 'success' | 'warning' | 'error' => {
 		switch (type) {
+			case 'info':
+				return 'info';
 			case 'success':
 				return 'success';
-			case 'error':
-				return 'danger';
 			case 'warning':
 				return 'warning';
-			case 'info':
+			case 'error':
+				return 'error';
 			default:
-				return 'success';
+				return 'info';
 		}
 	};
 
