@@ -18,45 +18,70 @@ Prefer running unit tests because `npm run test` and playwright tests require lo
 ## Type Check Commands
 - Type check: `cd frontend-service && npm run typecheck`
 
-## Code Style Guidelines
-- Use TypeScript with strict types and proper interfaces in dedicated types/ folders
-- React components use functional style with hooks
-- Follow project structure: components/, utils/, objects/, hooks/ directories
-- Component naming: PascalCase (Game.tsx); utilities: camelCase (gameUtils.ts)
-- Import order: React, libraries, local imports
-- Test all components with proper mocking strategy 
+## JavaScript/TypeScript Guidelines
 
-## General JS/TS coding guidelines
-- Prefer immutable code (const, not let) 
-- Use ALL_CAPS naming convention for constants
-- Don't add comments to a piece of code if a reasonably competant junior engineer could just read the code and understand what it does. If a piece of code is not obvious then add a comment
+### Programming Style
+- Avoid using classes, prefer more functional code
+- Prefer immutable variables (`const` over `let`)
+- Use higher-order functions (`map`, `filter`, `reduce`, `forEach`) instead of `for` loops
+- Always use strict equality (`===`)
+- Limit line length to around 100 characters
+- Always terminate statements with a semicolon (`;`)
+
+### Naming & Comments
+- Constants: `ALL_CAPS`
+- Functions: start with a verb (e.g. `generateRoundEndTimeStamp()`)
+- Boolean state: prefix with verbs (`isLoading`, `hasError`)
+- Event handlers: prefix with `on` (e.g. `onSubmitButtonClick`)
+- File & directory names: `camelCase` for utilities, `PascalCase` for components
+- Comments: Only add if a reasonably competent junior engineer can't understand the code immediately
+
+### Formatting
 - Use tabs, not spaces
+- Include trailing commas in multi-line objects/arrays
+- Wrap long expressions rather than extending past 100 chars
 
-## Backend services 
-- When possible write code in a module testable way
-- When possible write code in a way that lends itself to being run locally quite easily
+### TypeScript Specific
+- Use TypeScript with strict types and proper interfaces in dedicated types/ folders
+- Use TS in new files: `.ts` and `.tsx`
+- Avoid `any` or `unknown` unless absolutely necessary
+- Avoid `enum`; use `const` objects or maps instead
 
-## React
-- In general seperate individual components into separate files 
-- For TS React components add types in this style: 
+## React Guidelines
+
+### Component Structure
+- React components use functional style with hooks
+- Separate individual components into separate files
+- Follow project structure: components/, utils/, objects/, hooks/ directories
+- Import order: React, libraries, local imports
+
+### Component Typing
+- Do not use the `React.FC` type for components
+- Type props at the parameter level:
 
 ```ts
-const myComponent = ({
-	myProperty
-}): {
-	myProperty: type
-} => {
+type ComponentProps = { text: string }
+
+const MyComponent = ({ text }: ComponentProps) => {
 	// rest of component 
 }
 ```
 
+### Event Handlers
+- Event handlers: prefix with `on` (e.g. `onSubmitButtonClick`)
+
 ## Styling
 - Never use inline styles
 - Use TailwindCSS to specify styles
-- Use TailwindCSS in a clean well-structured idiomatic way. ie. utilise CSS variables found in global.css
-- pay attention to frontend-service/docs for more styling information
+- Use TailwindCSS in a clean well-structured idiomatic way (utilize CSS variables found in global.css)
+- Pay attention to frontend-service/docs for more styling information
 
 ## Testing 
-- All components and utils files must have a corresponding test file in the src/tests directory. 
+- All components and utils files must have a corresponding test file in the src/tests directory
 - Tests are written in vitest for frontend and backend
 - Components are tested with vitest and React Testing Library
+- Use `try`/`catch` blocks for all asynchronous operations
+
+## Backend Services 
+- When possible write code in a module testable way
+- When possible write code in a way that lends itself to being run locally quite easily
