@@ -17,6 +17,9 @@ const roundTimerSelectionSlider = ({ onChange }: TimeSliderProps) => {
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
+        // Initially call onChange to register previous timer preference if it exists
+        onChange(savedPrefs.hasTimer, savedPrefs.roundTimeMs);
+
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);
         };
