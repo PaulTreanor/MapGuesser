@@ -9,7 +9,7 @@ app.use('*', cors({
 	origin: (origin, _c) => {
 		if (!origin) return '*'
 
-		const allowedDomains = ['localhost', '127.0.0.1', 'mapguesser.com']
+		const allowedDomains = ['localhost', '127.0.0.1', 'mapguesser.com', 'vercel.app']
 
 		try {
 			const { hostname } = new URL(origin)
