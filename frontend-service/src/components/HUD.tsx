@@ -1,18 +1,27 @@
 import React, { useEffect } from 'react'
-import type { GameState } from './types/Game.types'
-import { TopBarGameProps } from './types/TopBarGame.types'
+import type { GameState, CurrentRound } from './types/Game.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
 import { Heading, Paragraph } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
+import CountDownProgressBar from './countDownProgressBar'
 
-export default function TopBarGame({
+interface HUDProps {
+	gameState: GameState;
+	currentRound: CurrentRound;
+	roundEndTimeStamp: number | null;
+	moveToNextRound: () => void;
+	setGameState: () => void;
+}
+
+export default function HUD({
 	gameState,
 	currentRound,
+	roundEndTimeStamp,
 	moveToNextRound,
 	setGameState,
-}: TopBarGameProps) {
+}: HUDProps) {
 
 	const { status, score, rounds } = gameState
 
@@ -34,6 +43,13 @@ export default function TopBarGame({
 	return (
 		roundLocation ? (
 			<nav className="border-gray-200 pointer-events-none min-h-64">
+				{roundEndTimeStamp && (
+					<CountDownProgressBar 
+						progressBarFullTimeStamp={roundEndTimeStamp}
+						className="w-full fixed top-0 left-0 z-50"
+						isPaused={currentRound.completed}
+					/>
+				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
 						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">
@@ -59,10 +75,7 @@ export default function TopBarGame({
 					{roundNumberAsDisplayed === numberOfRoundsInGame && currentRound.completed && status !== gameStatus.FINISHED  && (
 						<Button
 							variant="mapguesserSuccess"
-							onClick={() => setGameState((prev: GameState) => ({
-								...prev,
-								status: gameStatus.FINISHED
-							}))}
+							onClick={setGameState}
 							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm"
 						>
 							Finish Game

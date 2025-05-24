@@ -1,14 +1,20 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Modal from './Modal'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
-import type { GameState } from './types/Game.types'
-import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
-import { Paragraph } from './typography/Typography'
+import { Subheading, Paragraph } from './typography/Typography'
 import { MapGuesserHeading } from './typography/MapGuesserHeading'
+import RoundTimerSelectionSlider from './roundTimerSelectionSlider'
+import { useGameStore } from '../store/gameStore'
 
+export default function StartModal({setGameState}: {setGameState: () => void}) {
+	const { setDoesGameHaveTimer, setRoundTimeMs } = useGameStore();
 
-export default function StartModal({setGameState}: {setGameState: React.Dispatch<React.SetStateAction<GameState>>}) {
+	const handleTimerChange = useCallback((hasTimer: boolean, timeMs: number) => {
+		setDoesGameHaveTimer(hasTimer);
+		setRoundTimeMs(timeMs);
+	}, [setDoesGameHaveTimer, setRoundTimeMs]);
+
 	return (
 		<Modal>
 			<MapGuesserHeading />
@@ -26,19 +32,18 @@ export default function StartModal({setGameState}: {setGameState: React.Dispatch
 			</Paragraph>
 			<br />
 			<Paragraph>
-				Please share MapGuesser with your friends if you enjoyed it!
-			</Paragraph>
-			<br />
-			<Paragraph>
 				For more of my work checkout my <a href="http://paultreanor.com" className="text-blue-800 hover:underline">website</a>.
 			</Paragraph>
 			<br />
+			<Subheading>
+				Do you want a timer for each round?
+			</Subheading>
+			<br />
+			<RoundTimerSelectionSlider onChange={handleTimerChange} />
+			<br />
 			<div className="flex justify-end mr-2">
 				<Button
-					onClick={() => setGameState((prev: GameState) => ({
-						...prev,
-						status: gameStatus.IN_PROGRESS
-					}))}
+					onClick={setGameState}
 					variant="mapguesser"
 					size="xl"
 				>

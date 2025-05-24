@@ -1,58 +1,65 @@
-import React, { useState } from 'react'
-import type { CurrentRound, GameState, Round } from './types/Game.types'
+import React, { useEffect, useCallback } from 'react'
+import type { LocationsResponse } from './types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
-import TopBarGame from './TopBarGame'
+import HUD from './HUD'
 import StartModal from './StartModal'
 import EndModal from './EndModal'
-import { indexOfFinalRound } from '../objects/gameConsts'
 import { useFetch } from '../hooks/useFetch'
+import { useRoundTimer } from '../hooks/useRoundTimer'
 import { endpoints } from '../objects/endpoints'
-
-interface LocationsResponse {
-  data: Round[];
-}
+import { useGameStore } from '../store/gameStore'
+import { useRoundStore } from '../store/roundStore'
+import { notify } from '../context/NotificationContext'
+import { MAX_SCORE } from '../objects/gameConsts'
 
 export default function Game() {
-	const [currentRound, setCurrentRound] = useState<CurrentRound>({
-		index: 0,
-		completed: false
-	});
-	const [gameState, setGameState] = useState<GameState>({
-		rounds: null,
-		score: 0,
-		status: gameStatus.NOT_STARTED
-	});
+	// Get state and actions from stores
+	const { 
+		rounds, 
+		score, 
+		status,
+		startGame,
+		finishGame, 
+		updateScore,
+		setRounds
+	} = useGameStore();
+	
+	const {
+		currentRound,
+		roundEndTimeStamp,
+		completeRound,
+		moveToNextRound
+	} = useRoundStore();
 
 	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
 	
-	// Update gameState when data is fetched
-	if (data && !gameState.rounds) {
-		setGameState(prev => ({
-			...prev,
-			rounds: data.data
-		}));
-	}
+	// Update gameState with rounds when data is fetched
+	useEffect(() => {
+		if (data?.data && !rounds) {
+			setRounds(data.data);
+		}
+	}, [data]);
+
+	const handleTimeExpired = useCallback(() => {
+		if (!currentRound.completed) {
+			notify({
+				type: 'warning',
+				message: "Time's up! Moving to the next round...",
+				duration: 5000
+			});
+			
+			handleGuess(MAX_SCORE);
+		}
+	}, [currentRound.completed]);
+
+	// Custom hook that manages round timer setup and expiration checking
+	// Automatically starts timer when round begins and calls handleTimeExpired when time runs out
+	useRoundTimer({ handleTimeExpired });
 
 	const handleGuess = (distance: number) => {
-		setGameState(prev => ({
-			...prev,
-			score: prev.score + distance
-		}))
-		setCurrentRound(prev => ({
-			...prev,
-			completed: true
-		}))
-	}
-
-	const moveToNextRound = () => {
-		if (currentRound.index === indexOfFinalRound) {
-			return
-		}
-		setCurrentRound({
-			index: currentRound.index + 1,
-			completed: false
-		})
+		updateScore(distance);
+		completeRound();
 	}
 
 	if (error || (data && data.data.length === 0)) {
@@ -62,7 +69,7 @@ export default function Game() {
 		)
 	}
 	
-	if (isPending || !gameState.rounds) {
+	if (isPending || !rounds) {
 		return (
 			<div>Loading...</div>
 		)
@@ -70,26 +77,27 @@ export default function Game() {
 
 	return (
 		<>
-			{ gameState.status === gameStatus.NOT_STARTED && 
-				<StartModal setGameState={setGameState} />
+			{ status === gameStatus.NOT_STARTED && 
+				<StartModal setGameState={startGame} />
 			}
-			{ gameState.status === gameStatus.FINISHED && 
-				<EndModal score={gameState.score} />
+			{ status === gameStatus.FINISHED && 
+				<EndModal score={score} />
 			}
 			<div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
-				{gameState.status !== gameStatus.NOT_STARTED && (
-					<TopBarGame
-						gameState={gameState}
+				{status !== gameStatus.NOT_STARTED && (
+					<HUD
+						gameState={{ rounds, score, status }}
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
-						setGameState={setGameState}
+						setGameState={finishGame}
+						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}
 				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
 					<MapboxMap
-						roundDetails={gameState.rounds[currentRound.index]}
+						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}
-						isDisabled={!gameState.rounds?.length}
+						isDisabled={!rounds?.length || currentRound.completed}
 					/>
 				</div>
 			</div>
