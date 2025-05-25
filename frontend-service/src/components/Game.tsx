@@ -46,7 +46,7 @@ export default function Game() {
 			notify({
 				type: 'warning',
 				message: "Time's up! Moving to the next round...",
-				duration: 5000000
+				duration: 5000
 			});
 			
 			handleGuess(MAX_SCORE);

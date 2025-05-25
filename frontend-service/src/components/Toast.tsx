@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
+import type { NotificationType } from '../context/NotificationContext';
 
 type ToastProps = {
-	type: 'info' | 'success' | 'warning' | 'error';
+	type: NotificationType;
 	message: string;
 	onClose?: () => void;
 };
