@@ -12,6 +12,7 @@ import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
 import { MAX_SCORE } from '../objects/gameConsts'
+import { useLoading } from '../context/LoadingContext';
 
 export default function Game() {
 	// Get state and actions from stores
@@ -33,6 +34,17 @@ export default function Game() {
 	} = useRoundStore();
 
 	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
+
+	const { setLoading } = useLoading();
+	
+	// Handle initial game data loading
+	useEffect(() => {
+		if (isPending) {
+			setLoading('gameData', true, 'Loading game locations...');
+		} else {
+			setLoading('gameData', false);
+		}
+	}, [isPending]);
 	
 	// Update gameState with rounds when data is fetched
 	useEffect(() => {
@@ -70,9 +82,8 @@ export default function Game() {
 	}
 	
 	if (isPending || !rounds) {
-		return (
-			<div>Loading...</div>
-		)
+		// LoadingOverlay handles loading display
+		return null; 
 	}
 
 	return (

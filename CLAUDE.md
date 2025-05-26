@@ -27,6 +27,8 @@ Prefer running unit tests because `npm run test` and playwright tests require lo
 - Always use strict equality (`===`)
 - Limit line length to around 100 characters
 - Always terminate statements with a semicolon (`;`)
+- Prefer defining functions with const and arrow style instead of function keyword
+- Prefer exporting exports from modules as one unified export at bottom of code file (ie. no multiple export keywords)
 
 ### Naming & Comments
 - Constants: `ALL_CAPS`
@@ -81,6 +83,7 @@ const MyComponent = ({ text }: ComponentProps) => {
 - Tests are written in vitest for frontend and backend
 - Components are tested with vitest and React Testing Library
 - Use `try`/`catch` blocks for all asynchronous operations
+- For vitest tests, use the `test` keyword instad of the `it` keyword
 
 ## Backend Services 
 - When possible write code in a module testable way

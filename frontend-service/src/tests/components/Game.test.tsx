@@ -4,6 +4,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Game from '../../components/Game';
 import { Round } from '@/components/types/Game.types';
 import * as useFetchHook from '../../hooks/useFetch';
+import { LoadingProvider } from '../../context/LoadingContext';
 
 vi.mock('../../components/MapBoxMap', () => ({
 	default: vi.fn(() => <div data-testid="mock-mapbox">🌎</div>)
@@ -11,6 +12,13 @@ vi.mock('../../components/MapBoxMap', () => ({
 
 vi.mock('../../hooks/useFetch', () => ({
 	useFetch: vi.fn()
+}));
+
+// Mock LoadingOverlay to prevent rendering issues in tests
+vi.mock('../../components/LoadingOverlay', () => ({
+	default: ({ message }: { message: string }) => (
+		<div data-testid="loading-overlay">{message}</div>
+	)
 }));
 
 const mockRounds = [
@@ -23,6 +31,14 @@ const mockResponse = {
 	error: null
 };
 
+const renderWithLoading = (component: React.ReactElement) => {
+	return render(
+		<LoadingProvider>
+			{component}
+		</LoadingProvider>
+	);
+};
+
 describe('Game Component', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -30,30 +46,30 @@ describe('Game Component', () => {
 	});
 
 	test('should render mapbox map component', async () => {
-		render(<Game/>);
+		renderWithLoading(<Game/>);
 		
 		await waitFor(() => {
-			expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
 		
 		expect(screen.getByTestId('mock-mapbox')).toBeInTheDocument();
 	});
 
 	test('should render start modal', async () => {
-		render(<Game/>);
+		renderWithLoading(<Game/>);
 		
 		await waitFor(() => {
-			expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
 
 		expect(screen.getByText('For each round, try to pinpoint the city on the map. The map supports panning and zooming.')).toBeInTheDocument();
 	});
 
 	test('should start game with Start Game! button clicked', async () => {
-		render(<Game />);
+		renderWithLoading(<Game />);
 		
 		await waitFor(() => {
-			expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
+			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
 		
 		const startButton = screen.getByRole('button', { name: 'Start Game!' });
@@ -77,7 +93,7 @@ describe('Game Component', () => {
 			error: null
 		});
 
-		render(<Game />);
+		renderWithLoading(<Game />);
 		
 		await waitFor(() => {
 			expect(screen.getByText("Error loading game data. Please try again later.")).toBeInTheDocument();
@@ -92,7 +108,7 @@ describe('Game Component', () => {
 			error: "Network error"
 		});
 
-		render(<Game />);
+		renderWithLoading(<Game />);
 		
 		expect(screen.getByText("Error loading game data. Please try again later.")).toBeInTheDocument();
 	});
@@ -104,8 +120,9 @@ describe('Game Component', () => {
 			error: null
 		});
 
-		render(<Game />);
+		renderWithLoading(<Game />);
 
-		expect(screen.getByText('Loading...')).toBeInTheDocument();
+		expect(screen.getByTestId('loading-overlay')).toBeInTheDocument();
+		expect(screen.getByText('Loading game locations...')).toBeInTheDocument();
 	});
 });
