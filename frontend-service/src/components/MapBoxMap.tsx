@@ -13,17 +13,22 @@ import {
 } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 import { Pin } from '../components/types/Game.types'
+import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
-	const currentLineIdRef = useRef<string>(''); 
+	const currentLineIdRef = useRef<string>('');
+	const { setLoading } = useLoading(); 
 
 	const initialiseMap = () => {
 		if (mapContainerRef.current === null) {
 			return null;
 		}
+
+		// Start loading when map initialization begins
+		setLoading('mapbox', true, 'Loading interactive map...');
 
 		const map = new mapboxgl.Map({
 			container: mapContainerRef.current,
@@ -36,6 +41,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 		map.on('load', () => {
 			cursorSetup(map);
 			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+			setLoading('mapbox', false);
 		});
 
 		return map;

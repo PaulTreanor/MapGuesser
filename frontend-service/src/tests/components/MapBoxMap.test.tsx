@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import React from 'react'
 import MapboxMap from '../../components/MapBoxMap'
 import { vi, describe, test, expect } from 'vitest'
+import { LoadingProvider } from '../../context/LoadingContext'
 
 vi.mock('mapbox-gl', () => ({
 	default: {
@@ -22,6 +23,21 @@ vi.mock('mapbox-gl', () => ({
 	},
 }))
 
+// Mock LoadingOverlay to prevent rendering issues in tests
+vi.mock('../../components/LoadingOverlay', () => ({
+	default: ({ message }: { message: string }) => (
+		<div data-testid="loading-overlay">{message}</div>
+	)
+}));
+
+const renderWithLoading = (component: React.ReactElement) => {
+	return render(
+		<LoadingProvider>
+			{component}
+		</LoadingProvider>
+	);
+};
+
 describe('MapboxMap', () => {
 	const mockProps = {
 		roundDetails: {
@@ -33,12 +49,12 @@ describe('MapboxMap', () => {
     }
     
     test('applies does not apply disabled class when isDisabled is false', () => {
-		const { container } = render(<MapboxMap {...mockProps} isDisabled={false} />)
+		const { container } = renderWithLoading(<MapboxMap {...mockProps} isDisabled={false} />)
 		expect(container.firstChild).not.toHaveClass('pointer-events-none')
 	})
 
 	test('applies disabled class when isDisabled is true', () => {
-		const { container } = render(<MapboxMap {...mockProps} isDisabled={true} />)
+		const { container } = renderWithLoading(<MapboxMap {...mockProps} isDisabled={true} />)
 		expect(container.firstChild).toHaveClass('pointer-events-none')
 	})
 })
