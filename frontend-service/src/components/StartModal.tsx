@@ -20,15 +20,7 @@ export default function StartModal({setGameState}: {setGameState: () => void}) {
 			<MapGuesserHeading />
 			<br />
 			<Paragraph>
-				For each round, try to pinpoint the city on the map. The map supports panning and zooming. 
-			</Paragraph>
-			<br />
-			<Paragraph>
-			Scores are based on how far your guess is from the city's real location, so lower scores are better. 
-			</Paragraph>
-			<br />
-			<Paragraph>
-				There is {numberOfRoundsInGame} rounds per game and you want your final score as close to 0 as possible, like golf.
+				For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better. 
 			</Paragraph>
 			<br />
 			<Paragraph>

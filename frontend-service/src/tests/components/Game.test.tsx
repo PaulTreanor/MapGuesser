@@ -62,7 +62,7 @@ describe('Game Component', () => {
 			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
 
-		expect(screen.getByText('For each round, try to pinpoint the city on the map. The map supports panning and zooming.')).toBeInTheDocument();
+		expect(screen.getByText("For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better.")).toBeInTheDocument();
 	});
 
 	test('should start game with Start Game! button clicked', async () => {
