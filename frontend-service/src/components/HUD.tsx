@@ -48,6 +48,7 @@ export default function HUD({
 						progressBarFullTimeStamp={roundEndTimeStamp}
 						className="w-full fixed top-0 left-0 z-50"
 						isPaused={currentRound.completed}
+						isRoundCompleted={currentRound.completed}
 					/>
 				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">

@@ -5,20 +5,23 @@ import { useProgressTimer } from '../hooks/useProgressTimer'
 interface CountDownProgressBarProps {
 	progressBarFullTimeStamp: number,
 	className?: string,
-	isPaused?: boolean
+	isPaused?: boolean,
+	isRoundCompleted?: boolean
 }
 
 const CountDownProgressBar = ({
 	progressBarFullTimeStamp,
 	className,
-	isPaused = false
+	isPaused = false,
+	isRoundCompleted = false
 }: CountDownProgressBarProps) => {
 	const [pausedTimeRemaining, setPausedTimeRemaining] = useState<number | null>(null)
 	
 	// Manages timer progress, color, and pulse state
 	const { progress, color, shouldPulse } = useProgressTimer({
 		progressBarFullTimeStamp,
-		isPaused
+		isPaused,
+		isRoundCompleted
 	})
 	
 	// When the isPaused prop changes, store the current time remaining

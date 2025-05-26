@@ -14,13 +14,14 @@ import {
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
 import { Pin } from '../components/types/Game.types'
 import { useLoading } from '../context/LoadingContext';
+
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
 	const mapContainerRef = useRef(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>('');
-	const { setLoading } = useLoading(); 
+	const { setLoading } = useLoading();
 
 	const initialiseMap = () => {
 		if (mapContainerRef.current === null) {
