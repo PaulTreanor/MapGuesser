@@ -24,7 +24,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 const DEFAULT_DURATION = 5000; // 5 seconds
 
-function notificationReducer(state: Notification[], action: NotificationAction): Notification[] {
+const notificationReducer = (state: Notification[], action: NotificationAction): Notification[] => {
 	switch (action.type) {
 		case 'ADD_NOTIFICATION':
 			return [...state, { id: action.payload.id || uuidv4(), ...action.payload }];
@@ -35,7 +35,7 @@ function notificationReducer(state: Notification[], action: NotificationAction):
 	}
 }
 
-export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 	const [notifications, dispatch] = useReducer(notificationReducer, []);
 
 	const notify = useCallback((notification: Omit<Notification, 'id'>): string => {
@@ -69,7 +69,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 	);
 };
 
-export const useNotification = (): NotificationContextType => {
+const useNotification = (): NotificationContextType => {
 	const context = useContext(NotificationContext);
 	
 	if (context === undefined) {
@@ -91,10 +91,17 @@ let globalNotify: (notification: Omit<Notification, 'id'>) => string = () => {
 	return '';
 };
 
-export const setGlobalNotify = (notifyFn: (notification: Omit<Notification, 'id'>) => string) => {
+const setGlobalNotify = (notifyFn: (notification: Omit<Notification, 'id'>) => string) => {
 	globalNotify = notifyFn;
 };
 
-export const notify = (notification: Omit<Notification, 'id'>): string => {
+const notify = (notification: Omit<Notification, 'id'>): string => {
 	return globalNotify(notification);
 };
+
+export {
+	NotificationProvider,
+	useNotification,
+	setGlobalNotify,
+	notify
+}
