@@ -95,7 +95,8 @@ export default function Game() {
 			{ status === gameStatus.FINISHED && 
 				<EndModal score={score} />
 			}
-			<div className="relative h-screen"> {/* Ensure the container fills the screen or has a defined height */}
+			{/* Ensure the container fills the screen or has a defined height */}
+			<div className="relative h-screen"> 
 				{status !== gameStatus.NOT_STARTED && (
 					<HUD
 						gameState={{ rounds, score, status }}
@@ -105,7 +106,8 @@ export default function Game() {
 						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}
-				<div className={`absolute top-0 left-0 right-0 ${MENU_BAR_HEIGHT_CLASS}`}> {/* Map container leaving space for MenuBar */}
+				{/* Map container leaving space for MenuBar */}
+				<div className={`absolute top-0 left-0 right-0 ${MENU_BAR_HEIGHT_CLASS}`}> 
 					<MapboxMap
 						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}

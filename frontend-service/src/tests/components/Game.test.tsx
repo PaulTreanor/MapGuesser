@@ -76,7 +76,6 @@ describe('Game Component', () => {
 		fireEvent.click(startButton);
 
 		expect(screen.getByTestId('mock-mapbox')).toBeInTheDocument();
-		// Game data should be rendered (location question)
 		expect(screen.getByText(/Where is/)).toBeInTheDocument();
 		expect(screen.getByText('Test Location')).toBeInTheDocument();
 

@@ -1,13 +1,13 @@
 import React from 'react';
 import { MENU_BAR_Z_INDEX } from '../objects/layoutConsts';
 import { numberOfRoundsInGame } from '../objects/gameConsts';
+import { useGameStore } from "../store/gameStore"
+import { useRoundStore } from "../store/roundStore"
 
-interface MenuBarProps {
-	score: number;
-	currentRoundIndex: number;
-}
+const MenuBar = () => {
+	const { score } = useGameStore();
+	const { currentRound } = useRoundStore();
 
-const MenuBar = ({ score, currentRoundIndex }: MenuBarProps) => {
 	const onSettingsClick = () => {
 		alert('Settings clicked');
 	};
@@ -16,7 +16,7 @@ const MenuBar = ({ score, currentRoundIndex }: MenuBarProps) => {
 		alert('About clicked');
 	};
 
-	const roundNumberAsDisplayed = currentRoundIndex + 1;
+	const roundNumberAsDisplayed = currentRound.index + 1;
 
 	return (
 		<div className={`fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm border-t border-gray-700/50 px-4 py-2 ${MENU_BAR_Z_INDEX}`}>
