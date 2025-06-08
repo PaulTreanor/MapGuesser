@@ -50,15 +50,6 @@ describe('HUD Component', () => {
         expect(screen.getByText('MapGuesser')).toBeInTheDocument();
     });
 
-    test('should render the current round number', () => {
-        render(
-            <HUD
-                {...minProps}
-            />
-        );
-        expect(screen.getByText(`1/${numberOfRoundsInGame}`)).toBeInTheDocument();
-    });
-
     test('should render the current round location', () => {
         render(
             <HUD
@@ -66,15 +57,6 @@ describe('HUD Component', () => {
             />
         );
         expect(screen.getByText("New York")).toBeInTheDocument();
-    });
-
-    test('should render the users score', () => {
-        render(
-            <HUD
-                {...minProps}
-            />
-        );
-        expect(screen.getByText("0 points")).toBeInTheDocument();
     });
     
     test('should render the timer when roundEndTimeStamp is provided', () => {

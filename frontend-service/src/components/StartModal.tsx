@@ -23,10 +23,6 @@ export default function StartModal({setGameState}: {setGameState: () => void}) {
 				For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better. 
 			</Paragraph>
 			<br />
-			<Paragraph>
-				For more of my work checkout my <a href="http://paultreanor.com" className="text-blue-800 hover:underline">website</a>.
-			</Paragraph>
-			<br />
 			<Subheading>
 				Do you want a timer for each round?
 			</Subheading>

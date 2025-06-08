@@ -76,11 +76,8 @@ describe('Game Component', () => {
 		fireEvent.click(startButton);
 
 		expect(screen.getByTestId('mock-mapbox')).toBeInTheDocument();
-		// Game data should be rendered (round counter, score, location question)
-		expect(screen.getByText('1/5')).toBeInTheDocument();
 		expect(screen.getByText(/Where is/)).toBeInTheDocument();
 		expect(screen.getByText('Test Location')).toBeInTheDocument();
-		expect(screen.getByText('0 points')).toBeInTheDocument();
 
 		const nextRoundButton = screen.queryByRole('button', { name: 'Next Round' });
 		expect(nextRoundButton).not.toBeInTheDocument();

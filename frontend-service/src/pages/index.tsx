@@ -1,17 +1,20 @@
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
 import Game from "../components/Game"
+import MenuBar from "../components/menu-bar/MenuBar"
 import favicon from "../images/favicon.ico"
 import { NotificationProvider } from "../context/NotificationContext"
 import { LoadingProvider } from "../context/LoadingContext"
 import ToastContainer from "../components/ToastContainer"
 
 const IndexPage: React.FC<PageProps> = () => {
+
   return (
     <NotificationProvider>
       <LoadingProvider>
         <main className="h-full overflow-hidden">
           <Game />
+          <MenuBar />
           <ToastContainer />
         </main>
       </LoadingProvider>
