@@ -12,7 +12,8 @@ import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
 import { MAX_SCORE } from '../objects/gameConsts'
-import { useLoading } from '../context/LoadingContext';
+import { useLoading } from '../context/LoadingContext'
+import { MENU_BAR_HEIGHT_CLASS } from '../objects/layoutConsts';
 
 export default function Game() {
 	// Get state and actions from stores
@@ -104,7 +105,7 @@ export default function Game() {
 						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}
-				<div className="absolute top-0 left-0 right-0 bottom-0"> {/* Map container filling the entire parent */}
+				<div className={`absolute top-0 left-0 right-0 ${MENU_BAR_HEIGHT_CLASS}`}> {/* Map container leaving space for MenuBar */}
 					<MapboxMap
 						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}

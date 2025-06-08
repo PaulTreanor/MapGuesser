@@ -1,17 +1,24 @@
 import * as React from "react"
 import type { HeadFC, PageProps } from "gatsby"
 import Game from "../components/Game"
+import MenuBar from "../components/MenuBar"
 import favicon from "../images/favicon.ico"
 import { NotificationProvider } from "../context/NotificationContext"
 import { LoadingProvider } from "../context/LoadingContext"
 import ToastContainer from "../components/ToastContainer"
+import { useGameStore } from "../store/gameStore"
+import { useRoundStore } from "../store/roundStore"
 
 const IndexPage: React.FC<PageProps> = () => {
+  const { score } = useGameStore();
+  const { currentRound } = useRoundStore();
+
   return (
     <NotificationProvider>
       <LoadingProvider>
         <main className="h-full overflow-hidden">
           <Game />
+          <MenuBar score={score} currentRoundIndex={currentRound.index} />
           <ToastContainer />
         </main>
       </LoadingProvider>

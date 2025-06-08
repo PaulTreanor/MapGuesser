@@ -3,9 +3,10 @@ import type { GameState, CurrentRound } from './types/Game.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'
-import { Heading, Paragraph } from './typography/Typography'
+import { Heading } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
 import CountDownProgressBar from './countDownProgressBar'
+import { MENU_BAR_HEIGHT_CLASS } from '../objects/layoutConsts'
 
 interface HUDProps {
 	gameState: GameState;
@@ -23,7 +24,7 @@ export default function HUD({
 	setGameState,
 }: HUDProps) {
 
-	const { status, score, rounds } = gameState
+	const { status, rounds } = gameState
 
 	const roundLocation = rounds?.[currentRound.index]?.location || null
 	
@@ -52,7 +53,8 @@ export default function HUD({
 				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
-						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">
+						{/* Using MENU_BAR_HEIGHT_CLASS to leave space for MenuBar */}
+						<Heading className={`z-30 mr-4 hidden md:block md:absolute md:${MENU_BAR_HEIGHT_CLASS} md:left-0 md:ml-4 md:mb-4`}>
 							🌎
 							<span className='text-shadow'> MapGuesser</span>
 						</Heading>
@@ -67,7 +69,7 @@ export default function HUD({
 							variant="mapguesserDanger"
 							onClick={moveToNextRound}
 							disabled={!currentRound.completed}
-							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm"
+							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm`}
 						>
 							Next Round
 						</Button>
@@ -76,16 +78,10 @@ export default function HUD({
 						<Button
 							variant="mapguesserSuccess"
 							onClick={setGameState}
-							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm"
+							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm`}
 						>
 							Finish Game
 						</Button>
-					)}
-					{roundNumberAsDisplayed > 0 && (
-						<div className='px-4 py-2 bg-blue-900 text-white rounded-md z-30 mt-4 sm:mt-0 absolute bottom-0 right-0 mb-6 mr-4 sm:relative sm:mb-0 sm:mr-0 shadow-slate-50 shadow-sm'>
-							<Paragraph className='z-30 text-white'>{score} points</Paragraph>
-							<Paragraph className='z-30 text-white'>{roundNumberAsDisplayed}/{numberOfRoundsInGame}</Paragraph>
-						</div>
 					)}
 				</div>
 			</nav>
