@@ -11,7 +11,7 @@ test('game run through', async ({ page }) => {
 	const locationText = await page.getByText(/Where is .+\?/);
     await expect(locationText).toBeVisible();
 
-    const firstRoundConterText = await page.getByText("1/5");
+    const firstRoundConterText = await page.getByText("Round 1/5");
     await expect(firstRoundConterText).toBeVisible();
 
 	const mapCanvas = await page.locator('.mapboxgl-canvas');
@@ -24,7 +24,7 @@ test('game run through', async ({ page }) => {
     
     // await page.waitForTimeout(1000);
 
-    const secondRoundConterText = await page.getByText("2/5");
+    const secondRoundConterText = await page.getByText("Round 2/5");
     await expect(secondRoundConterText).toBeVisible();
 
     await mapCanvas.click();
@@ -34,7 +34,7 @@ test('game run through', async ({ page }) => {
     await nextRoundButton.click();
     
 
-    const thirdRoundConterText = await page.getByText("3/5");
+    const thirdRoundConterText = await page.getByText("Round 3/5");
     await expect(thirdRoundConterText).toBeVisible();
 
     await mapCanvas.click();
@@ -43,7 +43,7 @@ test('game run through', async ({ page }) => {
 
     await nextRoundButton.click();
 
-    const fourthRoundConterText = await page.getByText("4/5");
+    const fourthRoundConterText = await page.getByText("Round 4/5");
     await expect(fourthRoundConterText).toBeVisible();
 
     await mapCanvas.click();
@@ -52,7 +52,7 @@ test('game run through', async ({ page }) => {
 
     await nextRoundButton.click();
 
-    const fifthRoundConterText = await page.getByText("5/5");
+    const fifthRoundConterText = await page.getByText("Round 5/5");
     await expect(fifthRoundConterText).toBeVisible();
 
     await mapCanvas.click();

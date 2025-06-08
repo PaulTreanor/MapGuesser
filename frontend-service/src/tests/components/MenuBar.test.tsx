@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import MenuBar from '../../components/MenuBar';
+import MenuBar from '../../components/menu-bar/MenuBar';
 import { numberOfRoundsInGame } from '../../objects/gameConsts';
 import * as gameStore from '../../store/gameStore';
 import * as roundStore from '../../store/roundStore';
@@ -24,8 +24,7 @@ describe('MenuBar Component', () => {
 
 		render(<MenuBar />);
 
-		expect(screen.getByText('Settings')).toBeInTheDocument();
-		expect(screen.getByText('About')).toBeInTheDocument();
+		expect(screen.getByText('ℹ️')).toBeInTheDocument();
 	});
 
 	test('should render score and round info starting from round 0 (displayed as round 1)', () => {

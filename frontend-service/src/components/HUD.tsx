@@ -58,7 +58,7 @@ export default function HUD({
 							🌎
 							<span className='text-shadow'> MapGuesser</span>
 						</Heading>
-						<div className="p-4 bg-blue-900 rounded-md z-30 shadow-slate-50 shadow-sm"> 
+						<div className="p-4 bg-blue-900 rounded-md z-30 shadow-gray-50 shadow-sm"> 
 							<h2 className='text-2xl text-white font-roboto'>
 								Where is <span className='font-bold'>{roundLocation}</span>?
 							</h2>
@@ -69,7 +69,7 @@ export default function HUD({
 							variant="mapguesserDanger"
 							onClick={moveToNextRound}
 							disabled={!currentRound.completed}
-							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm`}
+							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm`}
 						>
 							Next Round
 						</Button>
@@ -78,7 +78,7 @@ export default function HUD({
 						<Button
 							variant="mapguesserSuccess"
 							onClick={setGameState}
-							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-slate-50 shadow-sm`}
+							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm`}
 						>
 							Finish Game
 						</Button>
