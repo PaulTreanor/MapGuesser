@@ -6,7 +6,6 @@ import { Button } from './ui/button'
 import { Heading } from './typography/Typography'
 import { notify } from '../context/NotificationContext'
 import CountDownProgressBar from './countDownProgressBar'
-import { MENU_BAR_HEIGHT_CLASS } from '../objects/layoutConsts'
 
 interface HUDProps {
 	gameState: GameState;
@@ -53,8 +52,7 @@ export default function HUD({
 				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
-						{/* Using MENU_BAR_HEIGHT_CLASS to leave space for MenuBar */}
-						<Heading className={`z-30 mr-4 hidden md:block md:absolute md:${MENU_BAR_HEIGHT_CLASS} md:left-0 md:ml-4 md:mb-4`}>
+						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">
 							🌎
 							<span className='text-shadow'> MapGuesser</span>
 						</Heading>
@@ -69,7 +67,7 @@ export default function HUD({
 							variant="mapguesserDanger"
 							onClick={moveToNextRound}
 							disabled={!currentRound.completed}
-							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm`}
+							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm"
 						>
 							Next Round
 						</Button>
@@ -78,7 +76,7 @@ export default function HUD({
 						<Button
 							variant="mapguesserSuccess"
 							onClick={setGameState}
-							className={`pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:${MENU_BAR_HEIGHT_CLASS} sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm`}
+							className="pointer-events-auto z-30 mt-4 sm:mt-0 sm:absolute sm:bottom-0 sm:right-1/2 sm:transform sm:translate-x-1/2 sm:mb-4 shadow-gray-50 shadow-sm"
 						>
 							Finish Game
 						</Button>
