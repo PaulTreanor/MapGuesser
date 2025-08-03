@@ -6,3 +6,4 @@ src/gatsby-types.d.ts
 .env.*
 .vite/
 backend-service/locations-service/test-results/.last-run.json
+.vercel

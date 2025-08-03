@@ -17,7 +17,8 @@ import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
-	const mapContainerRef = useRef(null)
+		const WRAPPER_ID = 'map-wrapper';     
+	const mapContainerRef = useRef<HTMLElement | null>(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>('');
 	const { setLoading } = useLoading(); 
@@ -43,6 +44,12 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 			setLoading('mapbox', false);
 		});
+
+		/* ResizeObserver – resync map when wrapper changes */
+		const ro = new ResizeObserver(() => map.resize());
+		ro.observe(mapContainerRef.current);
+		
+		map.on('remove', () => ro.disconnect());
 
 		return map;
 	}
@@ -157,7 +164,8 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 	
 	return (
 		<div
-			ref={mapContainerRef}
+			id={WRAPPER_ID}                               
+			ref={mapContainerRef as unknown as React.RefObject<HTMLDivElement>}
 			className={`w-full min-h-full h-full z-10 ${isDisabled ? 'pointer-events-none' : ''}`}
 		/>
 	);
