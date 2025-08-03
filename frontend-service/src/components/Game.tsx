@@ -105,8 +105,8 @@ export default function Game() {
 						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}
-				{/* Map container filling entire parent */}
-				<div className="absolute top-0 left-0 right-0 bottom-0"> 
+				{/* Map container leaving space for MenuBar */}
+				<div className="absolute top-0 left-0 right-0 bottom-0 pb-8"> 
 					<MapboxMap
 						roundDetails={rounds[currentRound.index]}
 						handleGuess={handleGuess}
