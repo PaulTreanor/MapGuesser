@@ -17,7 +17,7 @@ import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
 const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
-		const WRAPPER_ID = 'map-wrapper';     
+	const WRAPPER_ID = 'map-wrapper';     
 	const mapContainerRef = useRef<HTMLElement | null>(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>('');
@@ -166,7 +166,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 		<div
 			id={WRAPPER_ID}                               
 			ref={mapContainerRef as unknown as React.RefObject<HTMLDivElement>}
-			className={`w-full min-h-full h-full z-10 ${isDisabled ? 'pointer-events-none' : ''}`}
+			className={`w-full min-h-full h-full ${isDisabled ? 'pointer-events-none' : ''}`}
 		/>
 	);
 };
