@@ -6,6 +6,7 @@ import { useRoundStore } from "../../store/roundStore"
 import MenuBarItem from './MenuBarItem';
 import MenuBarButtonItem from './MenuBarButtonItem';
 import AboutModal from '../AboutModal';
+import { Heading } from '../typography/Typography'
 
 const MenuBar = () => {
 	const { score } = useGameStore();
@@ -29,7 +30,9 @@ const MenuBar = () => {
 					<MenuBarButtonItem onClick={onAboutClick}>
 						<span className="text-lg">ℹ️</span>
 					</MenuBarButtonItem>
-					
+					<MenuBarItem>
+						<p className="hidden md:block font-titillium text-blue-800 font-bold">🌎 MapGuesser</p>
+					</MenuBarItem>
 					{roundNumberAsDisplayed > 0 && (
 						<MenuBarItem className="ml-auto">
 							<div className="hidden sm:block">{score} points</div>

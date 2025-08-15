@@ -52,10 +52,7 @@ export default function HUD({
 				)}
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
 					<div className="flex flex-col sm:flex-row items-center">
-						<Heading className="z-30 mr-4 hidden md:block md:absolute md:bottom-0 md:left-0 md:ml-4 md:mb-4">
-							🌎
-							<span className='text-shadow'> MapGuesser</span>
-						</Heading>
+						
 						<div className="p-4 bg-blue-900 rounded-md z-30 shadow-gray-50 shadow-sm"> 
 							<h2 className='text-2xl text-white font-roboto'>
 								Where is <span className='font-bold'>{roundLocation}</span>?

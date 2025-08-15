@@ -39,16 +39,6 @@ describe('HUD Component', () => {
         setGameState: vi.fn(),
     }
 
-    test('should render the MapGuesser icon and title', () => {
-        render(
-            <HUD
-                {...minProps}
-            />
-        );
-
-        expect(screen.getByText('🌎')).toBeInTheDocument();
-        expect(screen.getByText('MapGuesser')).toBeInTheDocument();
-    });
 
     test('should render the current round location', () => {
         render(

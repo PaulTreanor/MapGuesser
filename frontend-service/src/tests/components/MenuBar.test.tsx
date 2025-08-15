@@ -27,6 +27,15 @@ describe('MenuBar Component', () => {
 		expect(screen.getByText('ℹ️')).toBeInTheDocument();
 	});
 
+	test('should render the MapGuesser logo', () => {
+		mockUseGameStore.mockReturnValue({ score: 0 } as any);
+		mockUseRoundStore.mockReturnValue({ currentRound: { index: 0 } } as any);
+
+		render(<MenuBar />);
+
+		expect(screen.getByText('🌎 MapGuesser')).toBeInTheDocument();
+	});
+
 	test('should render score and round info starting from round 0 (displayed as round 1)', () => {
 		mockUseGameStore.mockReturnValue({ score: 0 } as any);
 		mockUseRoundStore.mockReturnValue({ currentRound: { index: 0 } } as any);
