@@ -166,7 +166,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 		<div
 			id={WRAPPER_ID}                               
 			ref={mapContainerRef as unknown as React.RefObject<HTMLDivElement>}
-			className={`w-full min-h-full h-full ${isDisabled ? 'pointer-events-none' : ''}`}
+			className={`w-full min-h-full h-full relative ${isDisabled ? 'pointer-events-none' : ''}`}
 		/>
 	);
 };
