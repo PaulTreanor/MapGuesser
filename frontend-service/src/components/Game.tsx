@@ -3,7 +3,7 @@ import type { LocationsResponse } from './types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
 import HUD from './HUD'
-import StartModal from './StartModal'
+import GameSetupModal from './game-setup-modal/GameSetupModal'
 import EndModal from './EndModal'
 import { useFetch } from '../hooks/useFetch'
 import { useRoundTimer } from '../hooks/useRoundTimer'
@@ -89,7 +89,7 @@ export default function Game() {
 	return (
 		<>
 			{ status === gameStatus.NOT_STARTED && 
-				<StartModal setGameState={startGame} />
+				<GameSetupModal setGameState={startGame} />
 			}
 			{ status === gameStatus.FINISHED && 
 				<EndModal score={score} />
