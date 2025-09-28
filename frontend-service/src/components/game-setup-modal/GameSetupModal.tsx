@@ -4,6 +4,7 @@ import { Paragraph } from '../typography/Typography'
 import { MapGuesserHeading } from '../typography/MapGuesserHeading'
 import SinglePlayerStartMenu from './SinglePlayerStartMenu'
 import SelectGameModeMenu from './SelectGameModeMenu'
+import MultiplayerMode from './MultiplayerMode'
 import { GAME_SETUP_STEPS, GameSetupStep } from '../../objects/gameSetupConsts'
 
 const getStepFromHash = (): GameSetupStep => {
@@ -40,8 +41,8 @@ export default function GameSetupModal({setGameState}: {setGameState: () => void
 		switch (currentStep) {
 			case GAME_SETUP_STEPS.SINGLE_PLAYER:
 				return <SinglePlayerStartMenu setGameState={setGameState} />;
-			// case GAME_SETUP_STEPS.START_GAME:
-			// 		return <StartGameStartMenu setGameState={setGameState} />;
+			case GAME_SETUP_STEPS.START_GAME:
+				return <MultiplayerMode />;
 			// case GAME_SETUP_STEPS.JOIN_GAME:
 			// 		return <JoinGameStartMenu setGameState={setGameState} />;
 			case GAME_SETUP_STEPS.SELECT_MODE:

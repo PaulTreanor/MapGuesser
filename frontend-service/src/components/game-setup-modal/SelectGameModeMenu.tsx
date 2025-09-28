@@ -1,4 +1,5 @@
 import React from 'react'
+import { useAuth, useClerk } from '@clerk/clerk-react'
 import { GAME_SETUP_STEPS } from '../../objects/gameSetupConsts'
 import GameModeCard from './GameModeCard'
 
@@ -20,7 +21,7 @@ const gameModeCards = [
 		id: GAME_SETUP_STEPS.START_GAME,
 		title: 'Start Multiplayer Game',
 		description: 'Create a game room and invite friends',
-		enabled: false,
+		enabled: true,
 		fragment: `#${GAME_SETUP_STEPS.START_GAME}`,
 		colorClasses: {
 			bg: 'bg-green-100',
@@ -45,10 +46,20 @@ const gameModeCards = [
 ];
 
 export default function SelectGameModeMenu() {
+	const { isSignedIn } = useAuth();
+	const { openSignIn } = useClerk();
+
 	const handleCardClick = (card: typeof gameModeCards[0]) => {
-		if (card.enabled) {
-			window.location.hash = card.fragment;
+		if (!card.enabled) return;
+		
+		if (card.id === GAME_SETUP_STEPS.START_GAME) {
+			if (!isSignedIn) {
+				openSignIn();
+				return;
+			}
 		}
+		
+		window.location.hash = card.fragment;
 	};
 
 	return (

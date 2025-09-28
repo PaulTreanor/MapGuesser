@@ -14,6 +14,12 @@ vi.mock('../../hooks/useFetch', () => ({
 	useFetch: vi.fn()
 }));
 
+// Mock Clerk hooks
+vi.mock('@clerk/clerk-react', () => ({
+	useAuth: vi.fn(() => ({ isSignedIn: false })),
+	useClerk: vi.fn(() => ({ openSignIn: vi.fn() }))
+}));
+
 // Mock LoadingOverlay to prevent rendering issues in tests
 vi.mock('../../components/LoadingOverlay', () => ({
 	default: ({ message }: { message: string }) => (

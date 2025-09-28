@@ -6,19 +6,28 @@ import favicon from "../images/favicon.ico"
 import { NotificationProvider } from "../context/NotificationContext"
 import { LoadingProvider } from "../context/LoadingContext"
 import ToastContainer from "../components/ToastContainer"
+import { ClerkProvider } from '@clerk/clerk-react'
+
+const CLERK_PUBLISHABLE_KEY = process.env.GATSBY_CLERK_PUBLISHABLE_KEY as string;
+
+if (!CLERK_PUBLISHABLE_KEY) {
+  throw new Error('Missing Clerk Publishable Key')
+}
 
 const IndexPage: React.FC<PageProps> = () => {
 
   return (
-    <NotificationProvider>
-      <LoadingProvider>
-        <main className="h-full overflow-hidden">
-          <Game />
-          <MenuBar />
-          <ToastContainer />
-        </main>
-      </LoadingProvider>
-    </NotificationProvider>
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+      <NotificationProvider>
+        <LoadingProvider>
+          <main className="h-full overflow-hidden">
+            <Game />
+            <MenuBar />
+            <ToastContainer />
+          </main>
+        </LoadingProvider>
+      </NotificationProvider>
+    </ClerkProvider>
   )
 }
 
