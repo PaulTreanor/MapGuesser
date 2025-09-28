@@ -65,16 +65,21 @@ describe('Game Component', () => {
 		expect(screen.getByText("For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better.")).toBeInTheDocument();
 	});
 
-	test('should start game with Start Game! button clicked', async () => {
+	test('should start single player game with Start Game! button clicked', async () => {
 		renderWithLoading(<Game />);
 		
 		await waitFor(() => {
 			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
-		
-		const startButton = screen.getByRole('button', { name: 'Start Game!' });
-		fireEvent.click(startButton);
 
+		const singlePlayerCardNode = screen.getByText("Single Player Game");
+		fireEvent.click(singlePlayerCardNode)
+
+		await waitFor(() => {
+			const startButton = screen.getByRole('button', { name: 'Start Game!' });
+			fireEvent.click(startButton);
+		});
+		
 		expect(screen.getByTestId('mock-mapbox')).toBeInTheDocument();
 		expect(screen.getByText(/Where is/)).toBeInTheDocument();
 		expect(screen.getByText('Test Location')).toBeInTheDocument();
