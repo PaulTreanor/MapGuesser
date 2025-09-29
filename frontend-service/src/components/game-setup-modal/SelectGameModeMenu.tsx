@@ -21,7 +21,7 @@ const gameModeCards = [
 		id: GAME_SETUP_STEPS.START_GAME,
 		title: 'Start Multiplayer Game',
 		description: 'Create a game room and invite friends',
-		enabled: true,
+		enabled: false,
 		fragment: `#${GAME_SETUP_STEPS.START_GAME}`,
 		colorClasses: {
 			bg: 'bg-green-100',
