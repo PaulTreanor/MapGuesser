@@ -1,7 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test('game run through', async ({ page }) => {
-	await page.goto('http://localhost:8000/');
+    await page.goto('http://localhost:8000/');
+    
+    const singlePlayerCard = page.getByText("Single Player Game");
+    await expect(singlePlayerCard).toBeVisible();
+
+    await singlePlayerCard.click();
 
 	const startGameButton = await page.getByRole('button', { name: 'Start Game!' });
     await expect(startGameButton).toBeVisible();

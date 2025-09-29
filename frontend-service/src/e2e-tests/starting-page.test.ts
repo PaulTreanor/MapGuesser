@@ -6,8 +6,13 @@ test('has MapGuesser title', async ({ page }) => {
 	await expect(page).toHaveTitle('MapGuesser');
 });
 
-test('start game button renders', async ({ page }) => {
+test('single player mode start game button renders', async ({ page }) => {
 	await page.goto('http://localhost:8000/');
+
+	const singlePlayerCard = page.getByText("Single Player Game");
+    await expect(singlePlayerCard).toBeVisible();
+
+    await singlePlayerCard.click();
 
 	const startGameButton = await page.getByRole('button', { name: 'Start Game!' });
 	await expect(startGameButton).toBeVisible();
