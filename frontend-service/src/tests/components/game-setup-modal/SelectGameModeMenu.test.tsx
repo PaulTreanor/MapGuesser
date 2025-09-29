@@ -1,8 +1,7 @@
 import React from 'react'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import SelectGameModeMenu from '../../../components/game-setup-modal/SelectGameModeMenu'
-import { useAuth, useClerk } from '@clerk/clerk-react'
 
 // Mock Clerk hooks
 vi.mock('@clerk/clerk-react', () => ({
@@ -29,6 +28,7 @@ describe('SelectGameModeMenu', () => {
 		expect(screen.getByText('Join an existing game room')).toBeInTheDocument();
 	});
 
+	// Commenting this out because it's not enabled right now
 	// test('if user is not logged in, dont progress start multiplayer game', () => {
 	// 	const mockOpenSignIn = vi.fn();
 	// 	vi.mocked(useAuth).mockReturnValue({ isSignedIn: false });
