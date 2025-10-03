@@ -1,7 +1,13 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
 
-const app = new Hono()
+type Bindings = {
+	CLERK_PUBLISHABLE_KEY: string;
+	CLERK_SECRET_KEY: string;
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
 
 app.use('*', cors({
 	origin: (origin, _c) => {
@@ -34,12 +40,25 @@ app.get('/health', (c) => {
 
 /**
  * POST /create-game
- * @description Creates a new multiplayer game
+ * @description Creates a new multiplayer game (requires authentication)
  */
-app.post('/create-game', async (c) => {
+app.post('/create-game', clerkMiddleware(), async (c) => {
+	const auth = getAuth(c);
+
+	if (!auth?.userId) {
+		return c.json({ error: 'Unauthorized' }, 401);
+	}
+
 	const { timer } = await c.req.json();
 
-	return c.json({ message: 'Game created', timer });
+	// TODO: Generate unique game code properly
+	const gameCode = 'ABC123';
+
+	return c.json({
+		gameCode,
+		timer,
+		userId: auth.userId,
+	});
 })
 
 /**
