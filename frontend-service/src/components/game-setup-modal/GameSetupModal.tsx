@@ -4,32 +4,54 @@ import { Paragraph } from '../typography/Typography'
 import { MapGuesserHeading } from '../typography/MapGuesserHeading'
 import SinglePlayerStartMenu from './SinglePlayerStartMenu'
 import SelectGameModeMenu from './SelectGameModeMenu'
-import MultiplayerMode from './MultiplayerMode'
+import StartMultiPlayerGameSetup from './StartMultiplayerGameSetup'
+import JoinMultiplayerGameSetup from './JoinMultiplayerGameSetup'
+import Lobby from './Lobby'
 import { GAME_SETUP_STEPS, GameSetupStep } from '../../objects/gameSetupConsts'
 
-const getStepFromHash = (): GameSetupStep => {
+/**
+ * GameSetupModal is a parent component to game setup modal menus for all
+ * game modes, including the lobby, etc. 
+ * 
+ * As the user progresses through these menus (selects mode, joins lobby, etc)
+ * those child components trigger a progression to the next component via changing
+ * the URL hash. Each hash change triggers the next step before gameplay begins.
+ * 
+ * getStepFromHash() maps the URL hash to the menu steps (these are basically stages
+ * or options). Then GameSetupModal.tsx maps those steps to specific componentsOK.
+ */
+const getStepFromHash = (): { step: GameSetupStep; gameCode?: string } => {
 	const hash = window.location.hash;
+
+	if (hash.startsWith('#lobby-')) {
+		const gameCode = hash.replace('#lobby-', '');
+		return { step: GAME_SETUP_STEPS.LOBBY, gameCode };
+	}
+
 	switch (hash) {
 		case '#single-player':
-			return GAME_SETUP_STEPS.SINGLE_PLAYER;
+			return { step: GAME_SETUP_STEPS.SINGLE_PLAYER };
 		case '#start-game':
-			return GAME_SETUP_STEPS.START_GAME;
+			return { step: GAME_SETUP_STEPS.START_GAME };
 		case '#join-game':
-			return GAME_SETUP_STEPS.JOIN_GAME;
+			return { step: GAME_SETUP_STEPS.JOIN_GAME };
 		default:
-			return GAME_SETUP_STEPS.SELECT_MODE;
+			return { step: GAME_SETUP_STEPS.SELECT_MODE };
 	}
 };
 
-export default function GameSetupModal({setGameState}: {setGameState: () => void}) {
+export default function GameSetupModal() {
 	const [currentStep, setCurrentStep] = useState<GameSetupStep>(GAME_SETUP_STEPS.SELECT_MODE);
+	const [gameCode, setGameCode] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
 		const handleHashChange = () => {
-			setCurrentStep(getStepFromHash());
+			const { step, gameCode: code } = getStepFromHash();
+			setCurrentStep(step);
+			setGameCode(code);
 		};
 
-		setCurrentStep(getStepFromHash());
+		handleHashChange()
 		window.addEventListener('hashchange', handleHashChange);
 
 		return () => {
@@ -40,11 +62,13 @@ export default function GameSetupModal({setGameState}: {setGameState: () => void
 	const renderStepContent = () => {
 		switch (currentStep) {
 			case GAME_SETUP_STEPS.SINGLE_PLAYER:
-				return <SinglePlayerStartMenu setGameState={setGameState} />;
+				return <SinglePlayerStartMenu />;
 			case GAME_SETUP_STEPS.START_GAME:
-				return <MultiplayerMode />;
-			// case GAME_SETUP_STEPS.JOIN_GAME:
-			// 		return <JoinGameStartMenu setGameState={setGameState} />;
+				return <StartMultiPlayerGameSetup />;
+			case GAME_SETUP_STEPS.JOIN_GAME:
+				return <JoinMultiplayerGameSetup />;
+			case GAME_SETUP_STEPS.LOBBY:
+				return <Lobby />;
 			case GAME_SETUP_STEPS.SELECT_MODE:
 			default:
 				return <SelectGameModeMenu />;

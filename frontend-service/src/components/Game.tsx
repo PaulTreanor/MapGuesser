@@ -20,7 +20,6 @@ export default function Game() {
 		rounds, 
 		score, 
 		status,
-		startGame,
 		finishGame, 
 		updateScore,
 		setRounds
@@ -89,7 +88,7 @@ export default function Game() {
 	return (
 		<>
 			{ status === gameStatus.NOT_STARTED && 
-				<GameSetupModal setGameState={startGame} />
+				<GameSetupModal />
 			}
 			{ status === gameStatus.FINISHED && 
 				<EndModal score={score} />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import CountDownProgressBar from '../../components/countDownProgressBar'
 
@@ -18,7 +18,9 @@ describe('CountDownProgressBar', () => {
 		render(<CountDownProgressBar progressBarFullTimeStamp={futureTimestamp} />)
 		expect(document.querySelector('[role="progressbar"]')).toBeInTheDocument()
 
-		vi.advanceTimersByTime(5000)
+		act(() => {
+			vi.advanceTimersByTime(5000)
+		})
 
 		// The progress component should still be rendered after time advances
 		expect(document.querySelector('[role="progressbar"]')).toBeInTheDocument()
