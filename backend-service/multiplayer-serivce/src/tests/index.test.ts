@@ -65,5 +65,6 @@ describe('GET /join-game', () => {
 		expect(res.status).toBe(200)
 		const json = await res.json()
 		expect(json).toHaveProperty('roomId', 'ABCDE')
+		expect(json).toHaveProperty('userId', 'user_12345678')
 	})
 })

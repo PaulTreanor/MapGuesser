@@ -8,6 +8,7 @@ const GAME_SETUP_STEPS = {
 	SINGLE_PLAYER: 'single-player',
 	START_GAME: 'start-game',
 	JOIN_GAME: 'join-game',
+	LOBBY: 'lobby',
 } as const;
 
 type GameSetupStep = typeof GAME_SETUP_STEPS[keyof typeof GAME_SETUP_STEPS];
@@ -30,7 +31,7 @@ const gameModeCards: GameModeCardType[] = [
 		id: GAME_SETUP_STEPS.START_GAME,
 		title: 'Start Multiplayer Game',
 		description: 'Create a game room and invite friends',
-		enabled: false,
+		enabled: true,
 		fragment: `#${GAME_SETUP_STEPS.START_GAME}`,
 		colorClasses: {
 			bg: 'bg-green-100',
@@ -43,7 +44,7 @@ const gameModeCards: GameModeCardType[] = [
 		id: GAME_SETUP_STEPS.JOIN_GAME,
 		title: 'Join Multiplayer Game',
 		description: 'Join an existing game room',
-		enabled: false,
+		enabled: true,
 		fragment: `#${GAME_SETUP_STEPS.JOIN_GAME}`,
 		colorClasses: {
 			bg: 'bg-violet-100',

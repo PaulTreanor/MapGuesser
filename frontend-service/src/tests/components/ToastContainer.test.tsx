@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import ToastContainer from '../../components/ToastContainer';
 import { NotificationProvider, notify } from '../../context/NotificationContext';
@@ -131,14 +131,18 @@ describe('ToastContainer', () => {
 		);
 		
 		// Should not warn when properly initialized
-		notify({ type: 'success', message: 'Test message' });
+		act(() => {
+			notify({ type: 'success', message: 'Test message' });
+		});
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
 		
 		// Unmount component to test cleanup
 		unmount();
 		
 		// Should warn after unmount
-		notify({ type: 'success', message: 'Test message' });
+		act(() => {
+			notify({ type: 'success', message: 'Test message' });
+		});
 		expect(consoleWarnSpy).toHaveBeenCalledWith('Notification system not available');
 	});
 

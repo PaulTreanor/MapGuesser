@@ -66,17 +66,17 @@ app.post('/create-game', clerkMiddleware(), async (c) => {
  * @description Resolves room data from join code
  */
 app.get('/join-game/:code', async (c) => {
-  const raw = c.req.param('code') ?? '';
-  const code = raw.trim().toUpperCase();
+	const raw = c.req.param('code') ?? '';
+	const code = raw.trim().toUpperCase();
 
-  return c.json(
-    {
-      roomId: code,
-      status: "...",
-      expiresAt: "...",
-	  wsUrl: "...",
-    }
-  );
+	return c.json({
+		roomId: code,
+		status: "...",
+		expiresAt: "...",
+		wsUrl: "...",
+		// Mocking this for now
+		userId: "user_12345678"
+	});
 })
 
 export default app
