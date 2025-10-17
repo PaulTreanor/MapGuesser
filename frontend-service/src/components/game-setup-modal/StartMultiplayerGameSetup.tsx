@@ -7,6 +7,7 @@ import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
 import { CreateGameResponse } from '../types/MultiplayerServiceApiResponse.types'
+import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
 
 
 const StartMultiPlayerGameSetup = () => {
@@ -17,7 +18,7 @@ const StartMultiPlayerGameSetup = () => {
 	const { setGameData } = useMultiplayerStore();
 
 	const { data, isPending, error } = useFetch<CreateGameResponse>(
-		'http://localhost:8788/create-game',
+		`${MULTIPLAYER_SERVICE_API_URL}/create-game`,
 		{
 			method: 'POST',
 			headers: {

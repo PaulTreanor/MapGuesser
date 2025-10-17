@@ -5,6 +5,7 @@ import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../types/MultiplayerServiceApiResponse.types'
+import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
 
 const JoinMultiplayerGameSetup = () => {
 	const [code, setCode] = useState('');
@@ -12,7 +13,8 @@ const JoinMultiplayerGameSetup = () => {
 	const { setGameData } = useMultiplayerStore();
 
 	const { data, isPending, error } = useFetch<JoinGameResponse>(
-		`http://localhost:8788/join-game/${code}`,
+		`${MULTIPLAYER_SERVICE_API_URL}/join-game/${code}`,
+		
 		{
 			enabled: shouldFetch
 		}
