@@ -57,7 +57,7 @@ app.post('/create-game', clerkMiddleware(), async (c) => {
 	return c.json({
 		gameCode,
 		timer,
-		userId: auth.userId,
+		gameOwnerId: auth.userId,
 	});
 })
 
@@ -75,7 +75,7 @@ app.get('/join-game/:code', async (c) => {
 		expiresAt: "...",
 		wsUrl: "...",
 		// Mocking this for now
-		userId: "user_12345678"
+		gameOwnerId: "user_12345678"
 	});
 })
 

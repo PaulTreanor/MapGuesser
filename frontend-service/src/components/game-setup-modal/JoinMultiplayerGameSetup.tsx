@@ -23,7 +23,7 @@ const JoinMultiplayerGameSetup = () => {
 				gameCode: data.roomId,
 				// Not sure if timer info will be available on join (probably should be)
 				timer: 0,
-				gameOwnerId: data.userId,
+				gameOwnerId: data.gameOwnerId,
 			});
 			window.location.hash = `#lobby-${data.roomId}`;
 		}

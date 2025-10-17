@@ -30,11 +30,7 @@ const StartMultiPlayerGameSetup = () => {
 
 	useEffect(() => {
 		if (data?.gameCode) {
-			setGameData({
-				gameCode: data.gameCode,
-				timer: data.timer,
-				gameOwnerId: data.userId,
-			});
+			setGameData(data);
 			window.location.hash = `#lobby-${data.gameCode}`;
 		}
 	}, [data]);

@@ -1,7 +1,7 @@
 type CreateGameResponse = {
 	gameCode: string;
 	timer: number;
-	userId: string;
+	gameOwnerId: string;
 };
 
 type JoinGameResponse = {
@@ -9,7 +9,7 @@ type JoinGameResponse = {
 	status: string;
 	expiresAt: string;
 	wsUrl: string;
-	userId: string;
+	gameOwnerId: string;
 };
 
 export type {

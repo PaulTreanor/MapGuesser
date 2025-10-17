@@ -55,7 +55,7 @@ describe('POST /create-game', () => {
 		const json = await res.json()
 		expect(json).toHaveProperty('gameCode')
 		expect(json).toHaveProperty('timer', timer)
-		expect(json).toHaveProperty('userId', 'user_123')
+		expect(json).toHaveProperty('gameOwnerId', 'user_123')
 	})
 })
 
@@ -65,6 +65,6 @@ describe('GET /join-game', () => {
 		expect(res.status).toBe(200)
 		const json = await res.json()
 		expect(json).toHaveProperty('roomId', 'ABCDE')
-		expect(json).toHaveProperty('userId', 'user_12345678')
+		expect(json).toHaveProperty('gameOwnerId', 'user_12345678')
 	})
 })

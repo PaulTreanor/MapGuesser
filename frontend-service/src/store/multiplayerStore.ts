@@ -1,29 +1,18 @@
 import { create } from 'zustand';
-
-type GameData = {
-	gameCode: string;
-	timer: number;
-	gameOwnerId: string;
-};
+import type { CreateGameResponse } from '../components/types/MultiplayerServiceApiResponse.types';
 
 interface MultiplayerStore {
-	// State
-	gameData: GameData | null;
+	gameData: CreateGameResponse | null;
 
-	// Actions
-	setGameData: (data: GameData) => void;
+	setGameData: (data: CreateGameResponse) => void;
 	clearGameData: () => void;
 }
 
 const useMultiplayerStore = create<MultiplayerStore>((set) => ({
-	// State
 	gameData: null,
 
-	// Actions
-	setGameData: (data: GameData) => set({ gameData: data }),
-
+	setGameData: (data: CreateGameResponse) => set({ gameData: data }),
 	clearGameData: () => set({ gameData: null }),
 }));
 
 export { useMultiplayerStore };
-export type { GameData };
