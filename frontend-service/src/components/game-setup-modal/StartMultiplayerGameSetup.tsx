@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Button } from '../ui/button';
-import { Subheading, Paragraph } from '../typography/Typography';
+import { Subheading } from '../typography/Typography';
 import RoundTimerSelectionSlider from '../roundTimerSelectionSlider';
 import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
+import { notify } from '../../context/NotificationContext';
 import { CreateGameResponse } from '../types/MultiplayerServiceApiResponse.types'
 
 
@@ -27,6 +28,17 @@ const StartMultiPlayerGameSetup = () => {
 			enabled: shouldFetch && authToken !== null,
 		}
 	);
+
+	useEffect(() => {
+		if (error) {
+			notify({
+				type: 'error',
+				message: `Failed to create game: ${error}`,
+				duration: 5000
+			});
+			setShouldFetch(false);
+		}
+	}, [error]);
 
 	useEffect(() => {
 		if (data?.gameCode) {
@@ -53,17 +65,6 @@ const StartMultiPlayerGameSetup = () => {
 			<br />
 			<RoundTimerSelectionSlider onChange={handleTimerChange} />
 			<br />
-
-			{error && (
-				<Paragraph className="text-red-600 text-center mb-4">{error}</Paragraph>
-			)}
-
-			{data && (
-				<Paragraph className="text-green-600 text-center mb-4">
-					{/* Will add in "no timer!" logic here eventually */}
-					Game created with {data.timer}ms timer!
-				</Paragraph>
-			)}
 
 			<div className="flex justify-end mr-2">
 				<Button

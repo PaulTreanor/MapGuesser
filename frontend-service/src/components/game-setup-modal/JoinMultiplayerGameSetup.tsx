@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
-import { Subheading, Paragraph } from '../typography/Typography';
+import { Subheading } from '../typography/Typography';
 import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
+import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../types/MultiplayerServiceApiResponse.types'
 
 const JoinMultiplayerGameSetup = () => {
@@ -16,6 +17,17 @@ const JoinMultiplayerGameSetup = () => {
 			enabled: shouldFetch
 		}
 	);
+
+	useEffect(() => {
+		if (error) {
+			notify({
+				type: 'error',
+				message: `Failed to join game: ${error}`,
+				duration: 5000
+			});
+			setShouldFetch(false);
+		}
+	}, [error]);
 
 	useEffect(() => {
 		if (data?.roomId) {
@@ -60,14 +72,6 @@ const JoinMultiplayerGameSetup = () => {
 					maxLength={6}
 					className="w-48 text-center text-3xl font-bold tracking-widest uppercase border-2 border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 				/>
-
-				{error && (
-					<Paragraph className="text-red-600">{error}</Paragraph>
-				)}
-
-				{data && (
-					<Paragraph className="text-green-600">Game found! Room ID: {data.roomId}</Paragraph>
-				)}
 
 				<Button
 					onClick={handleJoinGame}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { Heading, Subheading, Paragraph } from '../typography/Typography';
+import { Subheading, Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 
