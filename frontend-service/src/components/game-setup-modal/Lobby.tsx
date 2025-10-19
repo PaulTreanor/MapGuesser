@@ -1,17 +1,80 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Subheading, Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
+import { useGameRoom } from '../../hooks/useGameRoom';
+
+type Player = {
+	id: string;
+	name: string;
+	isHost: boolean;
+};
+
+type GameRoomMessage = {
+	type: string;
+	[key: string]: unknown;
+};
 
 const Lobby = () => {
 	const { user, isSignedIn } = useUser();
 	const { gameData } = useMultiplayerStore();
+	const [players, setPlayers] = useState<Player[]>([]);
 
 	const hash = window.location.hash;
 	const gameCode = hash.replace('#lobby-', '');
 
 	const isGameOwner = isSignedIn && user?.id === gameData?.gameOwnerId;
+
+	const handleMessage = useCallback((message: GameRoomMessage) => {
+		console.log('Lobby received message:', message);
+
+		switch (message.type) {
+			case 'connected':
+				console.log('Connected to game room');
+				break;
+			case 'player_joined':
+				// TODO: Update players list when implemented
+				break;
+			case 'player_left':
+				// TODO: Update players list when implemented
+				break;
+			default:
+				break;
+		}
+	}, []);
+
+	const { connectionStatus } = useGameRoom({
+		gameCode,
+		enabled: !!gameCode,
+		onMessage: handleMessage,
+	});
+
+	const getConnectionStatusColor = () => {
+		switch (connectionStatus) {
+			case 'connected':
+				return 'bg-green-100 text-green-800 border-green-300';
+			case 'connecting':
+				return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+			case 'error':
+				return 'bg-red-100 text-red-800 border-red-300';
+			default:
+				return 'bg-gray-100 text-gray-800 border-gray-300';
+		}
+	};
+
+	const getConnectionStatusText = () => {
+		switch (connectionStatus) {
+			case 'connected':
+				return '● Connected';
+			case 'connecting':
+				return '○ Connecting...';
+			case 'error':
+				return '✕ Connection Error';
+			default:
+				return '○ Disconnected';
+		}
+	};
 
 	return (
 		<div>
@@ -21,6 +84,11 @@ const Lobby = () => {
 				</Subheading>
 				<div className="text-center text-4xl font-bold tracking-widest text-blue-800">
 					{gameCode}
+				</div>
+				<div className="flex justify-center mt-4">
+					<div className={`px-3 py-1 rounded-full border text-sm font-medium ${getConnectionStatusColor()}`}>
+						{getConnectionStatusText()}
+					</div>
 				</div>
 			</div>
 
