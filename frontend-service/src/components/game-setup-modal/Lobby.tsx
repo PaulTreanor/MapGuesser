@@ -19,7 +19,7 @@ type GameRoomMessage = {
 };
 
 const Lobby = () => {
-	const { user, isSignedIn } = useUser();
+	const { user, isSignedIn, isLoaded } = useUser();
 	const { gameData } = useMultiplayerStore();
 	const [players, setPlayers] = useState<Player[]>([]);
 	const hasJoinedRef = useRef(false);
@@ -69,8 +69,9 @@ const Lobby = () => {
 	});
 
 	// Send player join message when connected (only once per connection)
+	// Wait for Clerk to load before identifying the user
 	useEffect(() => {
-		if (connectionStatus === 'connected' && !hasJoinedRef.current) {
+		if (connectionStatus === 'connected' && isLoaded && !hasJoinedRef.current) {
 			const identity = getPlayerIdentity(isSignedIn ? user : undefined);
 
 			console.log('Sending player_join:', identity);
@@ -84,7 +85,7 @@ const Lobby = () => {
 			// Reset when disconnected so we can rejoin if reconnecting
 			hasJoinedRef.current = false;
 		}
-	}, [connectionStatus, isSignedIn, user, sendMessage]);
+	}, [connectionStatus, isLoaded, isSignedIn, user, sendMessage]);
 
 	const handleStartGame = () => {
 		console.log('Host starting game...');
