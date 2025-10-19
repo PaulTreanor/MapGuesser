@@ -114,6 +114,17 @@ export class GameRoom extends DurableObject {
 					this.broadcastPlayerList();
 					break;
 
+				case 'game_start':
+					console.log('Game starting...');
+
+					// Broadcast game start to all players
+					this.broadcast({
+						type: 'game_starting',
+						message: 'The game is starting!',
+						timestamp: Date.now()
+					});
+					break;
+
 				default:
 					// Echo unknown messages back to sender
 					ws.send(JSON.stringify({
@@ -148,7 +159,7 @@ export class GameRoom extends DurableObject {
 	/**
 	 * Handle WebSocket error events
 	 */
-	async webSocketError(ws: WebSocket, error: unknown): Promise<void> {
+	async webSocketError(_ws: WebSocket, error: unknown): Promise<void> {
 		console.error('WebSocket error:', error);
 
 		// Broadcast updated player list

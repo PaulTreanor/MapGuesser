@@ -5,6 +5,7 @@ import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { useGameRoom } from '../../hooks/useGameRoom';
 import { getPlayerIdentity } from '../../utils/guestIdentity';
+import { notify } from '../../context/NotificationContext';
 
 type Player = {
 	playerId: string;
@@ -47,6 +48,15 @@ const Lobby = () => {
 			case 'player_left':
 				console.log('Player left:', message);
 				break;
+			case 'game_starting':
+				console.log('Game is starting!');
+				notify({
+					type: 'success',
+					message: 'Game is starting! 🎮',
+					duration: 3000
+				});
+				// TODO: Transition to game screen
+				break;
 			default:
 				break;
 		}
@@ -75,6 +85,13 @@ const Lobby = () => {
 			hasJoinedRef.current = false;
 		}
 	}, [connectionStatus, isSignedIn, user, sendMessage]);
+
+	const handleStartGame = () => {
+		console.log('Host starting game...');
+		sendMessage({
+			type: 'game_start',
+		});
+	};
 
 	const getConnectionStatusColor = () => {
 		switch (connectionStatus) {
@@ -168,6 +185,8 @@ const Lobby = () => {
 					<Button
 						variant="mapguesser"
 						size="xl"
+						onClick={handleStartGame}
+						disabled={connectionStatus !== 'connected'}
 					>
 						Start Game
 					</Button>
