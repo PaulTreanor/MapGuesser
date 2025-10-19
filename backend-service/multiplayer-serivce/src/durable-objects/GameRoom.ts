@@ -1,5 +1,11 @@
 import { DurableObject } from 'cloudflare:workers';
 
+type Player = {
+	playerId: string;
+	playerName: string;
+	isGuest: boolean;
+};
+
 /**
  * GameRoom Durable Object
  *
@@ -7,11 +13,11 @@ import { DurableObject } from 'cloudflare:workers';
  * Manages WebSocket connections and broadcasts messages to all connected players.
  */
 export class GameRoom extends DurableObject {
-	private sessions: Set<WebSocket>;
+	private sessions: Map<WebSocket, Player>;
 
 	constructor(state: DurableObjectState, env: unknown) {
 		super(state, env);
-		this.sessions = new Set();
+		this.sessions = new Map();
 	}
 
 	/**
@@ -31,8 +37,12 @@ export class GameRoom extends DurableObject {
 		// Accept the WebSocket connection
 		this.ctx.acceptWebSocket(server);
 
-		// Add to our set of sessions
-		this.sessions.add(server);
+		// Add to our map of sessions (player info will be added when they send player_join message)
+		this.sessions.set(server, {
+			playerId: 'unknown',
+			playerName: 'Unknown',
+			isGuest: true
+		});
 
 		// Send welcome message
 		server.send(JSON.stringify({
@@ -49,6 +59,25 @@ export class GameRoom extends DurableObject {
 	}
 
 	/**
+	 * Get list of all players
+	 */
+	private getPlayersList(): Player[] {
+		return Array.from(this.sessions.values());
+	}
+
+	/**
+	 * Broadcast player list update to all clients
+	 */
+	private broadcastPlayerList(): void {
+		const players = this.getPlayersList();
+		this.broadcast({
+			type: 'players_update',
+			players,
+			playerCount: players.length
+		});
+	}
+
+	/**
 	 * Handle incoming WebSocket messages
 	 */
 	async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
@@ -58,19 +87,31 @@ export class GameRoom extends DurableObject {
 
 			console.log('Received message:', data);
 
-			// Echo the message back to the sender
-			ws.send(JSON.stringify({
-				type: 'echo',
-				data,
-				timestamp: Date.now()
-			}));
+			// Handle different message types
+			switch (data.type) {
+				case 'player_join':
+					// Update player info for this connection
+					this.sessions.set(ws, {
+						playerId: data.playerId,
+						playerName: data.playerName,
+						isGuest: data.isGuest
+					});
 
-			// Broadcast to all other connected clients
-			this.broadcast({
-				type: 'player_message',
-				data,
-				timestamp: Date.now()
-			}, ws);
+					// Broadcast updated player list to all
+					this.broadcastPlayerList();
+
+					console.log(`Player joined: ${data.playerName} (${data.playerId})`);
+					break;
+
+				default:
+					// Echo unknown messages back to sender
+					ws.send(JSON.stringify({
+						type: 'echo',
+						data,
+						timestamp: Date.now()
+					}));
+					break;
+			}
 
 		} catch (error) {
 			console.error('Error handling message:', error);
@@ -85,16 +126,13 @@ export class GameRoom extends DurableObject {
 	 * Handle WebSocket close events
 	 */
 	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): Promise<void> {
-		console.log('WebSocket closed:', { code, reason, wasClean });
-		this.sessions.delete(ws);
-		ws.close(code, reason);
+		const player = this.sessions.get(ws);
+		console.log('WebSocket closed:', { code, reason, wasClean, player: player?.playerName });
 
-		// Notify other players
-		this.broadcast({
-			type: 'player_left',
-			timestamp: Date.now(),
-			activeConnections: this.sessions.size
-		});
+		this.sessions.delete(ws);
+
+		// Broadcast updated player list to remaining connections
+		this.broadcastPlayerList();
 	}
 
 	/**
@@ -103,7 +141,9 @@ export class GameRoom extends DurableObject {
 	async webSocketError(ws: WebSocket, error: unknown): Promise<void> {
 		console.error('WebSocket error:', error);
 		this.sessions.delete(ws);
-		ws.close(1011, 'WebSocket error');
+
+		// Broadcast updated player list
+		this.broadcastPlayerList();
 	}
 
 	/**
@@ -112,13 +152,13 @@ export class GameRoom extends DurableObject {
 	private broadcast(message: object, exclude?: WebSocket): void {
 		const messageStr = JSON.stringify(message);
 
-		for (const session of this.sessions) {
-			if (session !== exclude) {
+		for (const [ws] of this.sessions) {
+			if (ws !== exclude) {
 				try {
-					session.send(messageStr);
+					ws.send(messageStr);
 				} catch (error) {
 					console.error('Error broadcasting to session:', error);
-					this.sessions.delete(session);
+					this.sessions.delete(ws);
 				}
 			}
 		}

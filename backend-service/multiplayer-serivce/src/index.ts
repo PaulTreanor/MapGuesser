@@ -53,8 +53,8 @@ app.post('/create-game', clerkMiddleware(), async (c) => {
 
 	const { timer } = await c.req.json();
 
-	// TODO: Generate unique game code properly
-	const gameCode = 'ABC123';
+	// Generate unique 6-character game code
+	const gameCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
 	return c.json({
 		gameCode,

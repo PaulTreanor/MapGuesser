@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Subheading, Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { useGameRoom } from '../../hooks/useGameRoom';
+import { getPlayerIdentity } from '../../utils/guestIdentity';
 
 type Player = {
-	id: string;
-	name: string;
-	isHost: boolean;
+	playerId: string;
+	playerName: string;
+	isGuest: boolean;
 };
 
 type GameRoomMessage = {
@@ -20,6 +21,7 @@ const Lobby = () => {
 	const { user, isSignedIn } = useUser();
 	const { gameData } = useMultiplayerStore();
 	const [players, setPlayers] = useState<Player[]>([]);
+	const hasJoinedRef = useRef(false);
 
 	const hash = window.location.hash;
 	const gameCode = hash.replace('#lobby-', '');
@@ -33,22 +35,46 @@ const Lobby = () => {
 			case 'connected':
 				console.log('Connected to game room');
 				break;
+			case 'players_update':
+				console.log('Players update received:', message.players);
+				if (Array.isArray(message.players)) {
+					setPlayers(message.players as Player[]);
+				}
+				break;
 			case 'player_joined':
-				// TODO: Update players list when implemented
+				console.log('Player joined:', message);
 				break;
 			case 'player_left':
-				// TODO: Update players list when implemented
+				console.log('Player left:', message);
 				break;
 			default:
 				break;
 		}
 	}, []);
 
-	const { connectionStatus } = useGameRoom({
+	const { connectionStatus, sendMessage } = useGameRoom({
 		gameCode,
 		enabled: !!gameCode,
 		onMessage: handleMessage,
 	});
+
+	// Send player join message when connected (only once per connection)
+	useEffect(() => {
+		if (connectionStatus === 'connected' && !hasJoinedRef.current) {
+			const identity = getPlayerIdentity(isSignedIn ? user : undefined);
+
+			console.log('Sending player_join:', identity);
+			sendMessage({
+				type: 'player_join',
+				...identity,
+			});
+
+			hasJoinedRef.current = true;
+		} else if (connectionStatus === 'disconnected') {
+			// Reset when disconnected so we can rejoin if reconnecting
+			hasJoinedRef.current = false;
+		}
+	}, [connectionStatus, isSignedIn, user, sendMessage]);
 
 	const getConnectionStatusColor = () => {
 		switch (connectionStatus) {
@@ -98,12 +124,42 @@ const Lobby = () => {
 
 			<div className="border-t border-gray-200 pt-6 mb-6">
 				<Subheading className="mb-4">
-					Players in lobby:
+					Players in lobby: {players.length}
 				</Subheading>
 				<div className="bg-gray-50 rounded-lg p-4 min-h-[100px]">
-					<Paragraph className="text-gray-500 text-center">
-						Waiting for players to join...
-					</Paragraph>
+					{players.length === 0 ? (
+						<Paragraph className="text-gray-500 text-center">
+							Waiting for players to join...
+						</Paragraph>
+					) : (
+						<div className="space-y-2">
+							{players.map((player) => (
+								<div
+									key={player.playerId}
+									className="flex items-center justify-between bg-white rounded-lg p-3 border border-gray-200"
+								>
+									<div className="flex items-center gap-3">
+										<div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+											{player.playerName.charAt(0).toUpperCase()}
+										</div>
+										<span className="font-medium">{player.playerName}</span>
+									</div>
+									<div className="flex items-center gap-2">
+										{player.isGuest && (
+											<span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+												Guest
+											</span>
+										)}
+										{player.playerId === gameData?.gameOwnerId && (
+											<span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded font-medium">
+												Host
+											</span>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+					)}
 				</div>
 			</div>
 
