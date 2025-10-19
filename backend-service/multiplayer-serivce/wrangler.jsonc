@@ -2,7 +2,21 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "multiplayer-serivce",
   "main": "src/index.ts",
-  "compatibility_date": "2025-09-30"
+  "compatibility_date": "2025-09-30",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "GAME_ROOM",
+        "class_name": "GameRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["GameRoom"]
+    }
+  ]
   // "compatibility_flags": [
   //   "nodejs_compat"
   // ],

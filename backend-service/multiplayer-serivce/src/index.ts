@@ -1,10 +1,12 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
+import { GameRoom } from './durable-objects/GameRoom'
 
 type Bindings = {
 	CLERK_PUBLISHABLE_KEY: string;
 	CLERK_SECRET_KEY: string;
+	GAME_ROOM: DurableObjectNamespace<GameRoom>;
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -79,4 +81,26 @@ app.get('/join-game/:code', async (c) => {
 	});
 })
 
+/**
+ * GET /ws/:gameCode
+ * @description WebSocket endpoint for connecting to a game room
+ */
+app.get('/ws/:gameCode', async (c) => {
+	const gameCode = c.req.param('gameCode')?.toUpperCase();
+
+	if (!gameCode) {
+		return c.json({ error: 'Game code required' }, 400);
+	}
+
+	// Get the Durable Object ID for this game code
+	const id = c.env.GAME_ROOM.idFromName(gameCode);
+
+	// Get the Durable Object stub
+	const stub = c.env.GAME_ROOM.get(id);
+
+	// Forward the request to the Durable Object
+	return stub.fetch(c.req.raw);
+})
+
 export default app
+export { GameRoom }
