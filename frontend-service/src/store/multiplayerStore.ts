@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { CreateGameResponse } from '../components/types/MultiplayerServiceApiResponse.types';
+import type { CreateGameResponse } from '../types/MultiplayerServiceApiResponse.types';
 
 interface MultiplayerStore {
 	gameData: CreateGameResponse | null;

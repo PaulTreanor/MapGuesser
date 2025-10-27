@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { gameStatus } from '../objects/gameStatuses'
-import type { GameStatus, Round } from '../components/types/Game.types'
+import type { GameStatus, Round } from '../types/Game.types'
 
 interface GameStore {
 	// Game state

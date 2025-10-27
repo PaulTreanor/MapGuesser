@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from 'react'
-import type { LocationsResponse } from './types/Game.types'
+import type { LocationsResponse } from '../types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
 import HUD from './HUD'
@@ -7,7 +7,7 @@ import GameSetupModal from './game-setup-modal/GameSetupModal'
 import EndModal from './EndModal'
 import { useFetch } from '../hooks/useFetch'
 import { useRoundTimer } from '../hooks/useRoundTimer'
-import { endpoints } from '../objects/endpoints'
+import { buildLocationsApiEndpoint } from '../utils/endpointUtils'
 import { useGameStore } from '../store/gameStore'
 import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
@@ -32,7 +32,9 @@ export default function Game() {
 		moveToNextRound
 	} = useRoundStore();
 
-	const { data, isPending, error } = useFetch<LocationsResponse>(endpoints.locations.random);
+	const locationsApiEndpoint = buildLocationsApiEndpoint(5);
+
+	const { data, isPending, error } = useFetch<LocationsResponse>(locationsApiEndpoint);
 
 	const { setLoading } = useLoading();
 	

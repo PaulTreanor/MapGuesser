@@ -12,7 +12,20 @@ type JoinGameResponse = {
 	gameOwnerId: string;
 };
 
+type Player = {
+	playerId: string;
+	playerName: string;
+	isGuest: boolean;
+};
+
+type GameRoomMessage = {
+	type: string;
+	[key: string]: unknown;
+};
+
 export type {
 	CreateGameResponse,
 	JoinGameResponse,
+	Player,
+	GameRoomMessage,
 }

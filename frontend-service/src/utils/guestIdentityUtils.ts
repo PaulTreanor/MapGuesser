@@ -1,28 +1,21 @@
 /**
  * Utilities for managing guest player identity
+ * Guest identities persisted in localStorage.
+ * Account identities use Clerk
  */
 
 const GUEST_ID_KEY = 'mapguesser_guest_id';
 const GUEST_NAME_KEY = 'mapguesser_guest_name';
 
-/**
- * Generate a random guest ID
- */
 const generateGuestId = (): string => {
 	return `guest_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
 };
 
-/**
- * Generate a random guest name
- */
 const generateGuestName = (): string => {
 	const randomNum = Math.floor(Math.random() * 9999);
 	return `Guest_${randomNum.toString().padStart(4, '0')}`;
 };
 
-/**
- * Get or create a guest ID (persisted in localStorage)
- */
 const getGuestId = (): string => {
 	let guestId = localStorage.getItem(GUEST_ID_KEY);
 
@@ -34,9 +27,6 @@ const getGuestId = (): string => {
 	return guestId;
 };
 
-/**
- * Get or create a guest name (persisted in localStorage)
- */
 const getGuestName = (): string => {
 	let guestName = localStorage.getItem(GUEST_NAME_KEY);
 
@@ -48,17 +38,11 @@ const getGuestName = (): string => {
 	return guestName;
 };
 
-/**
- * Clear guest identity from localStorage
- */
 const clearGuestIdentity = (): void => {
 	localStorage.removeItem(GUEST_ID_KEY);
 	localStorage.removeItem(GUEST_NAME_KEY);
 };
 
-/**
- * Get player identity (Clerk user or guest)
- */
 const getPlayerIdentity = (clerkUser?: { id: string; fullName?: string | null }): {
 	playerId: string;
 	playerName: string;
@@ -80,6 +64,8 @@ const getPlayerIdentity = (clerkUser?: { id: string; fullName?: string | null })
 };
 
 export {
+	generateGuestId,
+	generateGuestName,
 	getGuestId,
 	getGuestName,
 	getPlayerIdentity,

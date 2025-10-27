@@ -2,7 +2,7 @@ import React from 'react'
 import { useAuth, useClerk } from '@clerk/clerk-react'
 import { GAME_SETUP_STEPS, gameModeCards } from '../../objects/gameSetupConsts'
 import GameModeCard from './GameModeCard'
-import type { GameModeCardType } from '../types/GameSetupModal.types'
+import type { GameModeCardType } from '../../types/GameSetupModal.types'
 
 export default function SelectGameModeMenu() {
 	const { isSignedIn } = useAuth();

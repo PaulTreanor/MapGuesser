@@ -4,7 +4,7 @@ import { Subheading } from '../typography/Typography';
 import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
-import type { JoinGameResponse } from '../types/MultiplayerServiceApiResponse.types'
+import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types'
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
 
 const JoinMultiplayerGameSetup = () => {

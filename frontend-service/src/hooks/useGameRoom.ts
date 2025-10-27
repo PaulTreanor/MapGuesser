@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MULTIPLAYER_SERVICE_API_URL } from '../objects/endpoints';
+import { getMultiplayerServiceWebsocketsUrl } from '../utils/endpointUtils';
 
 type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 
@@ -70,13 +70,12 @@ export const useGameRoom = ({
 		setConnectionStatus('connecting');
 
 		// Determine WebSocket URL based on environment
-		const wsProtocol = MULTIPLAYER_SERVICE_API_URL.startsWith('https') ? 'wss' : 'ws';
-		const wsBaseUrl = MULTIPLAYER_SERVICE_API_URL.replace(/^https?:\/\//, '');
-		const wsUrl = `${wsProtocol}://${wsBaseUrl}/ws/${gameCode.toUpperCase()}`;
+		const wsUrl = getMultiplayerServiceWebsocketsUrl();
+		const wsGameCodeUrl = `${wsUrl}${gameCode.toUpperCase()}`
 
-		console.log('Connecting to game room:', wsUrl);
+		console.log('Connecting to game room:', wsGameCodeUrl);
 
-		const ws = new WebSocket(wsUrl);
+		const ws = new WebSocket(wsGameCodeUrl);
 		wsRef.current = ws;
 
 		ws.onopen = () => {

@@ -1,5 +1,5 @@
 import { zoomLevels } from '../objects/zoomLevels';
-import { Pin } from '../components/types/Game.types'
+import { Pin } from '../types/Game.types'
 import { emojiForDistances } from '../utils/mapUtils';
 
 const cursorSetup = (map: mapboxgl.Map) => {

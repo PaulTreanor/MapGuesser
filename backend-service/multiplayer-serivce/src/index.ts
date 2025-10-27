@@ -2,12 +2,8 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
 import { GameRoom } from './durable-objects/GameRoom'
-
-type Bindings = {
-	CLERK_PUBLISHABLE_KEY: string;
-	CLERK_SECRET_KEY: string;
-	GAME_ROOM: DurableObjectNamespace<GameRoom>;
-}
+import { Bindings } from './index.types'
+import { generateGameCode } from './multiplayerUtils'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -52,9 +48,7 @@ app.post('/create-game', clerkMiddleware(), async (c) => {
 	}
 
 	const { timer } = await c.req.json();
-
-	// Generate unique 6-character game code
-	const gameCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+	const gameCode = generateGameCode();
 
 	return c.json({
 		gameCode,
@@ -76,7 +70,7 @@ app.get('/join-game/:code', async (c) => {
 		status: "...",
 		expiresAt: "...",
 		wsUrl: "...",
-		// Mocking this for now
+		// Harcode this for now
 		gameOwnerId: "user_12345678"
 	});
 })
@@ -92,13 +86,9 @@ app.get('/ws/:gameCode', async (c) => {
 		return c.json({ error: 'Game code required' }, 400);
 	}
 
-	// Get the Durable Object ID for this game code
 	const id = c.env.GAME_ROOM.idFromName(gameCode);
-
-	// Get the Durable Object stub
 	const stub = c.env.GAME_ROOM.get(id);
 
-	// Forward the request to the Durable Object
 	return stub.fetch(c.req.raw);
 })
 
