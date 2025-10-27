@@ -39,14 +39,11 @@ const StartMultiPlayerGameSetup = () => {
 			});
 			setShouldFetch(false);
 		}
-	}, [error]);
-
-	useEffect(() => {
 		if (data?.gameCode) {
 			setGameData(data);
 			window.location.hash = `#lobby-${data.gameCode}`;
 		}
-	}, [data]);
+	}, [error, data]);
 
 	const handleTimerChange = (hasTimer: boolean, timeMs: number) => {
 		setTimer(timeMs);

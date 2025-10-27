@@ -1,19 +1,17 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { useGameRoom } from '../../hooks/useGameRoom';
 import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
-import { notify } from '../../context/NotificationContext';
+import { ConnectionStatus } from '../../objects/connectionStatuses';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
-import type { Player, GameRoomMessage } from '../../types/MultiplayerServiceApiResponse.types';
 
 const Lobby = () => {
 	const { user, isSignedIn, isLoaded } = useUser();
-	const { gameData } = useMultiplayerStore();
-	const [players, setPlayers] = useState<Player[]>([]);
+	const { gameData, players, setPlayers } = useMultiplayerStore();
 	const hasJoinedRef = useRef(false);
 
 	const hash = window.location.hash;
@@ -21,47 +19,12 @@ const Lobby = () => {
 
 	const isGameOwner = isSignedIn && user?.id === gameData?.gameOwnerId;
 
-	const handleMessage = useCallback((message: GameRoomMessage) => {
-
-		switch (message.type) {
-			case 'connected':
-				console.log('[Lobby] Connected to game room');
-				break;
-			case 'players_update':
-				if (Array.isArray(message.players)) {
-					setPlayers(message.players as Player[]);
-				}
-				break;
-			case 'player_joined':
-				console.log('Player joined:', message);
-				break;
-			case 'player_left':
-				console.log('Player left:', message);
-				break;
-			case 'game_starting':
-				console.log('Game is starting!');
-				notify({
-					type: 'success',
-					message: 'Game is starting!',
-					duration: 3000
-				});
-				// TODO: Transition to game screen
-				break;
-			default:
-				break;
-		}
-	}, []);
-
-	const { connectionStatus, sendMessage } = useGameRoom({
-		gameCode,
-		enabled: !!gameCode,
-		onMessage: handleMessage,
-	});
+	const { connectionStatus, sendMessage } = useGameRoom({ gameCode, setPlayers });
 
 	// Send player join message when connected (only once per connection)
 	// Wait for Clerk to load before identifying the user
 	useEffect(() => {
-		if (connectionStatus === 'connected' && isLoaded && !hasJoinedRef.current) {
+		if (connectionStatus === ConnectionStatus.CONNECTED && isLoaded && !hasJoinedRef.current) {
 			const identity = getPlayerIdentity(isSignedIn ? user : undefined);
 
 			sendMessage({
@@ -70,11 +33,11 @@ const Lobby = () => {
 			});
 
 			hasJoinedRef.current = true;
-		} else if (connectionStatus === 'disconnected') {
+		} else if (connectionStatus === ConnectionStatus.DISCONNECTED) {
 			// Reset when disconnected so we can rejoin if reconnecting
 			hasJoinedRef.current = false;
 		}
-	}, [connectionStatus, isLoaded, isSignedIn, user, sendMessage]);
+	}, [connectionStatus, isLoaded, isSignedIn, user]);
 
 	const handleStartGame = () => {
 		sendMessage({
@@ -98,7 +61,7 @@ const Lobby = () => {
 						variant="mapguesser"
 						size="xl"
 						onClick={handleStartGame}
-						disabled={connectionStatus !== 'connected'}
+						disabled={connectionStatus !== ConnectionStatus.CONNECTED}
 					>
 						Start Game
 					</Button>

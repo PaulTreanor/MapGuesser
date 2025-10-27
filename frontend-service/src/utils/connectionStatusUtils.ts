@@ -1,25 +1,26 @@
-import type { ConnectionStatus } from "@/types/ConnectionStatus.types";
+import { ConnectionStatus } from '../objects/connectionStatuses';
+import type { ConnectionStatusValue } from '../objects/connectionStatuses';
 
-const getConnectionStatusColor = (status: ConnectionStatus): string => {
+const getConnectionStatusColor = (status: ConnectionStatusValue): string => {
 	switch (status) {
-		case 'connected':
+		case ConnectionStatus.CONNECTED:
 			return 'bg-green-100 text-green-800 border-green-300';
-		case 'connecting':
+		case ConnectionStatus.CONNECTING:
 			return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-		case 'error':
+		case ConnectionStatus.ERROR:
 			return 'bg-red-100 text-red-800 border-red-300';
 		default:
 			return 'bg-gray-100 text-gray-800 border-gray-300';
 	}
 };
 
-const getConnectionStatusText = (status: ConnectionStatus): string => {
+const getConnectionStatusText = (status: ConnectionStatusValue): string => {
 	switch (status) {
-		case 'connected':
+		case ConnectionStatus.CONNECTED:
 			return '● Connected';
-		case 'connecting':
+		case ConnectionStatus.CONNECTING:
 			return '○ Connecting...';
-		case 'error':
+		case ConnectionStatus.ERROR:
 			return '✕ Connection Error';
 		default:
 			return '○ Disconnected';

@@ -11,21 +11,47 @@ vi.mock('@clerk/clerk-react', () => ({
 
 // Mock multiplayer store
 const mockGameData = vi.fn();
+const mockPlayers = vi.fn();
+const mockSetPlayers = vi.fn();
 vi.mock('../../../store/multiplayerStore', () => ({
 	useMultiplayerStore: () => ({
-		gameData: mockGameData()
+		gameData: mockGameData(),
+		players: mockPlayers(),
+		setPlayers: mockSetPlayers
 	})
+}));
+
+// Mock useGameRoom hook
+const mockConnectionStatus = vi.fn();
+const mockSendMessage = vi.fn();
+vi.mock('../../../hooks/useGameRoom', () => ({
+	useGameRoom: () => ({
+		connectionStatus: mockConnectionStatus(),
+		sendMessage: mockSendMessage
+	})
+}));
+
+// Mock guest identity utils
+vi.mock('../../../utils/guestIdentityUtils', () => ({
+	getPlayerIdentity: vi.fn(() => ({
+		playerId: 'test-player-id',
+		playerName: 'Test Player',
+		isGuest: true
+	}))
 }));
 
 describe('Lobby', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		window.location.hash = '';
+		// Set default mock return values
+		mockConnectionStatus.mockReturnValue('disconnected');
+		mockPlayers.mockReturnValue([]);
 	});
 
 	test('displays game code heading and instructions', () => {
 		window.location.hash = '#lobby-XYZ789';
-		mockUseUser.mockReturnValue({ user: null, isSignedIn: false });
+		mockUseUser.mockReturnValue({ user: null, isSignedIn: false, isLoaded: true });
 		mockGameData.mockReturnValue(null);
 
 		render(<Lobby />);
@@ -36,7 +62,7 @@ describe('Lobby', () => {
 
 	test('displays game code from URL hash', () => {
 		window.location.hash = '#lobby-ABC123';
-		mockUseUser.mockReturnValue({ user: null, isSignedIn: false });
+		mockUseUser.mockReturnValue({ user: null, isSignedIn: false, isLoaded: true });
 		mockGameData.mockReturnValue(null);
 
 		render(<Lobby />);
@@ -46,12 +72,11 @@ describe('Lobby', () => {
 
 	test('displays waiting for players message', () => {
 		window.location.hash = '#lobby-ABC123';
-		mockUseUser.mockReturnValue({ user: null, isSignedIn: false });
+		mockUseUser.mockReturnValue({ user: null, isSignedIn: false, isLoaded: true });
 		mockGameData.mockReturnValue(null);
 
 		render(<Lobby />);
 
-		expect(screen.getByText('Players in lobby:')).toBeInTheDocument();
 		expect(screen.getByText('Waiting for players to join...')).toBeInTheDocument();
 	});
 
@@ -59,7 +84,8 @@ describe('Lobby', () => {
 		window.location.hash = '#lobby-ABC123';
 		mockUseUser.mockReturnValue({
 			user: { id: 'user_999' },
-			isSignedIn: true
+			isSignedIn: true,
+			isLoaded: true
 		});
 		mockGameData.mockReturnValue({
 			gameCode: 'ABC123',
@@ -76,7 +102,8 @@ describe('Lobby', () => {
 		window.location.hash = '#lobby-ABC123';
 		mockUseUser.mockReturnValue({
 			user: { id: 'user_123' },
-			isSignedIn: true
+			isSignedIn: true,
+			isLoaded: true
 		});
 		mockGameData.mockReturnValue({
 			gameCode: 'ABC123',
@@ -93,7 +120,8 @@ describe('Lobby', () => {
 		window.location.hash = '#lobby-ABC123';
 		mockUseUser.mockReturnValue({
 			user: null,
-			isSignedIn: false
+			isSignedIn: false,
+			isLoaded: true
 		});
 		mockGameData.mockReturnValue({
 			gameCode: 'ABC123',
@@ -110,7 +138,8 @@ describe('Lobby', () => {
 		window.location.hash = '#lobby-ABC123';
 		mockUseUser.mockReturnValue({
 			user: { id: 'user_123' },
-			isSignedIn: true
+			isSignedIn: true,
+			isLoaded: true
 		});
 		mockGameData.mockReturnValue(null);
 

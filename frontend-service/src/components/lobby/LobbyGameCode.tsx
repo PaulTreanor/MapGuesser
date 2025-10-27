@@ -1,11 +1,11 @@
 import React from 'react';
 import { Subheading } from '../typography/Typography';
 import { getConnectionStatusColor, getConnectionStatusText } from '../../utils/connectionStatusUtils';
-import type { ConnectionStatus } from '../../types/ConnectionStatus.types';
+import type { ConnectionStatusValue } from '../../objects/connectionStatuses';
 
 type LobbyGameCodeProps = {
 	gameCode: string;
-	connectionStatus: ConnectionStatus;
+	connectionStatus: ConnectionStatusValue;
 };
 
 const LobbyGameCode = ({ gameCode, connectionStatus }: LobbyGameCodeProps) => {
