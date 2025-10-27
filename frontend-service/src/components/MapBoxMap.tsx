@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import type { MapboxMapProps } from './types/MapBoxMap.types';
+import type { MapboxMapProps } from '../types/MapBoxMap.types';
 import { calculateKm } from '../utils/mapUtils';
 import {
 	cursorSetup,
@@ -12,7 +12,7 @@ import {
 	resetMapZoomAndCenter
 } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
-import { Pin } from '../components/types/Game.types'
+import { Pin } from '../types/Game.types'
 import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 

@@ -1,16 +1,18 @@
 /**
  * API endpoints configuration
  * 
- * Uses environment variables to determine the base URL:
- * - GATSBY_API_URL: Base URL for the backend API
+ * Uses .env.local, .env.development, and .env.production
  */
 
-const API_URL = process.env.GATSBY_API_URL || 'https://locations-service.treanorpaul9.workers.dev';
+const LOCATIONS_SERVICE_API_URL =
+	process.env.GATSBY_LOCATIONS_SERVICE_API_URL
+	|| 'https://locations-service.treanorpaul9.workers.dev';
 
-const endpoints = {
-	locations: {
-		random: `${API_URL}/locations/random?count=5`
-	}
+const MULTIPLAYER_SERVICE_API_URL =
+	process.env.GATSBY_MULTIPLAYER_SERVICE_API_URL
+	|| 'https://multiplayer-serivce.treanorpaul9.workers.dev';
+
+export {
+	LOCATIONS_SERVICE_API_URL,
+	MULTIPLAYER_SERVICE_API_URL,
 }
-
-export { endpoints }

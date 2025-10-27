@@ -12,7 +12,8 @@ Testing uses Vitest, React Testing Library, and Playwright.
   - `.env.local` - For development with local backend APIs
 - Required environment variables:
   - `GATSBY_MAPBOX_ACCESS_TOKEN` - MapBox public key
-  - `GATSBY_API_URL` - Base URL for backend APIs
+  - `GATSBY_LOCATIONS_SERVICE_API_URL` - Base URL for location-service API
+  - `GATSBY_MULTIPLAYER_SERVICE_API_URL` - Base URL for multiplayer-service API
 
 ### Install dependencies and run local server
 
@@ -35,6 +36,9 @@ Make sure your backend services are running:
 cd ../backend-service/locations-service
 npm run dev
 # API runs on http://localhost:8787
+cd ../backend-service/multiplayer-serivce
+npm run dev
+# API runs on http://localhost:8788
 ```
 
 ### Issues

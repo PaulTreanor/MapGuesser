@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { CurrentRound } from '../components/types/Game.types'
+import type { CurrentRound } from '../types/Game.types'
 
 interface RoundStore {
 	// Current round state

@@ -1,4 +1,4 @@
-import type { GameModeCardType } from '../components/types/GameSetupModal.types'
+import type { GameModeCardType } from '../types/GameSetupModal.types'
 
 // These are the names of the steps in the very simple game mode "state machine"
 // in GameSetupModal.tsx and also the name of the URL fragment for the corresponding game modes
@@ -8,6 +8,7 @@ const GAME_SETUP_STEPS = {
 	SINGLE_PLAYER: 'single-player',
 	START_GAME: 'start-game',
 	JOIN_GAME: 'join-game',
+	LOBBY: 'lobby',
 } as const;
 
 type GameSetupStep = typeof GAME_SETUP_STEPS[keyof typeof GAME_SETUP_STEPS];

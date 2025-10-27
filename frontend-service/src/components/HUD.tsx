@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import type { GameState, CurrentRound } from './types/Game.types'
+import type { GameState, CurrentRound } from '../types/Game.types'
 import { numberOfRoundsInGame } from '../objects/gameConsts'
 import { gameStatus } from '../objects/gameStatuses'
 import { Button } from './ui/button'

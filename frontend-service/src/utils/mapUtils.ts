@@ -1,4 +1,4 @@
-import { Pin } from '../components/types/Game.types';
+import { Pin } from '../types/Game.types';
 import { distance } from '@turf/distance';
 import { cityBufferKm } from '../objects/gameConsts';
 

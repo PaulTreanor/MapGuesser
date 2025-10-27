@@ -4,8 +4,8 @@ import { Subheading } from '../typography/Typography'
 import RoundTimerSelectionSlider from '../roundTimerSelectionSlider'
 import { useGameStore } from '../../store/gameStore'
 
-export default function SinglePlayerStartMenu({setGameState}: {setGameState: () => void}) {
-	const { setDoesGameHaveTimer, setRoundTimeMs } = useGameStore();
+export default function SinglePlayerStartMenu() {
+	const { setDoesGameHaveTimer, setRoundTimeMs, startGame } = useGameStore();
 
 	const handleTimerChange = useCallback((hasTimer: boolean, timeMs: number) => {
 		setDoesGameHaveTimer(hasTimer);
@@ -22,7 +22,7 @@ export default function SinglePlayerStartMenu({setGameState}: {setGameState: () 
 			<br />
 			<div className="flex justify-end mr-2">
 				<Button
-					onClick={setGameState}
+					onClick={startGame}
 					variant="mapguesser"
 					size="xl"
 				>

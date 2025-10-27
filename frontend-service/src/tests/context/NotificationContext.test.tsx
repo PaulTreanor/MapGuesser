@@ -147,15 +147,15 @@ describe('NotificationContext', () => {
 
 	it('should register global notify function', () => {
 		const consoleWarnSpy = vi.spyOn(console, 'warn');
-		
+
 		// Global notify should show warning before initialization
 		notify({ type: 'info', message: 'Before init' });
 		expect(consoleWarnSpy).toHaveBeenCalledWith('Notification system not initialized yet');
-		
+
 		// Test Component that sets up the global notify
 		const GlobalNotifyTest = () => {
 			const { notify } = useNotification();
-			
+
 			React.useEffect(() => {
 				setGlobalNotify(notify);
 				return () => {
@@ -165,24 +165,26 @@ describe('NotificationContext', () => {
 					});
 				};
 			}, [notify]);
-			
+
 			return <div data-testid="global-test">Global Notify Test</div>;
 		};
-		
+
 		const { unmount } = render(
 			<NotificationProvider>
 				<GlobalNotifyTest />
 			</NotificationProvider>
 		);
-		
+
 		// After rendering, global notify should be initialized
 		consoleWarnSpy.mockClear();
-		notify({ type: 'success', message: 'After init' });
+		act(() => {
+			notify({ type: 'success', message: 'After init' });
+		});
 		expect(consoleWarnSpy).not.toHaveBeenCalled();
-		
+
 		// Unmount to test cleanup
 		unmount();
-		
+
 		// After unmount, global notify should warn again
 		notify({ type: 'error', message: 'After unmount' });
 		expect(consoleWarnSpy).toHaveBeenCalledWith('Notification system not available');
