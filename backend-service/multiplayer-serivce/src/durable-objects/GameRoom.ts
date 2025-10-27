@@ -44,7 +44,10 @@ export class GameRoom extends DurableObject {
 
 	private getPlayersList(): Player[] {
 		const webSockets = this.ctx.getWebSockets();
-		return webSockets.map(ws => {
+		// Only include WebSockets that are in OPEN state (readyState === 1)
+		// This filters out connections that are CLOSING (2) or CLOSED (3)
+		const activeWebSockets = webSockets.filter(ws => ws.readyState === WebSocket.OPEN);
+		return activeWebSockets.map(ws => {
 			const player = ws.deserializeAttachment() as Player | undefined;
 			return player || { playerId: 'unknown', playerName: 'Unknown', isGuest: true };
 		});
@@ -104,7 +107,9 @@ export class GameRoom extends DurableObject {
 		}
 	}
 
-	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): Promise<void> {
+	async webSocketClose(ws: WebSocket, code: number, _reason: string, wasClean: boolean): Promise<void> {
+		const player = ws.deserializeAttachment() as Player | undefined;
+		console.log(`[GameRoom] WebSocket closed. Player: ${player?.playerName} (${player?.playerId}), Code: ${code}, Clean: ${wasClean}`);
 		this.broadcastPlayerList();
 	}
 

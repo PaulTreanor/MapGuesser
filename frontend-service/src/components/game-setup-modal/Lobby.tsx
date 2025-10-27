@@ -25,10 +25,9 @@ const Lobby = () => {
 
 		switch (message.type) {
 			case 'connected':
-				console.log('Connected to game room');
+				console.log('[Lobby] Connected to game room');
 				break;
 			case 'players_update':
-				console.log('Players update received:', message.players);
 				if (Array.isArray(message.players)) {
 					setPlayers(message.players as Player[]);
 				}
