@@ -3,12 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, test, expect, vi, beforeEach } from 'vitest'
 import GameSetupModal from '../../../components/game-setup-modal/GameSetupModal'
 
-// Mock Clerk hooks
-vi.mock('@clerk/clerk-react', () => ({
-	useAuth: vi.fn(() => ({ isSignedIn: false })),
-	useClerk: vi.fn(() => ({ openSignIn: vi.fn() }))
-}));
-
 // Mock game store
 const mockStartGame = vi.fn();
 vi.mock('../../../store/gameStore', () => ({
@@ -28,16 +22,16 @@ vi.mock('../../../components/game-setup-modal/SinglePlayerStartMenu', () => ({
 	)
 }));
 
-vi.mock('../../../components/game-setup-modal/StartMultiPlayerGameSetup', () => ({
-	default: () => <div data-testid="multiplayer-mode">Multiplayer Mode</div>
+vi.mock('../../../components/game-setup-modal/StartMultiplayerGameSetup', () => ({
+        default: () => <div data-testid="multiplayer-mode">Multiplayer Mode</div>
 }));
 
 describe('GameSetupModal', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-		// Reset hash
-		window.location.hash = '';
-	});
+        beforeEach(() => {
+                mockStartGame.mockReset();
+                // Reset hash
+                window.location.hash = '';
+        });
 
 	test('renders modal with heading and description', () => {
 		render(<GameSetupModal />);

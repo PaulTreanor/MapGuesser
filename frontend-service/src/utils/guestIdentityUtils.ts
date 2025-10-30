@@ -1,7 +1,6 @@
 /**
  * Utilities for managing guest player identity
  * Guest identities persisted in localStorage.
- * Account identities use Clerk
  */
 
 const GUEST_ID_KEY = 'mapguesser_guest_id';
@@ -43,23 +42,15 @@ const clearGuestIdentity = (): void => {
 	localStorage.removeItem(GUEST_NAME_KEY);
 };
 
-const getPlayerIdentity = (clerkUser?: { id: string; fullName?: string | null }): {
-	playerId: string;
-	playerName: string;
-	isGuest: boolean;
+const getPlayerIdentity = (): {
+        playerId: string;
+        playerName: string;
+        isGuest: boolean;
 } => {
-	if (clerkUser?.id) {
-		return {
-			playerId: clerkUser.id,
-			playerName: clerkUser.fullName || 'Player',
-			isGuest: false,
-		};
-	}
-
-	return {
-		playerId: getGuestId(),
-		playerName: getGuestName(),
-		isGuest: true,
+        return {
+                playerId: getGuestId(),
+                playerName: getGuestName(),
+                isGuest: true,
 	};
 };
 

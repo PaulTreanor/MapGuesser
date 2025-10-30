@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useUser } from '@clerk/clerk-react';
+import React, { useEffect, useRef } from 'react';
 import { Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
@@ -10,38 +9,37 @@ import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
 
 const Lobby = () => {
-	const { user, isSignedIn, isLoaded } = useUser();
-	const { gameData, players, setPlayers } = useMultiplayerStore();
-	const hasJoinedRef = useRef(false);
+        const { gameData, players, setPlayers } = useMultiplayerStore();
+        const hasJoinedRef = useRef(false);
+        const playerIdentityRef = useRef(getPlayerIdentity());
 
-	const hash = window.location.hash;
-	const gameCode = hash.replace('#lobby-', '');
+        const hash = window.location.hash;
+        const gameCode = hash.replace('#lobby-', '');
 
-	const isGameOwner = isSignedIn && user?.id === gameData?.gameOwnerId;
+        const isGameOwner = gameData?.gameOwnerId === playerIdentityRef.current.playerId;
 
-	const { connectionStatus, sendMessage } = useGameRoom({ gameCode, setPlayers });
+        const { connectionStatus, sendMessage } = useGameRoom({ gameCode, setPlayers });
 
-	// Send player join message when connected (only once per connection)
-	// Wait for Clerk to load before identifying the user
-	useEffect(() => {
-		if (connectionStatus === ConnectionStatus.CONNECTED && isLoaded && !hasJoinedRef.current) {
-			const identity = getPlayerIdentity(isSignedIn ? user : undefined);
+        // Send player join message when connected (only once per connection)
+        useEffect(() => {
+                if (connectionStatus === ConnectionStatus.CONNECTED && !hasJoinedRef.current) {
+                        const identity = playerIdentityRef.current;
 
-			sendMessage({
-				type: 'player_join',
-				...identity,
-			});
+                        sendMessage({
+                                type: 'player_join',
+                                ...identity,
+                        });
 
-			hasJoinedRef.current = true;
-		} else if (connectionStatus === ConnectionStatus.DISCONNECTED) {
-			// Reset when disconnected so we can rejoin if reconnecting
-			hasJoinedRef.current = false;
-		}
-	}, [connectionStatus, isLoaded, isSignedIn, user]);
+                        hasJoinedRef.current = true;
+                } else if (connectionStatus === ConnectionStatus.DISCONNECTED) {
+                        // Reset when disconnected so we can rejoin if reconnecting
+                        hasJoinedRef.current = false;
+                }
+        }, [connectionStatus, sendMessage]);
 
-	const handleStartGame = () => {
-		sendMessage({
-			type: 'game_start',
+        const handleStartGame = () => {
+                sendMessage({
+                        type: 'game_start',
 		});
 	};
 

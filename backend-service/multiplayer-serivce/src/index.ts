@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
 import { GameRoom } from './durable-objects/GameRoom'
 import { Bindings } from './index.types'
 import { generateGameCode } from './multiplayerUtils'
@@ -38,23 +37,22 @@ app.get('/health', (c) => {
 
 /**
  * POST /create-game
- * @description Creates a new multiplayer game (requires authentication)
+ * @description Creates a new multiplayer game (host identity supplied by client)
  */
-app.post('/create-game', clerkMiddleware(), async (c) => {
-	const auth = getAuth(c);
+app.post('/create-game', async (c) => {
+        const { timer, hostId } = await c.req.json();
 
-	if (!auth?.userId) {
-		return c.json({ error: 'Unauthorized' }, 401);
-	}
+        if (!hostId) {
+                return c.json({ error: 'Host identity required' }, 400);
+        }
 
-	const { timer } = await c.req.json();
-	const gameCode = generateGameCode();
+        const gameCode = generateGameCode();
 
-	return c.json({
-		gameCode,
-		timer,
-		gameOwnerId: auth.userId,
-	});
+        return c.json({
+                gameCode,
+                timer,
+                gameOwnerId: hostId,
+        });
 })
 
 /**

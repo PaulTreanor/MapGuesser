@@ -16,14 +16,14 @@ Simple health check endpoint that returns a status response.
 ```
 
 ### POST /create-game
-Creates a new multiplayer game. Requires authentication via Clerk.
-
-**Authentication:** Required (Clerk JWT token in `Authorization` header)
+Creates a new multiplayer game. The client supplies the host identity so the
+creator can be marked as the lobby host.
 
 **Request Body:**
 ```json
 {
-  "timer": 60000
+  "timer": 60000,
+  "hostId": "guest_123456"
 }
 ```
 
@@ -36,8 +36,7 @@ Creates a new multiplayer game. Requires authentication via Clerk.
 }
 ```
 
-**Error Responses:**
-- `401 Unauthorized`: Missing or invalid authentication token
+- `400 Bad Request`: Missing `hostId`
 
 ### GET /join-game/:code
 Resolves room data from a join code.
@@ -100,15 +99,6 @@ After connecting, clients should send a `player_join` message to register:
 
 ## Development
 
-**Add env vars**
-
-Create `.dev.vars` file in multiplayer-service directory root. Add keys:
-
-```bash
-CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-```
-
 **Run service**
 ```bash
 npm install
@@ -116,15 +106,7 @@ npm run dev
 # available at http://localhost:8788
 ```
 
-## Deployment 
-
-**Add env vars to Cloudflare**
-
-Run these commands and add the keys:
-```bash
-wrangler secret put CLERK_PUBLISHABLE_KEY
-wrangler secret put CLERK_SECRET_KEY
-```
+## Deployment
 
 **Deploy service**
 ```bash
