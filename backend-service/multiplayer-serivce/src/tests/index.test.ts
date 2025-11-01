@@ -1,5 +1,40 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, beforeEach, vi } from 'vitest'
 import app from '../index'
+
+// Mock environment with GAME_ROOM Durable Object
+const mockEnv = {
+	GAME_ROOM: {
+		idFromName: vi.fn((name: string) => name),
+		get: vi.fn(() => ({
+			fetch: vi.fn(async (url: string, options?: RequestInit) => {
+				const urlObj = new URL(url);
+
+				if (options?.method === 'POST' && urlObj.pathname === '/initialize') {
+					return new Response(JSON.stringify({ success: true }), {
+						headers: { 'Content-Type': 'application/json' }
+					});
+				}
+
+				if (options?.method === 'GET' && urlObj.pathname === '/metadata') {
+					// Return mock metadata - in real scenario this would be from storage
+					const body = options?.method === 'POST' ? await new Request(url, options).json() : null;
+					return new Response(JSON.stringify({
+						gameOwnerId: 'guest_123',
+						timer: 60
+					}), {
+						headers: { 'Content-Type': 'application/json' }
+					});
+				}
+
+				return new Response('Not found', { status: 404 });
+			})
+		}))
+	}
+};
+
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('GET /health', () => {
 	test('should return status ok', async () => {
@@ -19,7 +54,7 @@ describe('POST /create-game', () => {
                         headers: {
                                 'Content-Type': 'application/json',
                         },
-                })
+                }, mockEnv)
 
                 expect(res.status).toBe(400)
                 const json = await res.json()
@@ -35,7 +70,7 @@ describe('POST /create-game', () => {
                         headers: {
                                 'Content-Type': 'application/json',
                         },
-                })
+                }, mockEnv)
 
                 expect(res.status).toBe(200)
                 const json = await res.json()
@@ -47,10 +82,10 @@ describe('POST /create-game', () => {
 
 describe('GET /join-game', () => {
 	test('should return roomId in object', async () => {
-		const res = await app.request('/join-game/abcde')
+		const res = await app.request('/join-game/abcde', {}, mockEnv)
 		expect(res.status).toBe(200)
 		const json = await res.json()
 		expect(json).toHaveProperty('roomId', 'ABCDE')
-		expect(json).toHaveProperty('gameOwnerId', 'user_12345678')
+		expect(json).toHaveProperty('gameOwnerId', 'guest_123')
 	})
 })

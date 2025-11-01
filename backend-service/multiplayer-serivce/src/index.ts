@@ -48,6 +48,15 @@ app.post('/create-game', async (c) => {
 
         const gameCode = generateGameCode();
 
+        // Initialize the GameRoom with host information
+        const id = c.env.GAME_ROOM.idFromName(gameCode);
+        const stub = c.env.GAME_ROOM.get(id);
+        await stub.fetch('http://internal/initialize', {
+                method: 'POST',
+                body: JSON.stringify({ gameOwnerId: hostId, timer }),
+                headers: { 'Content-Type': 'application/json' }
+        });
+
         return c.json({
                 gameCode,
                 timer,
@@ -63,13 +72,20 @@ app.get('/join-game/:code', async (c) => {
 	const raw = c.req.param('code') ?? '';
 	const code = raw.trim().toUpperCase();
 
+	// Fetch metadata from the GameRoom
+	const id = c.env.GAME_ROOM.idFromName(code);
+	const stub = c.env.GAME_ROOM.get(id);
+	const metadataResponse = await stub.fetch('http://internal/metadata', {
+		method: 'GET'
+	});
+	const metadata = await metadataResponse.json() as { gameOwnerId: string | null; timer: number | null };
+
 	return c.json({
 		roomId: code,
 		status: "...",
 		expiresAt: "...",
 		wsUrl: "...",
-		// Harcode this for now
-		gameOwnerId: "user_12345678"
+		gameOwnerId: metadata.gameOwnerId
 	});
 })
 

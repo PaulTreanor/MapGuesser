@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
@@ -7,14 +7,41 @@ import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
 import { ConnectionStatus } from '../../objects/connectionStatuses';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
+import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints';
+import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types';
 
 const Lobby = () => {
-        const { gameData, players, setPlayers } = useMultiplayerStore();
+        const { gameData, players, setPlayers, setGameData } = useMultiplayerStore();
         const hasJoinedRef = useRef(false);
         const playerIdentityRef = useRef(getPlayerIdentity());
+        const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
 
         const hash = window.location.hash;
         const gameCode = hash.replace('#lobby-', '');
+
+        // Fetch game metadata if we don't have it (e.g., direct URL navigation)
+        useEffect(() => {
+                const fetchGameMetadata = async () => {
+                        if (!gameData && gameCode && !isFetchingMetadata) {
+                                setIsFetchingMetadata(true);
+                                try {
+                                        const response = await fetch(`${MULTIPLAYER_SERVICE_API_URL}/join-game/${gameCode}`);
+                                        const data = await response.json() as JoinGameResponse;
+                                        setGameData({
+                                                gameCode: data.roomId,
+                                                timer: 0,
+                                                gameOwnerId: data.gameOwnerId,
+                                        });
+                                } catch (error) {
+                                        console.error('Failed to fetch game metadata:', error);
+                                } finally {
+                                        setIsFetchingMetadata(false);
+                                }
+                        }
+                };
+
+                fetchGameMetadata();
+        }, [gameData, gameCode, isFetchingMetadata, setGameData]);
 
         const isGameOwner = gameData?.gameOwnerId === playerIdentityRef.current.playerId;
 
