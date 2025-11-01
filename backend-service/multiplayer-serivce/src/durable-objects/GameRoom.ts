@@ -83,10 +83,13 @@ export class GameRoom extends DurableObject {
 		// Only include WebSockets that are in OPEN state (readyState === 1)
 		// This filters out connections that are CLOSING (2) or CLOSED (3)
 		const activeWebSockets = webSockets.filter(ws => ws.readyState === WebSocket.OPEN);
-		return activeWebSockets.map(ws => {
-			const player = ws.deserializeAttachment() as Player | undefined;
-			return player || { playerId: 'unknown', playerName: 'Unknown', isGuest: true };
-		});
+		return activeWebSockets
+			.map(ws => {
+				const player = ws.deserializeAttachment() as Player | undefined;
+				return player || { playerId: 'unknown', playerName: 'Unknown', isGuest: true };
+			})
+			// Filter out unknown players - these are connections that haven't sent player_join yet
+			.filter(player => player.playerId !== 'unknown');
 	}
 
 	private broadcastPlayerList(): void {
