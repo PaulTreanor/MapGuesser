@@ -1,5 +1,5 @@
 type Bindings = {
-        GAME_ROOM: DurableObjectNamespace;
+    GAME_ROOM: DurableObjectNamespace;
 }
 
 export {

@@ -17,7 +17,6 @@ const mockEnv = {
 
 				if (options?.method === 'GET' && urlObj.pathname === '/metadata') {
 					// Return mock metadata - in real scenario this would be from storage
-					const body = options?.method === 'POST' ? await new Request(url, options).json() : null;
 					return new Response(JSON.stringify({
 						gameOwnerId: 'guest_123',
 						timer: 60
@@ -46,38 +45,38 @@ describe('GET /health', () => {
 })
 
 describe('POST /create-game', () => {
-        test('should return 400 when host identity missing', async () => {
-                const timer = 60
-                const res = await app.request('/create-game', {
-                        method: 'POST',
-                        body: JSON.stringify({ timer }),
-                        headers: {
-                                'Content-Type': 'application/json',
-                        },
-                }, mockEnv)
+	test('should return 400 when host identity missing', async () => {
+		const timer = 60
+		const res = await app.request('/create-game', {
+			method: 'POST',
+			body: JSON.stringify({ timer }),
+			headers: {
+					'Content-Type': 'application/json',
+			},
+		}, mockEnv)
 
-                expect(res.status).toBe(400)
-                const json = await res.json()
-                expect(json).toHaveProperty('error', 'Host identity required')
-        })
+		expect(res.status).toBe(400)
+		const json = await res.json()
+		expect(json).toHaveProperty('error', 'Host identity required')
+	})
 
-        test('should create a game with timer and return gameCode when host identity provided', async () => {
-                const timer = 60
-                const hostId = 'guest_123'
-                const res = await app.request('/create-game', {
-                        method: 'POST',
-                        body: JSON.stringify({ timer, hostId }),
-                        headers: {
-                                'Content-Type': 'application/json',
-                        },
-                }, mockEnv)
+	test('should create a game with timer and return gameCode when host identity provided', async () => {
+		const timer = 60
+		const hostId = 'guest_123'
+		const res = await app.request('/create-game', {
+			method: 'POST',
+			body: JSON.stringify({ timer, hostId }),
+			headers: {
+					'Content-Type': 'application/json',
+			},
+		}, mockEnv)
 
-                expect(res.status).toBe(200)
-                const json = await res.json()
-                expect(json).toHaveProperty('gameCode')
-                expect(json).toHaveProperty('timer', timer)
-                expect(json).toHaveProperty('gameOwnerId', hostId)
-        })
+		expect(res.status).toBe(200)
+		const json = await res.json()
+		expect(json).toHaveProperty('gameCode')
+		expect(json).toHaveProperty('timer', timer)
+		expect(json).toHaveProperty('gameOwnerId', hostId)
+	})
 })
 
 describe('GET /join-game', () => {

@@ -23,15 +23,15 @@ vi.mock('../../../components/game-setup-modal/SinglePlayerStartMenu', () => ({
 }));
 
 vi.mock('../../../components/game-setup-modal/StartMultiplayerGameSetup', () => ({
-        default: () => <div data-testid="multiplayer-mode">Multiplayer Mode</div>
+	default: () => <div data-testid="multiplayer-mode">Multiplayer Mode</div>
 }));
 
 describe('GameSetupModal', () => {
-        beforeEach(() => {
-                mockStartGame.mockReset();
-                // Reset hash
-                window.location.hash = '';
-        });
+	beforeEach(() => {
+		mockStartGame.mockReset();
+		// Reset hash
+		window.location.hash = '';
+	});
 
 	test('renders modal with heading and description', () => {
 		render(<GameSetupModal />);
