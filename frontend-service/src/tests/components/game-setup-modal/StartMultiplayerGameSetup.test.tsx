@@ -33,17 +33,17 @@ vi.mock('../../../components/roundTimerSelectionSlider', () => ({
 }));
 
 describe('StartMultiplayerGameSetup', () => {
-        beforeEach(() => {
-                vi.clearAllMocks();
-                window.location.hash = '';
-                localStorage.clear();
-                localStorage.setItem('mapguesser_guest_id', 'guest_123');
-                localStorage.setItem('mapguesser_guest_name', 'Guest Player');
-                vi.mocked(useFetchHook.useFetch).mockReturnValue({
-                        data: null,
-                        isPending: false,
-                        error: null
-                });
+	beforeEach(() => {
+		vi.clearAllMocks();
+		window.location.hash = '';
+		localStorage.clear();
+		localStorage.setItem('mapguesser_guest_id', 'guest_123');
+		localStorage.setItem('mapguesser_guest_name', 'Guest Player');
+		vi.mocked(useFetchHook.useFetch).mockReturnValue({
+			data: null,
+			isPending: false,
+			error: null
+		});
 	});
 
 	test('renders heading, timer slider, and create button', () => {

@@ -40,28 +40,28 @@ app.get('/health', (c) => {
  * @description Creates a new multiplayer game (host identity supplied by client)
  */
 app.post('/create-game', async (c) => {
-        const { timer, hostId } = await c.req.json();
+	const { timer, hostId } = await c.req.json();
 
-        if (!hostId) {
-                return c.json({ error: 'Host identity required' }, 400);
-        }
+	if (!hostId) {
+		return c.json({ error: 'Host identity required' }, 400);
+	}
 
-        const gameCode = generateGameCode();
+	const gameCode = generateGameCode();
 
-        // Initialize the GameRoom with host information
-        const id = c.env.GAME_ROOM.idFromName(gameCode);
-        const stub = c.env.GAME_ROOM.get(id);
-        await stub.fetch('http://internal/initialize', {
-                method: 'POST',
-                body: JSON.stringify({ gameOwnerId: hostId, timer }),
-                headers: { 'Content-Type': 'application/json' }
-        });
+	// Initialize the GameRoom with host information
+	const id = c.env.GAME_ROOM.idFromName(gameCode);
+	const stub = c.env.GAME_ROOM.get(id);
+	await stub.fetch('http://internal/initialize', {
+		method: 'POST',
+		body: JSON.stringify({ gameOwnerId: hostId, timer }),
+		headers: { 'Content-Type': 'application/json' }
+	});
 
-        return c.json({
-                gameCode,
-                timer,
-                gameOwnerId: hostId,
-        });
+	return c.json({
+		gameCode,
+		timer,
+		gameOwnerId: hostId,
+	});
 })
 
 /**

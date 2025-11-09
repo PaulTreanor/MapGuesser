@@ -4,14 +4,14 @@ import GameModeCard from './GameModeCard'
 import type { GameModeCardType } from '../../types/GameSetupModal.types'
 
 export default function SelectGameModeMenu() {
-        const handleCardClick = (card: GameModeCardType) => {
-                if (!card.enabled) return;
+	const handleCardClick = (card: GameModeCardType) => {
+		if (!card.enabled) return;
 
-                window.location.hash = card.fragment;
-        };
+		window.location.hash = card.fragment;
+	};
 
-        return (
-                <div className="w-full">
+	return (
+		<div className="w-full">
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
 				{gameModeCards.map((card) => (
 					<GameModeCard

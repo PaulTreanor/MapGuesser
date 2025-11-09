@@ -43,14 +43,14 @@ const clearGuestIdentity = (): void => {
 };
 
 const getPlayerIdentity = (): {
-        playerId: string;
-        playerName: string;
-        isGuest: boolean;
+	playerId: string;
+	playerName: string;
+	isGuest: boolean;
 } => {
-        return {
-                playerId: getGuestId(),
-                playerName: getGuestName(),
-                isGuest: true,
+	return {
+		playerId: getGuestId(),
+		playerName: getGuestName(),
+		isGuest: true,
 	};
 };
 
