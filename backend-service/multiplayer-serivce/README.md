@@ -16,8 +16,7 @@ Simple health check endpoint that returns a status response.
 ```
 
 ### POST /create-game
-Creates a new multiplayer game. The client supplies the host identity so the
-creator can be marked as the lobby host.
+Creates a new multiplayer game. The client supplies the host identity so the creator can be marked as the lobby host.
 
 **Request Body:**
 ```json

@@ -41,7 +41,7 @@ const Lobby = () => {
 		};
 
 		fetchGameMetadata();
-	}, [gameData, gameCode, isFetchingMetadata, setGameData]);
+	}, []);
 
 	const isGameOwner = gameData?.gameOwnerId === playerIdentityRef.current.playerId;
 

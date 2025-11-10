@@ -1,3 +1,4 @@
+import { Player } from '../types/MultiplayerServiceApiResponse.types'
 /**
  * Utilities for managing guest player identity
  * Guest identities persisted in localStorage.
@@ -42,11 +43,7 @@ const clearGuestIdentity = (): void => {
 	localStorage.removeItem(GUEST_NAME_KEY);
 };
 
-const getPlayerIdentity = (): {
-	playerId: string;
-	playerName: string;
-	isGuest: boolean;
-} => {
+const getPlayerIdentity = (): Player => {
 	return {
 		playerId: getGuestId(),
 		playerName: getGuestName(),
