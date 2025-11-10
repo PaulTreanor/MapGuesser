@@ -8,6 +8,7 @@ import { ConnectionStatus } from '../../objects/connectionStatuses';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints';
+import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types';
 
 const Lobby = () => {
@@ -26,6 +27,21 @@ const Lobby = () => {
 				setIsFetchingMetadata(true);
 				try {
 					const response = await fetch(`${MULTIPLAYER_SERVICE_API_URL}/join-game/${gameCode}`);
+
+					if (response.status === 404) {
+						notify({
+							type: 'error',
+							message: 'Game not found. The game may have expired or the code is invalid.',
+							duration: 5000
+						});
+						window.location.hash = '';
+						return;
+					}
+
+					if (!response.ok) {
+						throw new Error(`Response status: ${response.status}`);
+					}
+
 					const data = await response.json() as JoinGameResponse;
 					setGameData({
 						gameCode: data.roomId,
@@ -34,6 +50,12 @@ const Lobby = () => {
 					});
 				} catch (error) {
 					console.error('Failed to fetch game metadata:', error);
+					notify({
+						type: 'error',
+						message: 'Failed to load game. Please try again.',
+						duration: 5000
+					});
+					window.location.hash = '';
 				} finally {
 					setIsFetchingMetadata(false);
 				}

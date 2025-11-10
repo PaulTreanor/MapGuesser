@@ -48,6 +48,12 @@ app.post('/create-game', async (c) => {
 
 	const gameCode = generateGameCode();
 
+	// Register game in the registry database
+	const createdAt = Date.now();
+	await c.env.mapguesser_game_registry.prepare(
+		'INSERT INTO games (game_code, created_at) VALUES (?, ?)'
+	).bind(gameCode, createdAt).run();
+
 	// Initialize the GameRoom with host information
 	const id = c.env.GAME_ROOM.idFromName(gameCode);
 	const stub = c.env.GAME_ROOM.get(id);
@@ -71,6 +77,15 @@ app.post('/create-game', async (c) => {
 app.get('/join-game/:code', async (c) => {
 	const raw = c.req.param('code') ?? '';
 	const code = raw.trim().toUpperCase();
+
+	// Check if game exists in registry (strongly consistent read from primary)
+	const gameRecord = await c.env.mapguesser_game_registry.prepare(
+		'SELECT game_code FROM games WHERE game_code = ?'
+	).bind(code).first();
+
+	if (!gameRecord) {
+		return c.json({ error: 'Game not found' }, 404);
+	}
 
 	// Fetch metadata from the GameRoom
 	const id = c.env.GAME_ROOM.idFromName(code);

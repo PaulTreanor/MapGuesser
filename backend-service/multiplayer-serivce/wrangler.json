@@ -1,0 +1,24 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "multiplayer-serivce",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-09-30",
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "GAME_ROOM",
+				"class_name": "GameRoom"
+			}
+		]
+	},
+	"migrations": [
+    { "tag": "v1-sqlite", "new_sqlite_classes": ["GameRoom"] }
+	],
+	"d1_databases": [
+		{
+			"binding": "mapguesser_game_registry",
+			"database_name": "mapguesser-game-registry",
+			"database_id": "a65789d2-c00f-4871-a801-a7ca0ecaf3af"
+		}
+	]
+}
