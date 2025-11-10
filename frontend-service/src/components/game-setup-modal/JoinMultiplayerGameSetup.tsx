@@ -22,12 +22,16 @@ const JoinMultiplayerGameSetup = () => {
 
 	useEffect(() => {
 		if (error) {
+			const is404 = error.includes('404');
 			notify({
 				type: 'error',
-				message: `Failed to join game: ${error}`,
+				message: is404
+					? 'Game not found. Please check the code and try again.'
+					: `Failed to join game: ${error}`,
 				duration: 5000
 			});
 			setShouldFetch(false);
+			setCode('');
 		}
 	}, [error]);
 
