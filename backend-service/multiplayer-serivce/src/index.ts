@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { clerkMiddleware, getAuth } from '@hono/clerk-auth'
 import { GameRoom } from './durable-objects/GameRoom'
 import { Bindings } from './index.types'
 import { generateGameCode } from './multiplayerUtils'
@@ -38,22 +37,30 @@ app.get('/health', (c) => {
 
 /**
  * POST /create-game
- * @description Creates a new multiplayer game (requires authentication)
+ * @description Creates a new multiplayer game (host identity supplied by client)
  */
-app.post('/create-game', clerkMiddleware(), async (c) => {
-	const auth = getAuth(c);
+app.post('/create-game', async (c) => {
+	const { timer, hostId } = await c.req.json();
 
-	if (!auth?.userId) {
-		return c.json({ error: 'Unauthorized' }, 401);
+	if (!hostId) {
+		return c.json({ error: 'Host identity required' }, 400);
 	}
 
-	const { timer } = await c.req.json();
 	const gameCode = generateGameCode();
+
+	// Initialize the GameRoom with host information
+	const id = c.env.GAME_ROOM.idFromName(gameCode);
+	const stub = c.env.GAME_ROOM.get(id);
+	await stub.fetch('http://internal/initialize', {
+		method: 'POST',
+		body: JSON.stringify({ gameOwnerId: hostId, timer }),
+		headers: { 'Content-Type': 'application/json' }
+	});
 
 	return c.json({
 		gameCode,
 		timer,
-		gameOwnerId: auth.userId,
+		gameOwnerId: hostId,
 	});
 })
 
@@ -65,13 +72,20 @@ app.get('/join-game/:code', async (c) => {
 	const raw = c.req.param('code') ?? '';
 	const code = raw.trim().toUpperCase();
 
+	// Fetch metadata from the GameRoom
+	const id = c.env.GAME_ROOM.idFromName(code);
+	const stub = c.env.GAME_ROOM.get(id);
+	const metadataResponse = await stub.fetch('http://internal/metadata', {
+		method: 'GET'
+	});
+	const metadata = await metadataResponse.json() as { gameOwnerId: string | null; timer: number | null };
+
 	return c.json({
 		roomId: code,
 		status: "...",
 		expiresAt: "...",
 		wsUrl: "...",
-		// Harcode this for now
-		gameOwnerId: "user_12345678"
+		gameOwnerId: metadata.gameOwnerId
 	});
 })
 

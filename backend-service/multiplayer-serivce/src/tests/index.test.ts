@@ -1,19 +1,39 @@
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect, beforeEach, vi } from 'vitest'
 import app from '../index'
 
-// Mock the Clerk auth module
-vi.mock('@hono/clerk-auth', () => ({
-	clerkMiddleware: () => {
-		return async (c: any, next: any) => {
-			// Store mock auth data in context for getAuth to retrieve
-			c.set('clerk', { userId: c.req.header('x-mock-user-id') || null });
-			await next();
-		}
-	},
-	getAuth: (c: any) => {
-		return c.get('clerk');
-	},
-}))
+// Mock environment with GAME_ROOM Durable Object
+const mockEnv = {
+	GAME_ROOM: {
+		idFromName: vi.fn((name: string) => name),
+		get: vi.fn(() => ({
+			fetch: vi.fn(async (url: string, options?: RequestInit) => {
+				const urlObj = new URL(url);
+
+				if (options?.method === 'POST' && urlObj.pathname === '/initialize') {
+					return new Response(JSON.stringify({ success: true }), {
+						headers: { 'Content-Type': 'application/json' }
+					});
+				}
+
+				if (options?.method === 'GET' && urlObj.pathname === '/metadata') {
+					// Return mock metadata - in real scenario this would be from storage
+					return new Response(JSON.stringify({
+						gameOwnerId: 'guest_123',
+						timer: 60
+					}), {
+						headers: { 'Content-Type': 'application/json' }
+					});
+				}
+
+				return new Response('Not found', { status: 404 });
+			})
+		}))
+	}
+};
+
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('GET /health', () => {
 	test('should return status ok', async () => {
@@ -25,46 +45,46 @@ describe('GET /health', () => {
 })
 
 describe('POST /create-game', () => {
-	test('should return 401 when no auth provided', async () => {
+	test('should return 400 when host identity missing', async () => {
 		const timer = 60
 		const res = await app.request('/create-game', {
 			method: 'POST',
 			body: JSON.stringify({ timer }),
 			headers: {
-				'Content-Type': 'application/json',
+					'Content-Type': 'application/json',
 			},
-		})
+		}, mockEnv)
 
-		expect(res.status).toBe(401)
+		expect(res.status).toBe(400)
 		const json = await res.json()
-		expect(json).toHaveProperty('error', 'Unauthorized')
+		expect(json).toHaveProperty('error', 'Host identity required')
 	})
 
-	test('should create a game with timer and return gameCode when authenticated', async () => {
+	test('should create a game with timer and return gameCode when host identity provided', async () => {
 		const timer = 60
+		const hostId = 'guest_123'
 		const res = await app.request('/create-game', {
 			method: 'POST',
-			body: JSON.stringify({ timer }),
+			body: JSON.stringify({ timer, hostId }),
 			headers: {
-				'Content-Type': 'application/json',
-				'x-mock-user-id': 'user_123',
+					'Content-Type': 'application/json',
 			},
-		})
+		}, mockEnv)
 
 		expect(res.status).toBe(200)
 		const json = await res.json()
 		expect(json).toHaveProperty('gameCode')
 		expect(json).toHaveProperty('timer', timer)
-		expect(json).toHaveProperty('gameOwnerId', 'user_123')
+		expect(json).toHaveProperty('gameOwnerId', hostId)
 	})
 })
 
 describe('GET /join-game', () => {
 	test('should return roomId in object', async () => {
-		const res = await app.request('/join-game/abcde')
+		const res = await app.request('/join-game/abcde', {}, mockEnv)
 		expect(res.status).toBe(200)
 		const json = await res.json()
 		expect(json).toHaveProperty('roomId', 'ABCDE')
-		expect(json).toHaveProperty('gameOwnerId', 'user_12345678')
+		expect(json).toHaveProperty('gameOwnerId', 'guest_123')
 	})
 })

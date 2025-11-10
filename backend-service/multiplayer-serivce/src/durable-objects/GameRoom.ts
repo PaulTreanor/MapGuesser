@@ -11,9 +11,45 @@ export class GameRoom extends DurableObject {
 	}
 
 	/**
-	 * Handle incoming HTTP requests (WebSocket upgrades)
+	 * Initialize the game room with metadata
+	 */
+	async initialize(gameOwnerId: string, timer: number): Promise<void> {
+		await this.ctx.storage.put('gameOwnerId', gameOwnerId);
+		await this.ctx.storage.put('timer', timer);
+	}
+
+	/**
+	 * Get game metadata
+	 */
+	async getMetadata(): Promise<{ gameOwnerId: string | null; timer: number | null }> {
+		const gameOwnerId = await this.ctx.storage.get<string>('gameOwnerId');
+		const timer = await this.ctx.storage.get<number>('timer');
+		return { gameOwnerId: gameOwnerId ?? null, timer: timer ?? null };
+	}
+
+	/**
+	 * Handle incoming HTTP requests (WebSocket upgrades and HTTP methods)
 	 */
 	async fetch(request: Request): Promise<Response> {
+		const url = new URL(request.url);
+
+		// Handle HTTP methods for game room management
+		if (request.method === 'POST' && url.pathname === '/initialize') {
+			const body = await request.json() as { gameOwnerId: string; timer: number };
+			await this.initialize(body.gameOwnerId, body.timer);
+			return new Response(JSON.stringify({ success: true }), {
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		if (request.method === 'GET' && url.pathname === '/metadata') {
+			const metadata = await this.getMetadata();
+			return new Response(JSON.stringify(metadata), {
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		// Handle WebSocket upgrade
 		const upgradeHeader = request.headers.get('Upgrade');
 		if (upgradeHeader !== 'websocket') {
 			return new Response('Expected WebSocket', { status: 426 });
@@ -47,10 +83,13 @@ export class GameRoom extends DurableObject {
 		// Only include WebSockets that are in OPEN state (readyState === 1)
 		// This filters out connections that are CLOSING (2) or CLOSED (3)
 		const activeWebSockets = webSockets.filter(ws => ws.readyState === WebSocket.OPEN);
-		return activeWebSockets.map(ws => {
-			const player = ws.deserializeAttachment() as Player | undefined;
-			return player || { playerId: 'unknown', playerName: 'Unknown', isGuest: true };
-		});
+		return activeWebSockets
+			.map(ws => {
+				const player = ws.deserializeAttachment() as Player | undefined;
+				return player || { playerId: 'unknown', playerName: 'Unknown', isGuest: true };
+			})
+			// Filter out unknown players - these are connections that haven't sent player_join yet
+			.filter(player => player.playerId !== 'unknown');
 	}
 
 	private broadcastPlayerList(): void {

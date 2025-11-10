@@ -1,23 +1,12 @@
 import React from 'react'
-import { useAuth, useClerk } from '@clerk/clerk-react'
-import { GAME_SETUP_STEPS, gameModeCards } from '../../objects/gameSetupConsts'
+import { gameModeCards } from '../../objects/gameSetupConsts'
 import GameModeCard from './GameModeCard'
 import type { GameModeCardType } from '../../types/GameSetupModal.types'
 
 export default function SelectGameModeMenu() {
-	const { isSignedIn } = useAuth();
-	const { openSignIn } = useClerk();
-
 	const handleCardClick = (card: GameModeCardType) => {
 		if (!card.enabled) return;
-		
-		if (card.id === GAME_SETUP_STEPS.START_GAME) {
-			if (!isSignedIn) {
-				openSignIn();
-				return;
-			}
-		}
-		
+
 		window.location.hash = card.fragment;
 	};
 

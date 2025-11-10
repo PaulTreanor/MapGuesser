@@ -10,14 +10,6 @@ vi.mock('../../../hooks/useFetch', () => ({
 	useFetch: vi.fn()
 }));
 
-// Mock Clerk hooks
-const mockGetToken = vi.fn();
-vi.mock('@clerk/clerk-react', () => ({
-	useAuth: () => ({
-		getToken: mockGetToken
-	})
-}));
-
 // Mock multiplayer store
 const mockSetGameData = vi.fn();
 vi.mock('../../../store/multiplayerStore', () => ({
@@ -44,7 +36,9 @@ describe('StartMultiplayerGameSetup', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		window.location.hash = '';
-		mockGetToken.mockResolvedValue('mock-token-123');
+		localStorage.clear();
+		localStorage.setItem('mapguesser_guest_id', 'guest_123');
+		localStorage.setItem('mapguesser_guest_name', 'Guest Player');
 		vi.mocked(useFetchHook.useFetch).mockReturnValue({
 			data: null,
 			isPending: false,

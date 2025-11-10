@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@clerk/clerk-react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../ui/button';
 import { Subheading } from '../typography/Typography';
 import RoundTimerSelectionSlider from '../roundTimerSelectionSlider';
@@ -8,14 +7,14 @@ import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
 import { CreateGameResponse } from '../../types/MultiplayerServiceApiResponse.types'
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
+import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
 
 
 const StartMultiPlayerGameSetup = () => {
 	const [timer, setTimer] = useState(0);
 	const [shouldFetch, setShouldFetch] = useState(false);
-	const { getToken } = useAuth();
-	const [authToken, setAuthToken] = useState<string | null>(null);
 	const { setGameData } = useMultiplayerStore();
+	const playerIdentityRef = useRef(getPlayerIdentity());
 
 	const { data, isPending, error } = useFetch<CreateGameResponse>(
 		`${MULTIPLAYER_SERVICE_API_URL}/create-game`,
@@ -23,10 +22,12 @@ const StartMultiPlayerGameSetup = () => {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				...(authToken && { 'Authorization': `Bearer ${authToken}` }),
 			},
-			body: JSON.stringify({ timer }),
-			enabled: shouldFetch && authToken !== null,
+			body: JSON.stringify({
+				timer,
+				hostId: playerIdentityRef.current.playerId,
+			}),
+			enabled: shouldFetch,
 		}
 	);
 
@@ -42,6 +43,7 @@ const StartMultiPlayerGameSetup = () => {
 		if (data?.gameCode) {
 			setGameData(data);
 			window.location.hash = `#lobby-${data.gameCode}`;
+			setShouldFetch(false);
 		}
 	}, [error, data]);
 
@@ -49,9 +51,7 @@ const StartMultiPlayerGameSetup = () => {
 		setTimer(timeMs);
 	};
 
-	const handleCreateGame = async () => {
-		const token = await getToken();
-		setAuthToken(token);
+	const handleCreateGame = () => {
 		setShouldFetch(true);
 	};
 
