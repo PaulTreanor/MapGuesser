@@ -88,8 +88,3 @@ const MyComponent = ({ text }: ComponentProps) => {
 ## Backend Services
 - When possible write code in a module testable way
 - When possible write code in a way that lends itself to being run locally quite easily
-
-## Project Management
-- There is a `TODO.md` file in the repo root for tracking multiplayer implementation progress
-- Update `TODO.md` as tasks are completed or new ones are identified
-- Check `TODO.md` at the start of work sessions to understand current state
