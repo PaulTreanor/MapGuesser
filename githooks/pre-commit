@@ -1,5 +1,17 @@
 #!/bin/sh
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
+
+echo "Running frontend-service tests..."
 cd "$ROOT_DIR/frontend-service" || exit 1
-npm test
+npm test || exit 1
+
+echo "Running locations-service tests..."
+cd "$ROOT_DIR/backend-service/locations-service" || exit 1
+npm test || exit 1
+
+echo "Running multiplayer-service tests..."
+cd "$ROOT_DIR/backend-service/multiplayer-serivce" || exit 1
+npm test || exit 1
+
+echo "All tests passed!"
