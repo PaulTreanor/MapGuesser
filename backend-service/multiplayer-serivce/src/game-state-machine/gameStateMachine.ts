@@ -1,3 +1,9 @@
+import type {
+	GameState,
+	Event,
+	GameContext,
+	StateMachineDefinition
+} from "../multiplayerGame.types"
 /**
  * Note: Fatal errors immediate ends state machine from any state
  * So DO must be able to boot up from *any* state - this needs to be tested
@@ -38,17 +44,16 @@
 // 	currentRound: 3
 // }
 
-
 /**
  * State machine is stateless, so it doesn't actually know what state it's in. This is stored in the context.
  */
-const createMachine = (stateMachineDefinition) => {
-	const getState = (ctx) => ctx["gameStateMachinePhase"]
-	const setState = (ctx, value) => {
+const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
+	const getState = (ctx: GameContext) => ctx["gameStateMachinePhase"]
+	const setState = (ctx: GameContext, value: GameState) => {
 		ctx["gameStateMachinePhase"] = value
 	}
 	return {
-		transition(event, ctx) {
+		transition(event: Event, ctx: GameContext) {
 			const currentState = getState(ctx)
 			const currentStateDefinition = stateMachineDefinition[currentState]
 			if (!currentStateDefinition) {
@@ -83,10 +88,10 @@ const createMachine = (stateMachineDefinition) => {
 	}
 }
 
-const globalTransitions = {
+const globalTransitions: Partial<Record<Event, { target: GameState; action: (ctx: GameContext, event: Event) => void }>> = {
   fatalError: {
     target: 'final',
-    action(ctx, event) {
+    action(ctx: GameContext, event: Event) {
       console.error('Fatal error triggered', { ctx, event })
     }
   }
@@ -107,11 +112,12 @@ const machine = createMachine({
 		transitions: {
 			startGame: {
 				target: 'inRound',
-				guard: (ctx) => ctx.players.length >= 2,
-				action() {
+				guard: (ctx: GameContext) => ctx.players.length >= 2,
+				action(ctx: GameContext) {
 					// fetch locations into game state
-					// set currentRound = 1 in game state 
-					// populate gameStateCtx with boilerplate for players?
+					// set currentRound = 1 in game state
+					ctx.currentRound = 1;
+					console.log('Starting game, currentRound set to:', ctx.currentRound);
 				}
 			},
 			fatalError: globalTransitions.fatalError,
@@ -138,43 +144,62 @@ const machine = createMachine({
 		transitions: {
 			nextRound: {
 				target: 'inRound',
-				guard: (ctx) => {
-					// if final round
-					if (round == numberOfRounds) {
-						return false 
+				guard: (ctx: GameContext) => {
+					// if final round, don't allow nextRound (should use finishFinalRound instead)
+					if (ctx.currentRound >= ctx.numberOfRounds) {
+						return false
 					}
 					// if all players have guessed
-					if (ctx.round[currentRound].guesses.length == ctx.players.length) {
+					if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
 						return true
 					}
-					if (ctx.timer && (Date.now > roundEndTimeStamp)) {
-						return true
+					// if timer is set and time has expired
+					if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
+						if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
+							return true
+						}
 					}
-					console.log({"Transition guard for nextRound failed for non-obvious reason: ": ctx})
+					// if timer is not set and all players have *not* made their guesses yet
+					if (!ctx.timer && ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length < ctx.players.length) {
+						return false
+					}
+
+					console.log('Transition guard for nextRound failed for non-obvious reason:', ctx)
 					return false
 				},
-				action() {
-					// currentRound++ in game state 
+				action(ctx: GameContext) {
+					// currentRound++ in game state
+					ctx.currentRound++;
+					console.log('Moving to next round:', ctx.currentRound);
 				}
 			},
 			finishFinalRound: {
 				target: 'showResult',
-				guard: (ctx) => {
+				guard: (ctx: GameContext) => {
 					// if not final round
-					if (round !== numberOfRounds) {
-						return false 
+					if (ctx.currentRound !== ctx.numberOfRounds) {
+						return false
 					}
 					// if all players have guessed
-					if (ctx.round[currentRound].guesses.length == ctx.players.length) {
+					if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
 						return true
 					}
-					if (ctx.timer && (Date.now > roundEndTimeStamp)) {
-						return true
+					// if timer is set and time has expired
+					if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
+						if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
+							return true
+						}
 					}
-					console.log({"Transition guard for finishFinalRound failed for non-obvious reason: ": ctx})
+					// if timer is not set and all players have *not* made their guesses yet
+					if (!ctx.timer && ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length < ctx.players.length) {
+						return false
+					}
+					console.log('Transition guard for finishFinalRound failed for non-obvious reason:', ctx)
 					return false
 				},
-				action() {}
+				action(ctx: GameContext) {
+					console.log('Final round completed, moving to results');
+				}
 			},
 			fatalError: globalTransitions.fatalError,
 		}
@@ -211,9 +236,27 @@ const machine = createMachine({
 	}
 })
 
+const createGameContext = ({
+	gameOwnerId,
+	numberOfRounds = 5,
+	timer,
+}: {
+	gameOwnerId: string,
+	numberOfRounds: number
+	timer?: number,
+}):GameContext => ({
+	gameOwnerId,
+	timer,
+	players: [],
+	numberOfRounds,
+	rounds: [],
+	gameStateMachinePhase: 'lobby',
+	currentRound: 0
+});
 
-// gameState is ctx
-console.log("Machine starting", gameState)
-console.log({ "Initial state": machine.value })
-machine.transition('startGame')
-console.log({ "machine state": machine.value }, gameState)
+const exportedMachine = {
+	machine,
+	createGameContext,
+};
+
+export { exportedMachine };
