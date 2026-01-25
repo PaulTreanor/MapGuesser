@@ -1,10 +1,12 @@
 import React, { useRef, useMemo } from 'react';
 import MapboxMap from './MapBoxMap';
+import Modal from './Modal';
 import { useMultiplayerStore } from '../store/multiplayerStore';
 import { useGameRoom } from '../hooks/useGameRoom';
 import { getPlayerIdentity } from '../utils/guestIdentityUtils';
 import { calculateKm } from '../utils/mapUtils';
 import { Heading, Paragraph } from './typography/Typography';
+import { MapGuesserHeading } from './typography/MapGuesserHeading';
 import type { Pin } from '../types/Game.types';
 
 const MultiplayerGame = () => {
@@ -15,9 +17,6 @@ const MultiplayerGame = () => {
 	const hash = window.location.hash;
 	const gameCodeFromHash = hash.startsWith('#game-') ? hash.replace('#game-', '') : '';
 	const gameCode = gameData?.gameCode || gameCodeFromHash;
-
-	console.log('[MultiplayerGame] hash:', hash, 'gameCodeFromHash:', gameCodeFromHash, 'gameData?.gameCode:', gameData?.gameCode, 'final gameCode:', gameCode);
-	console.log('[MultiplayerGame] gameContext:', gameContext);
 
 	const { sendMessage } = useGameRoom({
 		gameCode: gameCode || '', // Pass empty string if no gameCode, useGameRoom will handle it
@@ -94,46 +93,55 @@ const MultiplayerGame = () => {
 	}
 
 	if (gameContext.gameStateMachinePhase === 'showResult' || gameContext.gameStateMachinePhase === 'final') {
+		// Sort players by score (lowest first since lower is better)
+		const playerScores = gameContext.players.map((player) => {
+			const totalScore = gameContext.rounds.reduce((sum, round) => {
+				const playerGuess = round.playerGuesses.find(
+					(guess) => guess.playerId === player.playerId
+				);
+
+				if (!playerGuess) return sum;
+
+				const distance = calculateKm(
+					playerGuess.guessCoordinates,
+					round.location.coordinates
+				);
+
+				return sum + distance;
+			}, 0);
+
+			return { player, totalScore };
+		}).sort((a, b) => a.totalScore - b.totalScore);
+
 		return (
-			<div className="flex items-center justify-center h-screen">
-				<div className="text-center max-w-2xl p-8 bg-white rounded-lg shadow-lg">
-					<Heading className="mb-6">Game Complete!</Heading>
-					<div className="space-y-4">
-						<Heading className="text-2xl mb-4">Final Scores</Heading>
-						{gameContext.players.map((player) => {
-							// Calculate total score (distance in km) for each player
-							const totalScore = gameContext.rounds.reduce((sum, round) => {
-								const playerGuess = round.playerGuesses.find(
-									(guess) => guess.playerId === player.playerId
-								);
-
-								if (!playerGuess) return sum;
-
-								// Calculate distance between guess and actual location
-								const distance = calculateKm(
-									playerGuess.guessCoordinates,
-									round.location.coordinates
-								);
-
-								return sum + distance;
-							}, 0);
-
-							return (
-								<div
-									key={player.playerId}
-									className="flex justify-between items-center p-4 bg-gray-100 rounded-md"
-								>
-									<span className="font-bold">{player.playerName}</span>
-									<span className="text-lg">{Math.round(totalScore)} km total distance</span>
-								</div>
-							);
-						})}
-					</div>
-					<Paragraph className="mt-6 text-gray-600">
-						Lower scores are better!
-					</Paragraph>
+			<Modal>
+				<MapGuesserHeading />
+				<br />
+				<Paragraph className="text-center mb-6">
+					Game Complete! Here are the final scores:
+				</Paragraph>
+				<div className="space-y-3">
+					{playerScores.map(({ player, totalScore }, index) => (
+						<div
+							key={player.playerId}
+							className={`flex justify-between items-center p-4 rounded-md ${
+								index === 0 ? 'bg-green-100 border-2 border-green-400' : 'bg-gray-100'
+							}`}
+						>
+							<span className="font-bold">
+								{index === 0 && '🏆 '}
+								{player.playerName}
+							</span>
+							<span className="text-lg font-semibold text-green-700">
+								{Math.round(totalScore)} km
+							</span>
+						</div>
+					))}
 				</div>
-			</div>
+				<Paragraph className="mt-4 text-center text-gray-600 text-sm">
+					Lower scores are better!
+				</Paragraph>
+			</Modal>
 		);
 	}
 
