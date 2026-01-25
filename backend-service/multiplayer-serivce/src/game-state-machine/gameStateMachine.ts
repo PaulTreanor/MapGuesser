@@ -4,48 +4,12 @@ import type {
 	GameContext,
 	StateMachineDefinition
 } from "../multiplayerGame.types"
-/**
- * Note: Fatal errors immediate ends state machine from any state
- * So DO must be able to boot up from *any* state - this needs to be tested
- * Durable object has separate global deletion/tear down method for cleaning up inactive games - this doesn't touch the FSM
- */
-
-// Game state (ctx) will look sort of vaguely like this
-// The state machine's state is in here. 
-// const gameContextState = {
-// 	gameOwnerId: "1234...",
-// 	timer: 15, // seconds
-// 	players: [
-// 		{
-// 			playerId: "1234...",
-// 			playerName: "coolPlayer1",
-// 			isGuest: true // this is actually totally redundant now but keeping it in and I'll refactor it out later
-// 		},
-// 		// ... more players
-// 	],
-// 	numberOfRounds: 5,
-// 	rounds: [
-// 		{
-// 			location: {
-// 				{"location": "Madrid", "coordinates": [-3.7038, 40.4168]},
-// 			},
-// 			playerGuesses: [
-// 				{
-// 					playerId: "1234...",
-// 					guessCoordinates: [-3.7038, 40.4168],
-// 				}
-// 				// ... more player guesses - updated as they come in
-// 			],
-// 			roundEndTimeStamp: 1764528670,
-// 		}, 
-// 		// ... more rounds
-// 	],
-// 	gameStateMachinePhase: "inRound",
-// 	currentRound: 3
-// }
 
 /**
  * State machine is stateless, so it doesn't actually know what state it's in. This is stored in the context.
+ * Fatal errors immediately ends state machine from any state.
+ * The durable object must be able to boot up from *any* state.
+ *The durable object has a separate global deletion/tear down method for cleaning up inactive games that is totally separate from the FSM
  */
 const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
 	const getState = (ctx: GameContext) => ctx["gameStateMachinePhase"]
