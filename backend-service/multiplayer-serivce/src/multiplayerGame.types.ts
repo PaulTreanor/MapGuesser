@@ -39,7 +39,7 @@ interface GameContext {
 type TransitionConfig = {
 	target: GameState;
 	guard?: (ctx: GameContext, event: Event) => boolean;
-	action: (ctx: GameContext, event: Event) => void;
+	action: (ctx: GameContext, event: Event) => void | Promise<void>;
 };
 
 type StateConfig = {

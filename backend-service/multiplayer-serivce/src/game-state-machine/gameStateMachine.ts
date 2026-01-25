@@ -12,12 +12,12 @@ import type {
  *The durable object has a separate global deletion/tear down method for cleaning up inactive games that is totally separate from the FSM
  */
 const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
-	const getState = (ctx: GameContext) => ctx["gameStateMachinePhase"]
+	const getState = (ctx: GameContext) => ctx.gameStateMachinePhase
 	const setState = (ctx: GameContext, value: GameState) => {
-		ctx["gameStateMachinePhase"] = value
+		ctx.gameStateMachinePhase = value
 	}
 	return {
-		transition(event: Event, ctx: GameContext) {
+		async transition(event: Event, ctx: GameContext) {
 			const currentState = getState(ctx)
 			const currentStateDefinition = stateMachineDefinition[currentState]
 			if (!currentStateDefinition) {
@@ -26,7 +26,7 @@ const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
 			}
 
 			const destinationTransition = currentStateDefinition.transitions[event]
-			if (!destinationTransition) { 
+			if (!destinationTransition) {
 				console.log(`Destination state for ${event} transition not found`)
 				return currentState
 			}
@@ -44,12 +44,32 @@ const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
 			currentStateDefinition.actions.onExit(ctx, event)
 			// destinationTransition.action() is technically still in currentStateDefinition
 			// the transition hasn't happened yet
-			destinationTransition.action(ctx, event)
+			await destinationTransition.action(ctx, event)
 			setState(ctx, destinationState)
 			destinationStateDefinition.actions.onEnter(ctx, event)
 			return getState(ctx)
 		}
 	}
+}
+
+const isRoundComplete = (ctx: GameContext): boolean => {
+	// if all players have guessed
+	if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
+		return true
+	}
+	// if timer is set and time has expired
+	if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
+		if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
+			return true
+		}
+	}
+	// if timer is not set and all players have *not* made their guesses yet
+	if (!ctx.timer && ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length < ctx.players.length) {
+		return false
+	}
+
+	console.log('Round complete check failed for non-obvious reason:', ctx)
+	return false
 }
 
 const globalTransitions: Partial<Record<Event, { target: GameState; action: (ctx: GameContext, event: Event) => void }>> = {
@@ -77,10 +97,10 @@ const machine = createMachine({
 			startGame: {
 				target: 'inRound',
 				guard: (ctx: GameContext) => ctx.players.length >= 2,
-				action(ctx: GameContext) {
-					// fetch locations into game state
+				async action(ctx: GameContext) {
 					// set currentRound = 1 in game state
 					ctx.currentRound = 1;
+					// fetch locations into game state
 					console.log('Starting game, currentRound set to:', ctx.currentRound);
 				}
 			},
@@ -113,23 +133,7 @@ const machine = createMachine({
 					if (ctx.currentRound >= ctx.numberOfRounds) {
 						return false
 					}
-					// if all players have guessed
-					if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
-						return true
-					}
-					// if timer is set and time has expired
-					if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
-						if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
-							return true
-						}
-					}
-					// if timer is not set and all players have *not* made their guesses yet
-					if (!ctx.timer && ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length < ctx.players.length) {
-						return false
-					}
-
-					console.log('Transition guard for nextRound failed for non-obvious reason:', ctx)
-					return false
+					return isRoundComplete(ctx)
 				},
 				action(ctx: GameContext) {
 					// currentRound++ in game state
@@ -144,22 +148,7 @@ const machine = createMachine({
 					if (ctx.currentRound !== ctx.numberOfRounds) {
 						return false
 					}
-					// if all players have guessed
-					if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
-						return true
-					}
-					// if timer is set and time has expired
-					if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
-						if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
-							return true
-						}
-					}
-					// if timer is not set and all players have *not* made their guesses yet
-					if (!ctx.timer && ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length < ctx.players.length) {
-						return false
-					}
-					console.log('Transition guard for finishFinalRound failed for non-obvious reason:', ctx)
-					return false
+					return isRoundComplete(ctx)
 				},
 				action(ctx: GameContext) {
 					console.log('Final round completed, moving to results');
