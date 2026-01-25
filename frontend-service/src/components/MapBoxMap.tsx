@@ -145,10 +145,11 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;
-			// Store new line ID 
+			// Store new line ID
 			currentLineIdRef.current = lineId;
+			const guessCoordinates: Pin = [e.lngLat.lng, e.lngLat.lat];
 			const { guessDistance, customDistanceMarker } = addMarkersAndLine(map, e);
-			handleGuess(guessDistance);
+			handleGuess(guessDistance, guessCoordinates);
 			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
 			// Remove the click event listener
 			map.off('click', handleMapClick);

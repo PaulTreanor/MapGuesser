@@ -1,8 +1,8 @@
-import type { Round } from "./Game.types";
+import type { Round, Pin } from "./Game.types";
 
 interface MapboxMapProps {
 	roundDetails: Round;
-	handleGuess: (distance: number) => void;
+	handleGuess: (distance: number, guessCoordinates?: Pin) => void;
 	isDisabled: boolean;
 }
 

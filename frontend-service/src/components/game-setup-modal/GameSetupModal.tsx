@@ -7,6 +7,7 @@ import SelectGameModeMenu from './SelectGameModeMenu'
 import StartMultiPlayerGameSetup from './StartMultiplayerGameSetup'
 import JoinMultiplayerGameSetup from './JoinMultiplayerGameSetup'
 import Lobby from './Lobby'
+import MultiplayerGame from '../MultiplayerGame'
 import { GAME_SETUP_STEPS, GameSetupStep } from '../../objects/gameSetupConsts'
 
 /**
@@ -26,6 +27,11 @@ const getStepFromHash = (): { step: GameSetupStep; gameCode?: string } => {
 	if (hash.startsWith('#lobby-')) {
 		const gameCode = hash.replace('#lobby-', '');
 		return { step: GAME_SETUP_STEPS.LOBBY, gameCode };
+	}
+
+	if (hash.startsWith('#game-')) {
+		const gameCode = hash.replace('#game-', '');
+		return { step: GAME_SETUP_STEPS.IN_GAME, gameCode };
 	}
 
 	switch (hash) {
@@ -59,6 +65,11 @@ export default function GameSetupModal() {
 		};
 	}, []);
 
+	// If we're in-game, render the multiplayer game component without the modal
+	if (currentStep === GAME_SETUP_STEPS.IN_GAME) {
+		return <MultiplayerGame />;
+	}
+
 	const renderStepContent = () => {
 		switch (currentStep) {
 			case GAME_SETUP_STEPS.SINGLE_PLAYER:
@@ -80,7 +91,7 @@ export default function GameSetupModal() {
 			<MapGuesserHeading />
 			<br />
 			<Paragraph>
-				For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better. 
+				For each round, try to pinpoint the city on the map. Scores are based on how far your guess is from the city's real location, so lower scores are better.
 			</Paragraph>
 			<br />
 			{renderStepContent()}

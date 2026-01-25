@@ -12,7 +12,7 @@ import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types';
 
 const Lobby = () => {
-	const { gameData, players, setPlayers, setGameData } = useMultiplayerStore();
+	const { gameData, players, gameContext, setPlayers, setGameData, setGameContext } = useMultiplayerStore();
 	const hasJoinedRef = useRef(false);
 	const playerIdentityRef = useRef(getPlayerIdentity());
 	const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
@@ -67,7 +67,15 @@ const Lobby = () => {
 
 	const isGameOwner = gameData?.gameOwnerId === playerIdentityRef.current.playerId;
 
-	const { connectionStatus, sendMessage } = useGameRoom({ gameCode, setPlayers });
+	const { connectionStatus, sendMessage } = useGameRoom({
+		gameCode,
+		setPlayers,
+		setGameContext,
+		onGameStarting: () => {
+			// Transition to the in-game view by changing the hash
+			window.location.hash = `#game-${gameCode}`;
+		},
+	});
 
 	// Send player join message when connected (only once per connection)
 	useEffect(() => {
@@ -91,6 +99,13 @@ const Lobby = () => {
 			type: 'game_start',
 		});
 	};
+
+	// When game context updates and game has started, transition to game view
+	useEffect(() => {
+		if (gameContext && gameContext.gameStateMachinePhase === 'inRound') {
+			window.location.hash = `#game-${gameCode}`;
+		}
+	}, [gameContext, gameCode]);
 
 	return (
 		<div>
