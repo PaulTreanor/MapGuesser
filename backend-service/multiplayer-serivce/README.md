@@ -11,6 +11,10 @@ The service consists of a Workers REST API that can spin a Durable Object for ea
 - Games are registered when created via `/create-game`
 - Join attempts validate against registry (returns 404 if game doesn't exist) 
 
+## State machine diagram 
+![State machine diagram](state-machine-diagram.png)
+
+
 ## API Endpoints
 
 ### GET /health

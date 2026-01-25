@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import app from '../index'
 
-// Mock environment with GAME_ROOM Durable Object
+// Mock environment with GAME_ROOM Durable Object and database
 const mockEnv = {
 	GAME_ROOM: {
 		idFromName: vi.fn((name: string) => name),
@@ -27,6 +27,14 @@ const mockEnv = {
 
 				return new Response('Not found', { status: 404 });
 			})
+		}))
+	},
+	mapguesser_game_registry: {
+		prepare: vi.fn((query: string) => ({
+			bind: vi.fn((..._args: unknown[]) => ({
+				run: vi.fn(async () => ({ success: true })),
+				first: vi.fn(async () => ({ game_code: 'ABCDE' }))
+			}))
 		}))
 	}
 };
