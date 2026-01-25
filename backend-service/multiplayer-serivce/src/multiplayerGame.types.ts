@@ -13,7 +13,7 @@ type PlayerGuess = {
 type Round = {
 	location: Location;
 	playerGuesses: PlayerGuess[];
-	roundEndTimeStamp: number;
+	roundEndTimeStamp?: number;
 }
 
 type GameState = "lobby" | "inRound" | "showResult" | "final";

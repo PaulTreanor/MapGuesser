@@ -3,6 +3,9 @@ import { exportedMachine } from '../../game-state-machine/gameStateMachine'
 import { GameContext } from '../../multiplayerGame.types';
 const { machine, createGameContext } = exportedMachine;
 
+// Mock the fetch function
+vi.stubGlobal('fetch', vi.fn());
+
 beforeEach(() => {
 	vi.clearAllMocks();
 });
@@ -70,20 +73,40 @@ describe('startGame transition', () => {
 		currentRound: 0
 	};
 
-	test('startGame transition fails with zero players', () => {
-		const gameState = machine.transition('startGame', ctxNoPlayers);
+	test('startGame transition fails with zero players', async () => {
+		await machine.transition('startGame', ctxNoPlayers);
 		expect(ctxNoPlayers.gameStateMachinePhase).toBe('lobby');
 	});
 
 
-	test('startGame transition succeeds with 2 players', () => {
-		const gameState = machine.transition('startGame', ctxWithPlayers);
+	test('startGame transition succeeds with 2 players', async () => {
+		const mockLocations = [
+			{ location: 'Paris', coordinates: [2.3522, 48.8566] as [number, number] },
+			{ location: 'London', coordinates: [-0.1276, 51.5074] as [number, number] },
+			{ location: 'Berlin', coordinates: [13.4050, 52.5200] as [number, number] },
+			{ location: 'Madrid', coordinates: [-3.7038, 40.4168] as [number, number] },
+			{ location: 'Rome', coordinates: [12.4964, 41.9028] as [number, number] }
+		];
+
+		vi.mocked(fetch).mockResolvedValueOnce({
+			ok: true,
+			json: async () => ({ data: mockLocations })
+		} as Response);
+
+		await machine.transition('startGame', ctxWithPlayers);
+
 		expect(ctxWithPlayers.gameStateMachinePhase).toBe('inRound');
+		expect(ctxWithPlayers.currentRound).toBe(1);
+		expect(ctxWithPlayers.rounds).toHaveLength(5);
+		expect(ctxWithPlayers.rounds[0].location).toEqual(mockLocations[0]);
+		expect(ctxWithPlayers.rounds[0].playerGuesses).toEqual([]);
+		expect(ctxWithPlayers.rounds[0].roundEndTimeStamp).toBeUndefined();
+		expect(fetch).toHaveBeenCalledWith('https://locations-service.treanorpaul9.workers.dev/locations/random?count=5');
 	})
 })
 
 describe('nextRound transition', () => {
-	test('nextround transition fails no timer and all players have not guessed', () => {
+	test('nextround transition fails no timer and all players have not guessed', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -97,19 +120,18 @@ describe('nextRound transition', () => {
 					playerGuesses: [
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(1);
 	});
 
-	test('nextround transition succeeds no timer and all players have guessed', () => {
+	test('nextround transition succeeds no timer and all players have guessed', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -124,19 +146,18 @@ describe('nextRound transition', () => {
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] },
 						{ playerId: 'player-2', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(2);
 	});
 
-	test('nextround transition fails if timer has not completed and not all players have guessed', () => {
+	test('nextround transition fails if timer has not completed and not all players have guessed', async () => {
 		const futureTimestamp = Date.now() + 60000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -159,12 +180,12 @@ describe('nextRound transition', () => {
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(1);
 	});
 
-	test('nextround transition succeeds if timer has not completed but all players have guessed', () => {
+	test('nextround transition succeeds if timer has not completed but all players have guessed', async () => {
 		const futureTimestamp = Date.now() + 60000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -188,12 +209,12 @@ describe('nextRound transition', () => {
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(2);
 	});
 
-	test('nextround transition succeeds if timer has completed and all players have guessed', () => {
+	test('nextround transition succeeds if timer has completed and all players have guessed', async () => {
 		const pastTimestamp = Date.now() - 1000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -217,12 +238,12 @@ describe('nextRound transition', () => {
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(2);
 	});
 
-	test('nextround transition succeeds if timer has completed and not all players have guessed', () => {
+	test('nextround transition succeeds if timer has completed and not all players have guessed', async () => {
 		const pastTimestamp = Date.now() - 1000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -245,12 +266,12 @@ describe('nextRound transition', () => {
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(2);
 	});
 
-	test('nextround transition fails if current round is last round', () => {
+	test('nextround transition fails if current round is last round', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -265,21 +286,20 @@ describe('nextRound transition', () => {
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] },
 						{ playerId: 'player-2', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('nextRound', ctx);
+		await machine.transition('nextRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(5);
 	});
 });
 
 describe('finishFinalRound transition', () => {
-	test('finishFinalRound transition fails if not final round', () => {
+	test('finishFinalRound transition fails if not final round', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -294,19 +314,18 @@ describe('finishFinalRound transition', () => {
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] },
 						{ playerId: 'player-2', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 3
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(3);
 	});
 
-	test('finishFinalRound transition fails no timer and all players have not guessed', () => {
+	test('finishFinalRound transition fails no timer and all players have not guessed', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -320,19 +339,18 @@ describe('finishFinalRound transition', () => {
 					playerGuesses: [
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(5);
 	});
 
-	test('finishFinalRound transition succeeds no timer and all players have guessed', () => {
+	test('finishFinalRound transition succeeds no timer and all players have guessed', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -341,29 +359,28 @@ describe('finishFinalRound transition', () => {
 			],
 			numberOfRounds: 5,
 			rounds: [
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
 				{
 					location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] },
 					playerGuesses: [
 						{ playerId: 'player-1', guessCoordinates: [-3.7038, 40.4168] },
 						{ playerId: 'player-2', guessCoordinates: [-3.7038, 40.4168] }
 					],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('showResult');
 		expect(ctx.currentRound).toBe(5);
 	});
 
-	test('finishFinalRound transition fails if timer has not completed and not all players have guessed', () => {
+	test('finishFinalRound transition fails if timer has not completed and not all players have guessed', async () => {
 		const futureTimestamp = Date.now() + 60000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -386,12 +403,12 @@ describe('finishFinalRound transition', () => {
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('inRound');
 		expect(ctx.currentRound).toBe(5);
 	});
 
-	test('finishFinalRound transition succeeds if timer has not completed but all players have guessed', () => {
+	test('finishFinalRound transition succeeds if timer has not completed but all players have guessed', async () => {
 		const futureTimestamp = Date.now() + 60000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -402,10 +419,10 @@ describe('finishFinalRound transition', () => {
 			],
 			numberOfRounds: 5,
 			rounds: [
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
 				{
 					location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] },
 					playerGuesses: [
@@ -419,12 +436,12 @@ describe('finishFinalRound transition', () => {
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('showResult');
 		expect(ctx.currentRound).toBe(5);
 	});
 
-	test('finishFinalRound transition succeeds if timer has completed and all players have guessed', () => {
+	test('finishFinalRound transition succeeds if timer has completed and all players have guessed', async () => {
 		const pastTimestamp = Date.now() - 1000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -435,10 +452,10 @@ describe('finishFinalRound transition', () => {
 			],
 			numberOfRounds: 5,
 			rounds: [
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
 				{
 					location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] },
 					playerGuesses: [
@@ -452,12 +469,12 @@ describe('finishFinalRound transition', () => {
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('showResult');
 		expect(ctx.currentRound).toBe(5);
 	});
 
-	test('finishFinalRound transition succeeds if timer has completed and not all players have guessed', () => {
+	test('finishFinalRound transition succeeds if timer has completed and not all players have guessed', async () => {
 		const pastTimestamp = Date.now() - 1000;
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
@@ -468,10 +485,10 @@ describe('finishFinalRound transition', () => {
 			],
 			numberOfRounds: 5,
 			rounds: [
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
-				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [], roundEndTimeStamp: 0 },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
+				{ location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] }, playerGuesses: [] },
 				{
 					location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] },
 					playerGuesses: [
@@ -484,14 +501,14 @@ describe('finishFinalRound transition', () => {
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('finishFinalRound', ctx);
+		await machine.transition('finishFinalRound', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('showResult');
 		expect(ctx.currentRound).toBe(5);
 	});
 });
 
 describe('fatalError transition', () => {
-	test('fatalError transition from lobby state transitions to final', () => {
+	test('fatalError transition from lobby state transitions to final', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [],
@@ -501,11 +518,11 @@ describe('fatalError transition', () => {
 			currentRound: 0
 		};
 
-		const gameState = machine.transition('fatalError', ctx);
+		await machine.transition('fatalError', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('final');
 	});
 
-	test('fatalError transition from inRound state transitions to final', () => {
+	test('fatalError transition from inRound state transitions to final', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -517,18 +534,17 @@ describe('fatalError transition', () => {
 				{
 					location: { location: 'Madrid', coordinates: [-3.7038, 40.4168] },
 					playerGuesses: [],
-					roundEndTimeStamp: 0
 				}
 			],
 			gameStateMachinePhase: 'inRound',
 			currentRound: 1
 		};
 
-		const gameState = machine.transition('fatalError', ctx);
+		await machine.transition('fatalError', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('final');
 	});
 
-	test('fatalError transition from showResult state transitions to final', () => {
+	test('fatalError transition from showResult state transitions to final', async () => {
 		const ctx: GameContext = {
 			gameOwnerId: 'host-123',
 			players: [
@@ -541,7 +557,7 @@ describe('fatalError transition', () => {
 			currentRound: 5
 		};
 
-		const gameState = machine.transition('fatalError', ctx);
+		await machine.transition('fatalError', ctx);
 		expect(ctx.gameStateMachinePhase).toBe('final');
 	});
 });

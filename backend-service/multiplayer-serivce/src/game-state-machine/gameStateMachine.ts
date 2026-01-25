@@ -4,6 +4,7 @@ import type {
 	GameContext,
 	StateMachineDefinition
 } from "../multiplayerGame.types"
+import { fetchRandomLocations } from "./utils"
 
 /**
  * State machine is stateless, so it doesn't actually know what state it's in. This is stored in the context.
@@ -58,8 +59,9 @@ const isRoundComplete = (ctx: GameContext): boolean => {
 		return true
 	}
 	// if timer is set and time has expired
-	if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
-		if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
+	const roundEndTimeStamp = ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp;
+	if (ctx.timer && roundEndTimeStamp !== undefined) {
+		if (Date.now() > roundEndTimeStamp) {
 			return true
 		}
 	}
@@ -98,9 +100,12 @@ const machine = createMachine({
 				target: 'inRound',
 				guard: (ctx: GameContext) => ctx.players.length >= 2,
 				async action(ctx: GameContext) {
-					// set currentRound = 1 in game state
 					ctx.currentRound = 1;
-					// fetch locations into game state
+					const locations = await fetchRandomLocations(ctx.numberOfRounds);
+					ctx.rounds = locations.map((location) => ({
+						location,
+						playerGuesses: []
+					}));
 					console.log('Starting game, currentRound set to:', ctx.currentRound);
 				}
 			},
