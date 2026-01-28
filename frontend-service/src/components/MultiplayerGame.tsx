@@ -163,27 +163,13 @@ const MultiplayerGame = () => {
 
 	return (
 		<div className="relative h-screen">
-			{/* HUD */}
+			{/* HUD - location prompt and waiting status */}
 			<nav className="border-gray-200 pointer-events-none min-h-64">
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">
-					<div className="flex flex-col sm:flex-row items-center gap-4">
-						<div className="p-4 bg-blue-900 rounded-md z-30 shadow-gray-50 shadow-sm">
-							<h2 className="text-2xl text-white font-roboto">
-								Where is <span className="font-bold">{currentRound.location.location}</span>?
-							</h2>
-						</div>
-
-						<div className="p-4 bg-gray-800 rounded-md z-30 shadow-gray-50 shadow-sm">
-							<p className="text-white">
-								Round {gameContext.currentRound} of {gameContext.numberOfRounds}
-							</p>
-						</div>
-
-						<div className="p-4 bg-gray-800 rounded-md z-30 shadow-gray-50 shadow-sm">
-							<p className="text-white">
-								Players: {playersWhoGuessed}/{totalPlayers} guessed
-							</p>
-						</div>
+					<div className="p-4 bg-blue-900 rounded-md z-30 shadow-gray-50 shadow-sm">
+						<h2 className="text-2xl text-white font-roboto">
+							Where is <span className="font-bold">{currentRound.location.location}</span>?
+						</h2>
 					</div>
 
 					{hasSubmittedGuess && !allPlayersGuessed && (
