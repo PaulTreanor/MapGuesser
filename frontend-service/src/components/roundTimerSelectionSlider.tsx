@@ -6,9 +6,10 @@ import { TIMER_OPTIONS } from "../objects/roundTimerSliderOptions";
 
 interface TimeSliderProps {
 	onChange: (hasTimer: boolean, timeMs: number) => void;
+	disabled?: boolean;
 }
 
-const roundTimerSelectionSlider = ({ onChange }: TimeSliderProps) => {
+const roundTimerSelectionSlider = ({ onChange, disabled = false }: TimeSliderProps) => {
     // Get saved preferences or default to "No timer"
     const savedPrefs = getTimerPreferences();
     const defaultIndex = savedPrefs.roundTimerIndex;
@@ -44,7 +45,7 @@ const roundTimerSelectionSlider = ({ onChange }: TimeSliderProps) => {
     };
 
     return (
-        <div className="w-full p-4 bg-background rounded-lg border border-border shadow-sm">
+        <div className={`w-full p-4 bg-background rounded-lg border border-border shadow-sm ${disabled ? 'opacity-50' : ''}`}>
             <Slider.Root
                 className="relative flex items-center select-none touch-none w-full h-6"
                 min={0}
@@ -52,11 +53,12 @@ const roundTimerSelectionSlider = ({ onChange }: TimeSliderProps) => {
                 step={1}
                 value={[index]}
                 onValueChange={handleSliderValueChange}
+                disabled={disabled}
             >
                 <Slider.Track className="bg-blue-300 relative grow rounded-full h-[0.375rem]">
                     <Slider.Range className="absolute bg-blue-800 rounded-full h-full" />
                 </Slider.Track>
-                <Slider.Thumb className="block w-5 h-5 bg-blue-800 hover:bg-blue-800/90 rounded-full shadow-md" />
+                <Slider.Thumb className={`block w-5 h-5 bg-blue-800 rounded-full shadow-md ${disabled ? 'cursor-not-allowed' : 'hover:bg-blue-800/90'}`} />
             </Slider.Root>
 
             <div className="flex justify-between mt-3 text-muted-foreground text-sm">
