@@ -36,7 +36,7 @@ type MultiplayerRound = {
 	roundEndTimeStamp?: number;
 };
 
-type GamePhase = "lobby" | "inRound" | "showResult" | "final";
+type GamePhase = "lobby" | "inRound" | "showRoundResult" | "showResult" | "final";
 
 type GameContext = {
 	gameOwnerId: string;

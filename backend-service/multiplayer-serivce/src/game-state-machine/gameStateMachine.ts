@@ -116,52 +116,56 @@ const machine = createMachine({
 	inRound: {
 		// In this state players submit guesses
 		// Timer is polled on backend for round to end
-		// When timer runs out (if timer) OR all guesses submitted, nextRound is transitioned
-		// Add player scores tot total scores as they come in
+		// When all guesses submitted (or timer expires), roundComplete is transitioned
 		actions: {
 			onEnter() {
 				console.log('inRound: onEnter')
-				// increment
-				// Set round number location as current round in game state
-				// If timer, set timer for round and add to game state
-				// Broadcast the game state object to clients (players)
 			},
 			onExit() {
 				console.log('inRound: onExit')
 			},
 		},
 		transitions: {
-			nextRound: {
-				target: 'inRound',
-				guard: (ctx: GameContext) => {
-					// if final round, don't allow nextRound (should use finishFinalRound instead)
-					if (ctx.currentRound >= ctx.numberOfRounds) {
-						return false
-					}
-					return isRoundComplete(ctx)
-				},
+			roundComplete: {
+				target: 'showRoundResult',
+				guard: (ctx: GameContext) => isRoundComplete(ctx),
 				action(ctx: GameContext) {
-					// currentRound++ in game state
-					ctx.currentRound++;
-					console.log('Moving to next round:', ctx.currentRound);
-				}
-			},
-			finishFinalRound: {
-				target: 'showResult',
-				guard: (ctx: GameContext) => {
-					// if not final round
-					if (ctx.currentRound !== ctx.numberOfRounds) {
-						return false
-					}
-					return isRoundComplete(ctx)
-				},
-				action(ctx: GameContext) {
-					console.log('Final round completed, moving to results');
+					console.log('Round complete, showing round results');
 				}
 			},
 			fatalError: globalTransitions.fatalError,
 		}
 
+	},
+	showRoundResult: {
+		// Show round results with map of all guesses
+		// Host clicks "Next Round" to continue to next round, or "See Final Scores" on last round
+		actions: {
+			onEnter() {
+				console.log('showRoundResult: onEnter')
+			},
+			onExit() {
+				console.log('showRoundResult: onExit')
+			},
+		},
+		transitions: {
+			continueToNextRound: {
+				target: 'inRound',
+				guard: (ctx: GameContext) => ctx.currentRound < ctx.numberOfRounds,
+				action(ctx: GameContext) {
+					ctx.currentRound++;
+					console.log('Continuing to next round:', ctx.currentRound);
+				}
+			},
+			finishFinalRound: {
+				target: 'showResult',
+				guard: (ctx: GameContext) => ctx.currentRound === ctx.numberOfRounds,
+				action(ctx: GameContext) {
+					console.log('Final round results viewed, moving to final scores');
+				}
+			},
+			fatalError: globalTransitions.fatalError,
+		}
 	},
 	showResult: {
 		actions: {

@@ -191,6 +191,54 @@ export class GameRoom extends DurableObject {
 					}
 					break;
 
+				case 'next_round':
+					if (!this.gameContext) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Game context not initialized'
+						}));
+						return;
+					}
+
+					if (this.gameContext.gameStateMachinePhase !== 'showRoundResult') {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Cannot advance round - not in round results phase'
+						}));
+						return;
+					}
+
+					// Only game owner can advance to next round
+					const player = ws.deserializeAttachment() as Player | undefined;
+					if (player?.playerId !== this.gameContext.gameOwnerId) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Only the game owner can advance to the next round'
+						}));
+						return;
+					}
+
+					try {
+						const isLastRound = this.gameContext.currentRound === this.gameContext.numberOfRounds;
+
+						if (isLastRound) {
+							await exportedMachine.machine.transition('finishFinalRound', this.gameContext);
+							console.log('Final round results viewed, moving to final scores');
+						} else {
+							await exportedMachine.machine.transition('continueToNextRound', this.gameContext);
+							console.log('Continuing to next round:', this.gameContext.currentRound);
+						}
+
+						await this.saveAndBroadcastGameState();
+					} catch (error) {
+						console.error('Error advancing round:', error);
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Failed to advance to next round'
+						}));
+					}
+					break;
+
 				case 'submit_guess':
 					if (!this.gameContext) {
 						ws.send(JSON.stringify({
@@ -233,18 +281,12 @@ export class GameRoom extends DurableObject {
 							guessCoordinates
 						});
 
-						// Check if round is complete and transition if needed
-						const isLastRound = this.gameContext.currentRound === this.gameContext.numberOfRounds;
+						// Check if round is complete and transition to showRoundResult
 						const allPlayersGuessed = currentRound.playerGuesses.length === this.gameContext.players.length;
 
 						if (allPlayersGuessed) {
-							if (isLastRound) {
-								await exportedMachine.machine.transition('finishFinalRound', this.gameContext);
-								console.log('Final round complete, moving to showResult');
-							} else {
-								await exportedMachine.machine.transition('nextRound', this.gameContext);
-								console.log('Round complete, moving to next round');
-							}
+							await exportedMachine.machine.transition('roundComplete', this.gameContext);
+							console.log('Round complete, moving to showRoundResult');
 						}
 
 						await this.saveAndBroadcastGameState();

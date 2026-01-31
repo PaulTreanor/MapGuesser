@@ -16,9 +16,9 @@ type Round = {
 	roundEndTimeStamp?: number;
 }
 
-type GameState = "lobby" | "inRound" | "showResult" | "final";
+type GameState = "lobby" | "inRound" | "showRoundResult" | "showResult" | "final";
 
-type Event = "startGame" | "nextRound" | "finishFinalRound" | "gameEnded" | "fatalError";
+type Event = "startGame" | "roundComplete" | "continueToNextRound" | "finishFinalRound" | "gameEnded" | "fatalError";
 
 interface Player {
 	playerId: string;

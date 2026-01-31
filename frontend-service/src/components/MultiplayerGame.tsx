@@ -1,5 +1,6 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import MapboxMap from './MapBoxMap';
+import RoundResultsMap from './RoundResultsMap';
 import Modal from './Modal';
 import { useMultiplayerStore } from '../store/multiplayerStore';
 import { useGameRoom } from '../hooks/useGameRoom';
@@ -7,22 +8,39 @@ import { getPlayerIdentity } from '../utils/guestIdentityUtils';
 import { calculateKm } from '../utils/mapUtils';
 import { Heading, Paragraph } from './typography/Typography';
 import { MapGuesserHeading } from './typography/MapGuesserHeading';
+import { Button } from './ui/button';
+import { ConnectionStatus } from '../objects/connectionStatuses';
 import type { Pin } from '../types/Game.types';
 
 const MultiplayerGame = () => {
 	const { gameData, gameContext, setPlayers, setGameContext } = useMultiplayerStore();
 	const playerIdentityRef = useRef(getPlayerIdentity());
+	const hasJoinedRef = useRef(false);
 
 	// Get gameCode from store or extract from hash as fallback
 	const hash = window.location.hash;
 	const gameCodeFromHash = hash.startsWith('#game-') ? hash.replace('#game-', '') : '';
 	const gameCode = gameData?.gameCode || gameCodeFromHash;
 
-	const { sendMessage } = useGameRoom({
+	const { connectionStatus, sendMessage } = useGameRoom({
 		gameCode: gameCode || '', // Pass empty string if no gameCode, useGameRoom will handle it
 		setPlayers,
 		setGameContext,
 	});
+
+	// Send player_join when connected to ensure WebSocket has player identity attached
+	useEffect(() => {
+		if (connectionStatus === ConnectionStatus.CONNECTED && !hasJoinedRef.current) {
+			const identity = playerIdentityRef.current;
+			sendMessage({
+				type: 'player_join',
+				...identity,
+			});
+			hasJoinedRef.current = true;
+		} else if (connectionStatus === ConnectionStatus.DISCONNECTED) {
+			hasJoinedRef.current = false;
+		}
+	}, [connectionStatus, sendMessage]);
 
 	// Prepare round details - must be before any returns to satisfy hooks rules
 	// This might be null if gameContext is null or round doesn't exist yet
@@ -89,6 +107,94 @@ const MultiplayerGame = () => {
 					<Heading>Waiting for game to start...</Heading>
 				</div>
 			</div>
+		);
+	}
+
+	// Show round results phase - display map with all guesses and scoreboard
+	if (gameContext.gameStateMachinePhase === 'showRoundResult') {
+		const isGameOwner = gameContext.gameOwnerId === currentPlayerId;
+		const isLastRound = gameContext.currentRound === gameContext.numberOfRounds;
+
+		// Calculate scores for this round
+		const roundScores = gameContext.players.map((player) => {
+			const playerGuess = currentRound?.playerGuesses.find(
+				(guess) => guess.playerId === player.playerId
+			);
+
+			const distance = playerGuess && currentRound
+				? calculateKm(playerGuess.guessCoordinates, currentRound.location.coordinates)
+				: null;
+
+			return { player, distance };
+		}).sort((a, b) => {
+			if (a.distance === null) return 1;
+			if (b.distance === null) return -1;
+			return a.distance - b.distance;
+		});
+
+		const handleNextRound = () => {
+			sendMessage({ type: 'next_round' });
+		};
+
+		return (
+			<Modal>
+				<MapGuesserHeading />
+				<br />
+				<Paragraph className="text-center mb-4">
+					Round {gameContext.currentRound} Results - {currentRound?.location.location}
+				</Paragraph>
+
+				{/* Round Results Map */}
+				{currentRound && (
+					<RoundResultsMap
+						actualLocation={{
+							name: currentRound.location.location,
+							coordinates: currentRound.location.coordinates,
+						}}
+						playerGuesses={currentRound.playerGuesses}
+						players={gameContext.players}
+					/>
+				)}
+
+				{/* Round Scoreboard */}
+				<div className="space-y-2 mt-4">
+					{roundScores.map(({ player, distance }, index) => (
+						<div
+							key={player.playerId}
+							className={`flex justify-between items-center p-3 rounded-md ${
+								index === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
+							}`}
+						>
+							<span className="font-medium">
+								{index === 0 && '🎯 '}
+								{player.playerName}
+							</span>
+							<span className="text-green-700 font-semibold">
+								{distance !== null ? `${Math.round(distance)} km` : 'No guess'}
+							</span>
+						</div>
+					))}
+				</div>
+
+				{/* Next Round / See Final Scores button (host only) */}
+				{isGameOwner && (
+					<div className="flex justify-center mt-6">
+						<Button
+							variant="mapguesser"
+							size="xl"
+							onClick={handleNextRound}
+						>
+							{isLastRound ? 'See Final Scores' : 'Next Round'}
+						</Button>
+					</div>
+				)}
+
+				{!isGameOwner && (
+					<Paragraph className="mt-4 text-center text-gray-600 text-sm">
+						Waiting for host to continue...
+					</Paragraph>
+				)}
+			</Modal>
 		);
 	}
 
@@ -182,7 +288,7 @@ const MultiplayerGame = () => {
 
 					{allPlayersGuessed && (
 						<div className="p-4 bg-green-600 rounded-md z-30 shadow-gray-50 shadow-sm mt-4 sm:mt-0">
-							<p className="text-white font-bold">All players have guessed! Moving to next round...</p>
+							<p className="text-white font-bold">All players have guessed! Loading results...</p>
 						</div>
 					)}
 				</div>
