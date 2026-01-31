@@ -1,6 +1,5 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import MapboxMap from './MapBoxMap';
-import RoundResultsMap from './RoundResultsMap';
 import Modal from './Modal';
 import { useMultiplayerStore } from '../store/multiplayerStore';
 import { useGameRoom } from '../hooks/useGameRoom';
@@ -53,6 +52,16 @@ const MultiplayerGame = () => {
 			coordinates: currentRound.location.coordinates,
 		};
 	}, [currentRound?.location.location, currentRound?.location.coordinates]);
+
+	// Memoize multiplayer results data to prevent infinite re-renders
+	const multiplayerResultsData = useMemo(() => {
+		if (!currentRound || !gameContext) return undefined;
+		return {
+			playerGuesses: currentRound.playerGuesses,
+			players: gameContext.players,
+			actualLocation: currentRound.location.coordinates,
+		};
+	}, [currentRound?.playerGuesses, gameContext?.players, currentRound?.location.coordinates]);
 
 	// Check if current player has already submitted a guess for this round
 	// This is derived from game state, not local state, so it's always accurate
@@ -110,7 +119,7 @@ const MultiplayerGame = () => {
 		);
 	}
 
-	// Show round results phase - display map with all guesses and scoreboard
+	// Show round results phase - display full-screen map with all guesses and overlay scoreboard
 	if (gameContext.gameStateMachinePhase === 'showRoundResult') {
 		const isGameOwner = gameContext.gameOwnerId === currentPlayerId;
 		const isLastRound = gameContext.currentRound === gameContext.numberOfRounds;
@@ -137,64 +146,65 @@ const MultiplayerGame = () => {
 		};
 
 		return (
-			<Modal>
-				<MapGuesserHeading />
-				<br />
-				<Paragraph className="text-center mb-4">
-					Round {gameContext.currentRound} Results - {currentRound?.location.location}
-				</Paragraph>
-
-				{/* Round Results Map */}
-				{currentRound && (
-					<RoundResultsMap
-						actualLocation={{
-							name: currentRound.location.location,
-							coordinates: currentRound.location.coordinates,
-						}}
-						playerGuesses={currentRound.playerGuesses}
-						players={gameContext.players}
-					/>
-				)}
-
-				{/* Round Scoreboard */}
-				<div className="space-y-2 mt-4">
-					{roundScores.map(({ player, distance }, index) => (
-						<div
-							key={player.playerId}
-							className={`flex justify-between items-center p-3 rounded-md ${
-								index === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
-							}`}
-						>
-							<span className="font-medium">
-								{index === 0 && '🎯 '}
-								{player.playerName}
-							</span>
-							<span className="text-green-700 font-semibold">
-								{distance !== null ? `${Math.round(distance)} km` : 'No guess'}
-							</span>
-						</div>
-					))}
+			<div className="relative h-screen">
+				{/* Full-screen map showing all guesses */}
+				<div className="absolute top-0 left-0 right-0 bottom-0 pb-8">
+					{roundDetails && (
+						<MapboxMap
+							roundDetails={roundDetails}
+							handleGuess={() => {}}
+							isDisabled={true}
+							multiplayerResults={multiplayerResultsData}
+						/>
+					)}
 				</div>
 
-				{/* Next Round / See Final Scores button (host only) */}
-				{isGameOwner && (
-					<div className="flex justify-center mt-6">
-						<Button
-							variant="mapguesser"
-							size="xl"
-							onClick={handleNextRound}
-						>
-							{isLastRound ? 'See Final Scores' : 'Next Round'}
-						</Button>
-					</div>
-				)}
+				{/* Overlay panel with scoreboard */}
+				<div className="absolute top-4 left-4 z-40 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-sm">
+					<h3 className="text-lg font-bold text-center mb-2">
+						Round {gameContext.currentRound} - {currentRound?.location.location}
+					</h3>
 
-				{!isGameOwner && (
-					<Paragraph className="mt-4 text-center text-gray-600 text-sm">
-						Waiting for host to continue...
-					</Paragraph>
-				)}
-			</Modal>
+					{/* Round Scoreboard */}
+					<div className="space-y-2">
+						{roundScores.map(({ player, distance }, index) => (
+							<div
+								key={player.playerId}
+								className={`flex justify-between items-center p-2 rounded-md ${
+									index === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
+								}`}
+							>
+								<span className="font-medium text-sm">
+									{index === 0 && '🎯 '}
+									{player.playerName}
+								</span>
+								<span className="text-green-700 font-semibold text-sm">
+									{distance !== null ? `${Math.round(distance)} km` : 'No guess'}
+								</span>
+							</div>
+						))}
+					</div>
+
+					{/* Next Round / See Final Scores button (host only) */}
+					{isGameOwner && (
+						<div className="flex justify-center mt-4">
+							<Button
+								variant="mapguesser"
+								size="lg"
+								onClick={handleNextRound}
+							>
+								{isLastRound ? 'See Final Scores' : 'Next Round'}
+							</Button>
+						</div>
+					)}
+
+					{!isGameOwner && (
+						<p className="mt-3 text-center text-gray-600 text-xs">
+							Waiting for host to continue...
+						</p>
+					)}
+				</div>
+			</div>
 		);
 	}
 
