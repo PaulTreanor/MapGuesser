@@ -51,9 +51,10 @@ const MultiplayerGame = () => {
 			location: currentRound.location.location,
 			coordinates: currentRound.location.coordinates,
 		};
-	}, [currentRound?.location.location, currentRound?.location.coordinates]);
+	}, [currentRound?.location.location, currentRound?.location.coordinates?.[0], currentRound?.location.coordinates?.[1]]);
 
 	// Memoize multiplayer results data to prevent infinite re-renders
+	// Use playerGuesses.length to detect when guesses change, and primitive coords for location
 	const multiplayerResultsData = useMemo(() => {
 		if (!currentRound || !gameContext) return undefined;
 		return {
@@ -61,7 +62,7 @@ const MultiplayerGame = () => {
 			players: gameContext.players,
 			actualLocation: currentRound.location.coordinates,
 		};
-	}, [currentRound?.playerGuesses, gameContext?.players, currentRound?.location.coordinates]);
+	}, [currentRound?.playerGuesses?.length, gameContext?.players?.length, currentRound?.location.coordinates?.[0], currentRound?.location.coordinates?.[1]]);
 
 	// Check if current player has already submitted a guess for this round
 	// This is derived from game state, not local state, so it's always accurate
