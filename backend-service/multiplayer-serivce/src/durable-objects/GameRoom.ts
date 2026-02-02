@@ -152,17 +152,19 @@ export class GameRoom extends DurableObject {
 						isGuest: data.isGuest
 					});
 
-					// Add player to game context if not already present
+					// Add player to game context if not already present, or update existing player's name
 					if (this.gameContext) {
-						const playerExists = this.gameContext.players.some(p => p.playerId === data.playerId);
-						if (!playerExists) {
+						const existingPlayerIndex = this.gameContext.players.findIndex(p => p.playerId === data.playerId);
+						if (existingPlayerIndex === -1) {
 							this.gameContext.players.push({
 								playerId: data.playerId,
 								playerName: data.playerName,
 								isGuest: data.isGuest
 							});
-							await this.ctx.storage.put('gameContext', this.gameContext);
+						} else {
+							this.gameContext.players[existingPlayerIndex].playerName = data.playerName;
 						}
+						await this.saveAndBroadcastGameState();
 					}
 
 					this.broadcastPlayerList();

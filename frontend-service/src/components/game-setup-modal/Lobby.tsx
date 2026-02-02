@@ -3,7 +3,7 @@ import { Paragraph } from '../typography/Typography';
 import { Button } from '../ui/button';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { useGameRoom } from '../../hooks/useGameRoom';
-import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
+import { getPlayerIdentity, setGuestName } from '../../utils/guestIdentityUtils';
 import { ConnectionStatus } from '../../objects/connectionStatuses';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
@@ -100,6 +100,15 @@ const Lobby = () => {
 		});
 	};
 
+	const handleNameChange = (newName: string) => {
+		setGuestName(newName);
+		playerIdentityRef.current.playerName = newName;
+		sendMessage({
+			type: 'player_join',
+			...playerIdentityRef.current,
+		});
+	};
+
 	// When game context updates and game has started, transition to game view
 	useEffect(() => {
 		if (gameContext && gameContext.gameStateMachinePhase === 'inRound') {
@@ -115,7 +124,12 @@ const Lobby = () => {
 				Share this code with your friends to join the game!
 			</Paragraph>
 
-			<LobbyPlayersList players={players} gameOwnerId={gameData?.gameOwnerId} />
+			<LobbyPlayersList
+				players={players}
+				gameOwnerId={gameData?.gameOwnerId}
+				currentPlayerId={playerIdentityRef.current.playerId}
+				onNameChange={handleNameChange}
+			/>
 
 			{isGameOwner && (
 				<div className="flex justify-center">

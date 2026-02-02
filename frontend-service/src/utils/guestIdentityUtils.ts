@@ -43,6 +43,10 @@ const clearGuestIdentity = (): void => {
 	localStorage.removeItem(GUEST_NAME_KEY);
 };
 
+const setGuestName = (name: string): void => {
+	localStorage.setItem(GUEST_NAME_KEY, name);
+};
+
 const getPlayerIdentity = (): Player => {
 	return {
 		playerId: getGuestId(),
@@ -58,4 +62,5 @@ export {
 	getGuestName,
 	getPlayerIdentity,
 	clearGuestIdentity,
+	setGuestName,
 };
