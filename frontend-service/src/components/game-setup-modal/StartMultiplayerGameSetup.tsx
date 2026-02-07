@@ -58,7 +58,7 @@ const StartMultiPlayerGameSetup = () => {
 	return (
 		<div>
 			<Subheading>
-				Timer (coming soon )
+				Timer (coming soon)
 			</Subheading>
 			<br />
 			<RoundTimerSelectionSlider onChange={handleTimerChange} disabled={true} />

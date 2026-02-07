@@ -5,7 +5,7 @@ import { notify } from '../context/NotificationContext';
 import { ConnectionStatus } from '../objects/connectionStatuses';
 import type { ConnectionStatusValue } from '../objects/connectionStatuses';
 
-type UseGameRoomOptions = {
+type UseGameRoomProps = {
 	gameCode: string;
 	setPlayers: (playersList: any) => void;
 	setGameContext?: (context: GameContext) => void;
@@ -26,7 +26,7 @@ export const useGameRoom = ({
 	setPlayers,
 	setGameContext,
 	onGameStarting,
-}: UseGameRoomOptions): UseGameRoomReturn => {
+}: UseGameRoomProps): UseGameRoomReturn => {
 	const [connectionStatus, setConnectionStatus] = useState<ConnectionStatusValue>(ConnectionStatus.DISCONNECTED);
 	const wsRef = useRef<WebSocket | null>(null);
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -50,7 +50,6 @@ export const useGameRoom = ({
 				console.log('Player left:', message);
 				break;
 			case 'game_state':
-				console.log('Game state update:', message.gameContext);
 				if (setGameContext && message.gameContext) {
 					setGameContext(message.gameContext as GameContext);
 				}
@@ -62,14 +61,12 @@ export const useGameRoom = ({
 					message: 'Game is starting!',
 					duration: 3000
 				});
-				if (onGameStarting) {
-					onGameStarting();
-				}
+				onGameStarting?.();
 				break;
 			default:
 				break;
 		}
-	}, [setPlayers, setGameContext, onGameStarting]);
+	}, []);
 
 	const disconnect = useCallback(() => {
 		if (reconnectTimeoutRef.current) {
@@ -149,18 +146,11 @@ export const useGameRoom = ({
 		};
 	}, [gameCode]);
 
-	// Connect when component mounts or dependencies change
 	useEffect(() => {
 		if (gameCode) {
 			connect();
 		}
-
-		// Only disconnect when gameCode changes, not on unmount
-		// This allows the WebSocket to persist when transitioning between Lobby and MultiplayerGame
-		return () => {
-			// Don't disconnect on unmount - WebSocket will persist across component transitions
-		};
-	}, [gameCode, connect]);
+	}, [connect]);
 
 	return {
 		connectionStatus,
