@@ -6,12 +6,16 @@ import Lobby from '../../../components/game-setup-modal/Lobby';
 // Mock multiplayer store
 const mockGameData = vi.fn();
 const mockPlayers = vi.fn();
+const mockGameContext = vi.fn();
 const mockSetPlayers = vi.fn();
+const mockSetGameContext = vi.fn();
 vi.mock('../../../store/multiplayerStore', () => ({
 	useMultiplayerStore: () => ({
 		gameData: mockGameData(),
 		players: mockPlayers(),
-		setPlayers: mockSetPlayers
+		gameContext: mockGameContext(),
+		setPlayers: mockSetPlayers,
+		setGameContext: mockSetGameContext,
 	})
 }));
 
@@ -25,12 +29,18 @@ vi.mock('../../../hooks/useGameRoom', () => ({
 	})
 }));
 
+// Mock useFetchGameMetadata hook
+vi.mock('../../../hooks/useFetchGameMetadata', () => ({
+	useFetchGameMetadata: () => ({ isFetching: false })
+}));
+
 describe('Lobby', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		window.location.hash = '';
 		mockConnectionStatus.mockReturnValue('disconnected');
 		mockPlayers.mockReturnValue([]);
+		mockGameContext.mockReturnValue(null);
 		localStorage.clear();
 		localStorage.setItem('mapguesser_guest_id', 'guest_player');
 		localStorage.setItem('mapguesser_guest_name', 'Test Player');
@@ -97,5 +107,35 @@ describe('Lobby', () => {
 		render(<Lobby />);
 
 		expect(screen.queryByText('Start Game')).not.toBeInTheDocument();
+	});
+
+	test('Start Game button is disabled when not connected', () => {
+		window.location.hash = '#lobby-ABC123';
+		mockGameData.mockReturnValue({
+			gameCode: 'ABC123',
+			timer: 60000,
+			gameOwnerId: 'guest_player'
+		});
+		mockConnectionStatus.mockReturnValue('disconnected');
+
+		render(<Lobby />);
+
+		const button = screen.getByText('Start Game');
+		expect(button).toBeDisabled();
+	});
+
+	test('Start Game button is enabled when connected', () => {
+		window.location.hash = '#lobby-ABC123';
+		mockGameData.mockReturnValue({
+			gameCode: 'ABC123',
+			timer: 60000,
+			gameOwnerId: 'guest_player'
+		});
+		mockConnectionStatus.mockReturnValue('connected');
+
+		render(<Lobby />);
+
+		const button = screen.getByText('Start Game');
+		expect(button).not.toBeDisabled();
 	});
 });
