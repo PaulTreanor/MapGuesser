@@ -4,6 +4,7 @@ import type {
 	GameContext,
 	StateMachineDefinition
 } from "../multiplayerGame.types"
+import { fetchRandomLocations } from "./utils"
 
 /**
  * State machine is stateless, so it doesn't actually know what state it's in. This is stored in the context.
@@ -58,8 +59,9 @@ const isRoundComplete = (ctx: GameContext): boolean => {
 		return true
 	}
 	// if timer is set and time has expired
-	if (ctx.timer && ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp) {
-		if (Date.now() > ctx.rounds[ctx.currentRound - 1].roundEndTimeStamp) {
+	const roundEndTimeStamp = ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp;
+	if (ctx.timer && roundEndTimeStamp !== undefined) {
+		if (Date.now() > roundEndTimeStamp) {
 			return true
 		}
 	}
@@ -98,9 +100,12 @@ const machine = createMachine({
 				target: 'inRound',
 				guard: (ctx: GameContext) => ctx.players.length >= 2,
 				async action(ctx: GameContext) {
-					// set currentRound = 1 in game state
 					ctx.currentRound = 1;
-					// fetch locations into game state
+					const locations = await fetchRandomLocations(ctx.numberOfRounds);
+					ctx.rounds = locations.map((location) => ({
+						location,
+						playerGuesses: []
+					}));
 					console.log('Starting game, currentRound set to:', ctx.currentRound);
 				}
 			},
@@ -111,52 +116,56 @@ const machine = createMachine({
 	inRound: {
 		// In this state players submit guesses
 		// Timer is polled on backend for round to end
-		// When timer runs out (if timer) OR all guesses submitted, nextRound is transitioned
-		// Add player scores tot total scores as they come in
+		// When all guesses submitted (or timer expires), roundComplete is transitioned
 		actions: {
 			onEnter() {
 				console.log('inRound: onEnter')
-				// increment
-				// Set round number location as current round in game state
-				// If timer, set timer for round and add to game state
-				// Broadcast the game state object to clients (players)
 			},
 			onExit() {
 				console.log('inRound: onExit')
 			},
 		},
 		transitions: {
-			nextRound: {
-				target: 'inRound',
-				guard: (ctx: GameContext) => {
-					// if final round, don't allow nextRound (should use finishFinalRound instead)
-					if (ctx.currentRound >= ctx.numberOfRounds) {
-						return false
-					}
-					return isRoundComplete(ctx)
-				},
+			roundComplete: {
+				target: 'showRoundResult',
+				guard: (ctx: GameContext) => isRoundComplete(ctx),
 				action(ctx: GameContext) {
-					// currentRound++ in game state
-					ctx.currentRound++;
-					console.log('Moving to next round:', ctx.currentRound);
-				}
-			},
-			finishFinalRound: {
-				target: 'showResult',
-				guard: (ctx: GameContext) => {
-					// if not final round
-					if (ctx.currentRound !== ctx.numberOfRounds) {
-						return false
-					}
-					return isRoundComplete(ctx)
-				},
-				action(ctx: GameContext) {
-					console.log('Final round completed, moving to results');
+					console.log('Round complete, showing round results');
 				}
 			},
 			fatalError: globalTransitions.fatalError,
 		}
 
+	},
+	showRoundResult: {
+		// Show round results with map of all guesses
+		// Host clicks "Next Round" to continue to next round, or "See Final Scores" on last round
+		actions: {
+			onEnter() {
+				console.log('showRoundResult: onEnter')
+			},
+			onExit() {
+				console.log('showRoundResult: onExit')
+			},
+		},
+		transitions: {
+			continueToNextRound: {
+				target: 'inRound',
+				guard: (ctx: GameContext) => ctx.currentRound < ctx.numberOfRounds,
+				action(ctx: GameContext) {
+					ctx.currentRound++;
+					console.log('Continuing to next round:', ctx.currentRound);
+				}
+			},
+			finishFinalRound: {
+				target: 'showResult',
+				guard: (ctx: GameContext) => ctx.currentRound === ctx.numberOfRounds,
+				action(ctx: GameContext) {
+					console.log('Final round results viewed, moving to final scores');
+				}
+			},
+			fatalError: globalTransitions.fatalError,
+		}
 	},
 	showResult: {
 		actions: {

@@ -38,6 +38,10 @@ const getGuestName = (): string => {
 	return guestName;
 };
 
+const setGuestName = (name: string): void => {
+	localStorage.setItem(GUEST_NAME_KEY, name);
+};
+
 const clearGuestIdentity = (): void => {
 	localStorage.removeItem(GUEST_ID_KEY);
 	localStorage.removeItem(GUEST_NAME_KEY);
@@ -56,6 +60,7 @@ export {
 	generateGuestName,
 	getGuestId,
 	getGuestName,
+	setGuestName,
 	getPlayerIdentity,
 	clearGuestIdentity,
 };

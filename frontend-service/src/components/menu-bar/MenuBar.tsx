@@ -3,6 +3,7 @@ import { MENU_BAR_Z_INDEX } from '../../objects/layoutConsts';
 import { numberOfRoundsInGame } from '../../objects/gameConsts';
 import { useGameStore } from "../../store/gameStore"
 import { useRoundStore } from "../../store/roundStore"
+import { useMultiplayerStore } from "../../store/multiplayerStore"
 import MenuBarItem from './MenuBarItem';
 import MenuBarButtonItem from './MenuBarButtonItem';
 import AboutModal from '../AboutModal';
@@ -10,6 +11,7 @@ import AboutModal from '../AboutModal';
 const MenuBar = () => {
 	const { score } = useGameStore();
 	const { currentRound } = useRoundStore();
+	const { gameContext } = useMultiplayerStore();
 	const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
 	const onAboutClick = () => {
@@ -20,7 +22,38 @@ const MenuBar = () => {
 		setIsAboutModalOpen(false);
 	};
 
-	const roundNumberAsDisplayed = currentRound.index + 1;
+	// Check if multiplayer mode
+	const isMultiplayer = gameContext && gameContext.gameStateMachinePhase !== 'lobby';
+
+	// Get round info based on mode
+	const roundNumberAsDisplayed = isMultiplayer
+		? gameContext.currentRound
+		: currentRound.index + 1;
+	const totalRounds = isMultiplayer
+		? gameContext.numberOfRounds
+		: numberOfRoundsInGame;
+
+	const renderScoreContent = () => {
+		if (isMultiplayer) {
+			const currentRoundData = gameContext.rounds[gameContext.currentRound - 1];
+			const playersWhoGuessed = currentRoundData?.playerGuesses.length ?? 0;
+			const totalPlayers = gameContext.players.length;
+
+			return (
+				<>
+					<div className="hidden sm:block">{playersWhoGuessed}/{totalPlayers} guessed</div>
+					<div className="block sm:hidden">{playersWhoGuessed}/{totalPlayers}</div>
+				</>
+			);
+		}
+
+		return (
+			<>
+				<div className="hidden sm:block">{score} points</div>
+				<div className="block sm:hidden">{score} pts</div>
+			</>
+		);
+	};
 
 	return (
 		<>
@@ -33,16 +66,15 @@ const MenuBar = () => {
 						<p className="hidden md:block font-titillium text-blue-800 font-bold">🌎 MapGuesser</p>
 					</MenuBarItem>
 					<MenuBarItem className="ml-auto">
-						<div className="hidden sm:block">{score} points</div>
-						<div className="block sm:hidden">{score} pts</div>
+						{renderScoreContent()}
 					</MenuBarItem>
 					<MenuBarItem>
-						<div className="hidden sm:block">Round {roundNumberAsDisplayed}/{numberOfRoundsInGame}</div>
-						<div className="block sm:hidden">{roundNumberAsDisplayed}/{numberOfRoundsInGame}</div>
+						<div className="hidden sm:block">Round {roundNumberAsDisplayed}/{totalRounds}</div>
+						<div className="block sm:hidden">{roundNumberAsDisplayed}/{totalRounds}</div>
 					</MenuBarItem>
 				</div>
 			</div>
-			
+
 			{isAboutModalOpen && (
 				<AboutModal onClose={onAboutModalClose} />
 			)}

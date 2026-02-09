@@ -1,0 +1,12 @@
+{
+	"editor.formatOnType": false,
+	"editor.autoIndent": "keep",
+	"[javascript]": {
+		"editor.formatOnType": false,
+		"editor.autoIndent": "keep"
+	},
+	"editor.insertSpaces": false,
+	"editor.tabSize": 4,
+	"editor.detectIndentation": false
+}
+

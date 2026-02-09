@@ -58,10 +58,10 @@ const StartMultiPlayerGameSetup = () => {
 	return (
 		<div>
 			<Subheading>
-				Do you want a timer for each round?
+				Timer (coming soon)
 			</Subheading>
 			<br />
-			<RoundTimerSelectionSlider onChange={handleTimerChange} />
+			<RoundTimerSelectionSlider onChange={handleTimerChange} disabled={true} />
 			<br />
 
 			<div className="flex justify-end mr-2">

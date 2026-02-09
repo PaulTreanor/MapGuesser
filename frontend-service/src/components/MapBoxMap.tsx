@@ -9,14 +9,16 @@ import {
 	addLineToMap,
 	addLineSourceToMap,
 	createDistanceMarkerElement,
-	resetMapZoomAndCenter
+	clearMarkersAndPopups,
+	displayMultiplayerResults,
+	resetMapZoomAndCenter,
 } from '../utils/mapboxUtils';
 import { mapBoxMapStyle } from '../objects/mapBoxConsts';
-import { Pin } from '../types/Game.types'
+import type { Pin } from '../types/Game.types';
 import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
-const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) => {
+const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }: MapboxMapProps) => {
 	const WRAPPER_ID = 'map-wrapper';     
 	const mapContainerRef = useRef<HTMLElement | null>(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
@@ -55,9 +57,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 	}
 
 	const clearMap = (map: mapboxgl.Map) => {
-		// Clear existing markers and popups
-		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+		clearMarkersAndPopups();
 
 		// Remove existing line layer and source using the previous line ID
 		if (currentLineIdRef.current) {
@@ -72,10 +72,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 
 	// this method seems to add multiple markers
 	const addMarkersAndLine = (map: mapboxgl.Map, e: MapMouseEvent) => {
-
-		// Remove existing markers
-		document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
-		document.querySelectorAll('.mapboxgl-popup').forEach(popup => popup.remove());
+		clearMarkersAndPopups();
 
 		// Create a new marker and add it to the map at the clicked location
 		new mapboxgl.Marker()
@@ -128,9 +125,9 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 		};
 	}, []);
 
-	// Handle round changes
+	// Handle round changes (normal gameplay)
 	useEffect(() => {
-		if (!mapRef.current) return;
+		if (!mapRef.current || multiplayerResults) return;
 		const map = mapRef.current;
 
 		clearMap(map)
@@ -145,10 +142,11 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 
 		const handleMapClick = (e: MapMouseEvent) => {
 			const lineId = `${roundDetails.location}-line`;
-			// Store new line ID 
+			// Store new line ID
 			currentLineIdRef.current = lineId;
+			const guessCoordinates: Pin = [e.lngLat.lng, e.lngLat.lat];
 			const { guessDistance, customDistanceMarker } = addMarkersAndLine(map, e);
-			handleGuess(guessDistance);
+			handleGuess(guessDistance, guessCoordinates);
 			recentreAndOrZoom(map, customDistanceMarker, guessDistance);
 			// Remove the click event listener
 			map.off('click', handleMapClick);
@@ -160,7 +158,35 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled }: MapboxMapProps) =>
 		return () => {
 			map.off('click', handleMapClick);
 		};
-	}, [roundDetails]);
+	}, [roundDetails, multiplayerResults]);
+
+	// Handle multiplayer results display
+	useEffect(() => {
+		if (!mapRef.current || !multiplayerResults) return;
+		const map = mapRef.current;
+		const { playerGuesses, players, actualLocation } = multiplayerResults;
+
+		const displayResults = () => {
+			displayMultiplayerResults({
+				map,
+				playerGuesses,
+				players,
+				actualLocation,
+				locationName: roundDetails.location,
+			});
+		};
+
+		// Wait for map style to be loaded before adding layers
+		if (map.isStyleLoaded()) {
+			displayResults();
+		} else {
+			map.once('style.load', displayResults);
+		}
+
+		return () => {
+			map.off('style.load', displayResults);
+		};
+	}, [multiplayerResults]);
 	
 	return (
 		<div

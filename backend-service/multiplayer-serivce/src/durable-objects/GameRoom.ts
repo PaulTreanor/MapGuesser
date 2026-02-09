@@ -1,21 +1,55 @@
 import { DurableObject } from 'cloudflare:workers';
 import { Bindings } from '../index.types';
 import { Player } from './GameRoom.types';
+import { exportedMachine } from '../game-state-machine/gameStateMachine';
+import { GameContext } from '../multiplayerGame.types';
 
 /**
  * GameRoom DO - Each instance represents a single multiplayer game room.
  */
 export class GameRoom extends DurableObject {
+	private gameContext: GameContext | null = null;
+
 	constructor(state: DurableObjectState, env: Bindings) {
 		super(state, env);
 	}
 
 	/**
-	 * Initialize the game room with metadata
+	 * Initialize the game room with metadata and game context
 	 */
 	async initialize(gameOwnerId: string, timer: number): Promise<void> {
 		await this.ctx.storage.put('gameOwnerId', gameOwnerId);
 		await this.ctx.storage.put('timer', timer);
+
+		// Initialize game context
+		this.gameContext = exportedMachine.createGameContext({
+			gameOwnerId,
+			numberOfRounds: 5,
+			timer: timer > 0 ? timer : undefined
+		});
+		await this.ctx.storage.put('gameContext', this.gameContext);
+	}
+
+	/**
+	 * Load game context from storage
+	 */
+	private async loadGameContext(): Promise<void> {
+		if (!this.gameContext) {
+			this.gameContext = await this.ctx.storage.get<GameContext>('gameContext') || null;
+		}
+	}
+
+	/**
+	 * Save game context to storage and broadcast to all clients
+	 */
+	private async saveAndBroadcastGameState(): Promise<void> {
+		if (this.gameContext) {
+			await this.ctx.storage.put('gameContext', this.gameContext);
+			this.broadcast({
+				type: 'game_state',
+				gameContext: this.gameContext
+			});
+		}
 	}
 
 	/**
@@ -108,6 +142,8 @@ export class GameRoom extends DurableObject {
 		try {
 			const data = typeof message === 'string' ? JSON.parse(message) : message;
 
+			await this.loadGameContext();
+
 			switch (data.type) {
 				case 'player_join':
 					ws.serializeAttachment({
@@ -116,15 +152,153 @@ export class GameRoom extends DurableObject {
 						isGuest: data.isGuest
 					});
 
+					// Add player to game context if not already present, or update existing player's name
+					if (this.gameContext) {
+						const existingPlayerIndex = this.gameContext.players.findIndex(p => p.playerId === data.playerId);
+						if (existingPlayerIndex === -1) {
+							this.gameContext.players.push({
+								playerId: data.playerId,
+								playerName: data.playerName,
+								isGuest: data.isGuest
+							});
+						} else {
+							this.gameContext.players[existingPlayerIndex].playerName = data.playerName;
+						}
+						await this.saveAndBroadcastGameState();
+					}
+
 					this.broadcastPlayerList();
 					break;
 
 				case 'game_start':
-					this.broadcast({
-						type: 'game_starting',
-						message: 'The game is starting!',
-						timestamp: Date.now()
-					});
+					if (!this.gameContext) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Game context not initialized'
+						}));
+						return;
+					}
+
+					// Trigger state machine transition from lobby to inRound
+					try {
+						const newState = await exportedMachine.machine.transition('startGame', this.gameContext);
+						console.log('Game started, new state:', newState);
+						await this.saveAndBroadcastGameState();
+					} catch (error) {
+						console.error('Error starting game:', error);
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Failed to start game'
+						}));
+					}
+					break;
+
+				case 'next_round':
+					if (!this.gameContext) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Game context not initialized'
+						}));
+						return;
+					}
+
+					if (this.gameContext.gameStateMachinePhase !== 'showRoundResult') {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Cannot advance round - not in round results phase'
+						}));
+						return;
+					}
+
+					// Only game owner can advance to next round
+					const player = ws.deserializeAttachment() as Player | undefined;
+					if (player?.playerId !== this.gameContext.gameOwnerId) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Only the game owner can advance to the next round'
+						}));
+						return;
+					}
+
+					try {
+						const isLastRound = this.gameContext.currentRound === this.gameContext.numberOfRounds;
+
+						if (isLastRound) {
+							await exportedMachine.machine.transition('finishFinalRound', this.gameContext);
+							console.log('Final round results viewed, moving to final scores');
+						} else {
+							await exportedMachine.machine.transition('continueToNextRound', this.gameContext);
+							console.log('Continuing to next round:', this.gameContext.currentRound);
+						}
+
+						await this.saveAndBroadcastGameState();
+					} catch (error) {
+						console.error('Error advancing round:', error);
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Failed to advance to next round'
+						}));
+					}
+					break;
+
+				case 'submit_guess':
+					if (!this.gameContext) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Game context not initialized'
+						}));
+						return;
+					}
+
+					if (this.gameContext.gameStateMachinePhase !== 'inRound') {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Cannot submit guess - game is not in round'
+						}));
+						return;
+					}
+
+					try {
+						const { playerId, guessCoordinates } = data;
+						const currentRoundIndex = this.gameContext.currentRound - 1;
+						const currentRound = this.gameContext.rounds[currentRoundIndex];
+
+						if (!currentRound) {
+							throw new Error('Current round not found');
+						}
+
+						// Check if player already guessed this round
+						const existingGuess = currentRound.playerGuesses.find(g => g.playerId === playerId);
+						if (existingGuess) {
+							ws.send(JSON.stringify({
+								type: 'error',
+								message: 'Already submitted guess for this round'
+							}));
+							return;
+						}
+
+						// Add the guess
+						currentRound.playerGuesses.push({
+							playerId,
+							guessCoordinates
+						});
+
+						// Check if round is complete and transition to showRoundResult
+						const allPlayersGuessed = currentRound.playerGuesses.length === this.gameContext.players.length;
+
+						if (allPlayersGuessed) {
+							await exportedMachine.machine.transition('roundComplete', this.gameContext);
+							console.log('Round complete, moving to showRoundResult');
+						}
+
+						await this.saveAndBroadcastGameState();
+					} catch (error) {
+						console.error('Error submitting guess:', error);
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Failed to submit guess'
+						}));
+					}
 					break;
 
 				default:

@@ -25,8 +25,8 @@ vi.mock('../../../context/NotificationContext', () => ({
 
 // Mock RoundTimerSelectionSlider
 vi.mock('../../../components/roundTimerSelectionSlider', () => ({
-	default: ({ onChange }: { onChange: (hasTimer: boolean, timeMs: number) => void }) => (
-		<div data-testid="timer-slider">
+	default: ({ onChange, disabled }: { onChange: (hasTimer: boolean, timeMs: number) => void; disabled?: boolean }) => (
+		<div data-testid="timer-slider" data-disabled={disabled ? 'true' : 'false'}>
 			<button onClick={() => onChange(true, 60000)}>Set 60s timer</button>
 		</div>
 	)
@@ -49,9 +49,16 @@ describe('StartMultiplayerGameSetup', () => {
 	test('renders heading, timer slider, and create button', () => {
 		render(<StartMultiplayerGameSetup />);
 
-		expect(screen.getByText('Do you want a timer for each round?')).toBeInTheDocument();
+		expect(screen.getByText('Timer (coming soon)')).toBeInTheDocument();
 		expect(screen.getByTestId('timer-slider')).toBeInTheDocument();
 		expect(screen.getByText('Create Game')).toBeInTheDocument();
+	});
+
+	test('timer slider is disabled for multiplayer', () => {
+		render(<StartMultiplayerGameSetup />);
+
+		const timerSlider = screen.getByTestId('timer-slider');
+		expect(timerSlider).toHaveAttribute('data-disabled', 'true');
 	});
 
 	test('button is not disabled by default', () => {

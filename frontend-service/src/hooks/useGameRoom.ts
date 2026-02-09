@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { getMultiplayerServiceWebsocketsUrl } from '../utils/endpointUtils';
-import type { Player, GameRoomMessage } from '../types/MultiplayerServiceApiResponse.types';
+import type { Player, GameRoomMessage, GameContext } from '../types/MultiplayerServiceApiResponse.types';
 import { notify } from '../context/NotificationContext';
 import { ConnectionStatus } from '../objects/connectionStatuses';
 import type { ConnectionStatusValue } from '../objects/connectionStatuses';
 
-type UseGameRoomOptions = {
+type UseGameRoomProps = {
 	gameCode: string;
 	setPlayers: (playersList: any) => void;
+	setGameContext?: (context: GameContext) => void;
+	onGameStarting?: () => void;
 };
 
 type UseGameRoomReturn = {
@@ -22,7 +24,9 @@ type UseGameRoomReturn = {
 export const useGameRoom = ({
 	gameCode,
 	setPlayers,
-}: UseGameRoomOptions): UseGameRoomReturn => {
+	setGameContext,
+	onGameStarting,
+}: UseGameRoomProps): UseGameRoomReturn => {
 	const [connectionStatus, setConnectionStatus] = useState<ConnectionStatusValue>(ConnectionStatus.DISCONNECTED);
 	const wsRef = useRef<WebSocket | null>(null);
 	const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -45,6 +49,11 @@ export const useGameRoom = ({
 			case 'player_left':
 				console.log('Player left:', message);
 				break;
+			case 'game_state':
+				if (setGameContext && message.gameContext) {
+					setGameContext(message.gameContext as GameContext);
+				}
+				break;
 			case 'game_starting':
 				console.log('Game is starting!');
 				notify({
@@ -52,7 +61,7 @@ export const useGameRoom = ({
 					message: 'Game is starting!',
 					duration: 3000
 				});
-				// TODO: Transition to game screen
+				onGameStarting?.();
 				break;
 			default:
 				break;
@@ -137,17 +146,11 @@ export const useGameRoom = ({
 		};
 	}, [gameCode]);
 
-	// Connect when component mounts or dependencies change
 	useEffect(() => {
 		if (gameCode) {
 			connect();
 		}
-
-		// Cleanup on unmount
-		return () => {
-			disconnect();
-		};
-	}, [gameCode, connect, disconnect]);
+	}, [connect]);
 
 	return {
 		connectionStatus,
