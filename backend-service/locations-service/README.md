@@ -57,9 +57,43 @@ wrangler d1 migrations apply locations-db
 wrangler d1 migrations apply locations-db --remote
 ```
 
+### Adding New Locations
+
+Location data is managed in `data/initial-locations.json`. This JSON file is the source of truth for all locations in the game.
+
+**JSON format:**
+```json
+{"location": "City Name", "coordinates": [longitude, latitude]}
+```
+
+Note: Coordinates use GeoJSON convention - `[longitude, latitude]`, not `[latitude, longitude]`.
+
+**To add new locations:**
+
+1. Open `data/initial-locations.json`
+2. Add new location objects to the array:
+   ```json
+   {"location": "Tokyo", "coordinates": [139.6917, 35.6895]},
+   {"location": "Sydney", "coordinates": [151.2093, -33.8688]}
+   ```
+3. Test locally first:
+   ```bash
+   npm run seed
+   npm run dev
+   # Verify at http://localhost:8787/locations
+   ```
+4. Deploy to production:
+   ```bash
+   npm run seed:remote
+   ```
+
+**Tips for finding coordinates:**
+- Google Maps: Right-click a location → "What's here?" shows lat/lng
+- Remember to swap the order: Google shows `latitude, longitude` but the JSON needs `[longitude, latitude]`
+
 ### Seeding the Database
 
-The initial location data is stored in `data/initial-locations.json` and can be loaded into the database using the seeding scripts. These convert the JSON data into SQL statements and execute them against the D1 database.
+The seeding scripts convert `data/initial-locations.json` into SQL statements and execute them against the D1 database. This replaces all existing locations.
 
 To seed the database:
 
