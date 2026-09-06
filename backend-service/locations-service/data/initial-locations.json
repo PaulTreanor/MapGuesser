@@ -1,104 +1,3744 @@
 [
-    {"location": "Paris", "coordinates": [2.3522, 48.8566]},
-    {"location": "Rome", "coordinates": [12.4964, 41.9028]},
-    {"location": "Berlin", "coordinates": [13.4050, 52.5200]},
-    {"location": "Madrid", "coordinates": [-3.7038, 40.4168]},
-    {"location": "Athens", "coordinates": [23.7275, 37.9838]},
-    {"location": "Vienna", "coordinates": [16.3738, 48.2082]},
-    {"location": "Munich", "coordinates": [11.5820, 48.1351]},
-    {"location": "Milan", "coordinates": [9.1900, 45.4642]},
-    {"location": "London", "coordinates": [-0.1276, 51.5074]},
-    {"location": "Amsterdam", "coordinates": [4.8952, 52.3702]},
-    {"location": "Prague", "coordinates": [14.4378, 50.0755]},
-    {"location": "Brussels", "coordinates": [4.3517, 50.8503]},
-    {"location": "Budapest", "coordinates": [19.0402, 47.4979]},
-    {"location": "Warsaw", "coordinates": [21.0122, 52.2297]},
-    {"location": "Dublin", "coordinates": [-6.2603, 53.3498]},
-    {"location": "Copenhagen", "coordinates": [12.5683, 55.6761]},
-    {"location": "Edinburgh", "coordinates": [-3.1883, 55.9533]},
-    {"location": "Zurich", "coordinates": [8.5417, 47.3769]},
-    {"location": "Oslo", "coordinates": [10.7522, 59.9139]},
-    {"location": "Helsinki", "coordinates": [24.9384, 60.1699]},
-    {"location": "Stockholm", "coordinates": [18.0686, 59.3293]},
-    {"location": "Lisbon", "coordinates": [-9.1393, 38.7223]},
-    {"location": "Venice", "coordinates": [12.3155, 45.4408]},
-    {"location": "Frankfurt", "coordinates": [8.6821, 50.1109]},
-    {"location": "Istanbul", "coordinates": [28.9784, 41.0082]},
-    {"location": "Florence", "coordinates": [11.2558, 43.7696]},
-    {"location": "Nice", "coordinates": [7.2620, 43.7102]},
-    {"location": "Luxembourg", "coordinates": [6.1296, 49.8153]},
-    {"location": "Reykjavik", "coordinates": [-21.8278, 64.1265]},
-    {"location": "Valletta", "coordinates": [14.5146, 35.8989]},
-    {"location": "Vilnius", "coordinates": [25.2799, 54.6872]},
-    {"location": "Riga", "coordinates": [24.1052, 56.9496]},
-    {"location": "Tallinn", "coordinates": [24.7536, 59.4370]},
-    {"location": "Sofia", "coordinates": [23.3219, 42.6977]},
-    {"location": "Krakow", "coordinates": [19.9450, 50.0647]},
-    {"location": "Salzburg", "coordinates": [13.0550, 47.8095]},
-    {"location": "Porto", "coordinates": [-8.6103, 41.1496]},
-    {"location": "Bucharest", "coordinates": [26.1025, 44.4268]},
-    {"location": "Belgrade", "coordinates": [20.4489, 44.7866]},
-    {"location": "Saint Petersburg", "coordinates": [30.3609, 59.9311]},
-    {"location": "Sarajevo", "coordinates": [18.4131, 43.8563]},
-    {"location": "Skopje", "coordinates": [21.4254, 41.9981]},
-    {"location": "Barcelona", "coordinates": [2.1540, 41.3902]},
-    {"location": "Geneva", "coordinates": [6.1423, 46.2044]},
-    {"location": "Marseille", "coordinates": [5.3698, 43.2965]},
-    {"location": "Lyon", "coordinates": [4.8357, 45.7640]},
-    {"location": "Turin", "coordinates": [7.6869, 45.0703]},
-    {"location": "Naples", "coordinates": [14.2681, 40.8518]},
-    {"location": "Glasgow", "coordinates": [-4.2518, 55.8642]},
-    {"location": "Seville", "coordinates": [-5.9845, 37.3891]},
-    {"location": "Palermo", "coordinates": [13.3615, 38.1157]},
-    {"location": "Bologna", "coordinates": [11.3426, 44.4949]},
-    {"location": "Bratislava", "coordinates": [17.1077, 48.1486]},
-    {"location": "Ljubljana", "coordinates": [14.5058, 46.0569]},
-    {"location": "Valencia", "coordinates": [-0.3774, 39.4699]},
-    {"location": "Leeds", "coordinates": [-1.5491, 53.8008]},
-    {"location": "Stuttgart", "coordinates": [9.1829, 48.7758]},
-    {"location": "Dortmund", "coordinates": [7.4653, 51.5136]},
-    {"location": "Essen", "coordinates": [7.0123, 51.4566]},
-    {"location": "Leipzig", "coordinates": [12.3731, 51.3397]},
-    {"location": "Dresden", "coordinates": [13.7373, 51.0504]},
-    {"location": "Hanover", "coordinates": [9.7332, 52.3705]},
-    {"location": "Kiev", "coordinates": [30.5234, 50.4501]},
-    {"location": "Minsk", "coordinates": [27.5611, 53.9045]},
-    {"location": "Gothenburg", "coordinates": [11.9746, 57.7089]},
-    {"location": "Hamburg", "coordinates": [9.9937, 53.5511]},
-    {"location": "Gdansk", "coordinates": [18.6466, 54.3520]},
-    {"location": "Bilbao", "coordinates": [-2.9349, 43.2630]},
-    {"location": "Malaga", "coordinates": [-4.4214, 36.7213]},
-    {"location": "Antwerp", "coordinates": [4.4024, 51.2194]},
-    {"location": "Rotterdam", "coordinates": [4.4777, 51.9244]},
-    {"location": "Bordeaux", "coordinates": [-0.5792, 44.8378]},
-    {"location": "Strasbourg", "coordinates": [7.7521, 48.5734]},
-    {"location": "Lille", "coordinates": [3.0573, 50.6292]},
-    {"location": "Toulouse", "coordinates": [1.4442, 43.6047]},
-    {"location": "Nantes", "coordinates": [-1.5534, 47.2184]},
-    {"location": "Montpellier", "coordinates": [3.8767, 43.6108]},
-    {"location": "Genoa", "coordinates": [8.9463, 44.4056]},
-    {"location": "Verona", "coordinates": [10.9917, 45.4384]},
-    {"location": "Bari", "coordinates": [16.8719, 41.1171]},
-    {"location": "Catania", "coordinates": [15.0878, 37.5079]},
-    {"location": "Thessaloniki", "coordinates": [22.9444, 40.6401]},
-    {"location": "Heraklion", "coordinates": [25.1442, 35.3387]},
-    {"location": "Odessa", "coordinates": [30.7233, 46.4825]},
-    {"location": "Lviv", "coordinates": [24.0297, 49.8397]},
-    {"location": "Wroclaw", "coordinates": [17.0385, 51.1079]},
-    {"location": "Poznan", "coordinates": [16.9252, 52.4064]},
-    {"location": "Lodz", "coordinates": [19.4560, 51.7592]},
-    {"location": "Graz", "coordinates": [15.4395, 47.0707]},
-    {"location": "Linz", "coordinates": [14.2858, 48.3069]},
-    {"location": "Innsbruck", "coordinates": [11.3927, 47.2692]},
-    {"location": "Basel", "coordinates": [7.5886, 47.5596]},
-    {"location": "Bern", "coordinates": [7.4474, 46.9480]},
-    {"location": "Lausanne", "coordinates": [6.6323, 46.5197]},
-    {"location": "Malmo", "coordinates": [13.0359, 55.6050]},
-    {"location": "Aarhus", "coordinates": [10.2039, 56.1629]},
-    {"location": "Bergen", "coordinates": [5.3221, 60.3913]},
-    {"location": "Trondheim", "coordinates": [10.3951, 63.4305]},
-    {"location": "Turku", "coordinates": [22.2666, 60.4518]},
-    {"location": "Tampere", "coordinates": [23.7610, 61.4978]},
-    {"location": "Cork", "coordinates": [-8.4656, 51.8985]},
-    {"location": "Galway", "coordinates": [-9.0567, 53.2707]}
+    {
+        "location": "Paris",
+        "coordinates": [
+            2.3522,
+            48.8566
+        ]
+    },
+    {
+        "location": "Rome",
+        "coordinates": [
+            12.4964,
+            41.9028
+        ]
+    },
+    {
+        "location": "Berlin",
+        "coordinates": [
+            13.405,
+            52.52
+        ]
+    },
+    {
+        "location": "Madrid",
+        "coordinates": [
+            -3.7038,
+            40.4168
+        ]
+    },
+    {
+        "location": "Athens",
+        "coordinates": [
+            23.7275,
+            37.9838
+        ]
+    },
+    {
+        "location": "Vienna",
+        "coordinates": [
+            16.3738,
+            48.2082
+        ]
+    },
+    {
+        "location": "Munich",
+        "coordinates": [
+            11.582,
+            48.1351
+        ]
+    },
+    {
+        "location": "Milan",
+        "coordinates": [
+            9.19,
+            45.4642
+        ]
+    },
+    {
+        "location": "London",
+        "coordinates": [
+            -0.1276,
+            51.5074
+        ]
+    },
+    {
+        "location": "Amsterdam",
+        "coordinates": [
+            4.8952,
+            52.3702
+        ]
+    },
+    {
+        "location": "Prague",
+        "coordinates": [
+            14.4378,
+            50.0755
+        ]
+    },
+    {
+        "location": "Brussels",
+        "coordinates": [
+            4.3517,
+            50.8503
+        ]
+    },
+    {
+        "location": "Budapest",
+        "coordinates": [
+            19.0402,
+            47.4979
+        ]
+    },
+    {
+        "location": "Warsaw",
+        "coordinates": [
+            21.0122,
+            52.2297
+        ]
+    },
+    {
+        "location": "Dublin",
+        "coordinates": [
+            -6.2603,
+            53.3498
+        ]
+    },
+    {
+        "location": "Copenhagen",
+        "coordinates": [
+            12.5683,
+            55.6761
+        ]
+    },
+    {
+        "location": "Edinburgh",
+        "coordinates": [
+            -3.1883,
+            55.9533
+        ]
+    },
+    {
+        "location": "Zurich",
+        "coordinates": [
+            8.5417,
+            47.3769
+        ]
+    },
+    {
+        "location": "Oslo",
+        "coordinates": [
+            10.7522,
+            59.9139
+        ]
+    },
+    {
+        "location": "Helsinki",
+        "coordinates": [
+            24.9384,
+            60.1699
+        ]
+    },
+    {
+        "location": "Stockholm",
+        "coordinates": [
+            18.0686,
+            59.3293
+        ]
+    },
+    {
+        "location": "Lisbon",
+        "coordinates": [
+            -9.1393,
+            38.7223
+        ]
+    },
+    {
+        "location": "Venice",
+        "coordinates": [
+            12.3155,
+            45.4408
+        ]
+    },
+    {
+        "location": "Frankfurt",
+        "coordinates": [
+            8.6821,
+            50.1109
+        ]
+    },
+    {
+        "location": "Istanbul",
+        "coordinates": [
+            28.9784,
+            41.0082
+        ]
+    },
+    {
+        "location": "Florence",
+        "coordinates": [
+            11.2558,
+            43.7696
+        ]
+    },
+    {
+        "location": "Nice",
+        "coordinates": [
+            7.262,
+            43.7102
+        ]
+    },
+    {
+        "location": "Luxembourg",
+        "coordinates": [
+            6.1296,
+            49.8153
+        ]
+    },
+    {
+        "location": "Reykjavik",
+        "coordinates": [
+            -21.8278,
+            64.1265
+        ]
+    },
+    {
+        "location": "Valletta",
+        "coordinates": [
+            14.5146,
+            35.8989
+        ]
+    },
+    {
+        "location": "Vilnius",
+        "coordinates": [
+            25.2799,
+            54.6872
+        ]
+    },
+    {
+        "location": "Riga",
+        "coordinates": [
+            24.1052,
+            56.9496
+        ]
+    },
+    {
+        "location": "Tallinn",
+        "coordinates": [
+            24.7536,
+            59.437
+        ]
+    },
+    {
+        "location": "Sofia",
+        "coordinates": [
+            23.3219,
+            42.6977
+        ]
+    },
+    {
+        "location": "Krakow",
+        "coordinates": [
+            19.945,
+            50.0647
+        ]
+    },
+    {
+        "location": "Salzburg",
+        "coordinates": [
+            13.055,
+            47.8095
+        ]
+    },
+    {
+        "location": "Porto",
+        "coordinates": [
+            -8.6103,
+            41.1496
+        ]
+    },
+    {
+        "location": "Bucharest",
+        "coordinates": [
+            26.1025,
+            44.4268
+        ]
+    },
+    {
+        "location": "Belgrade",
+        "coordinates": [
+            20.4489,
+            44.7866
+        ]
+    },
+    {
+        "location": "Saint Petersburg",
+        "coordinates": [
+            30.3609,
+            59.9311
+        ]
+    },
+    {
+        "location": "Sarajevo",
+        "coordinates": [
+            18.4131,
+            43.8563
+        ]
+    },
+    {
+        "location": "Skopje",
+        "coordinates": [
+            21.4254,
+            41.9981
+        ]
+    },
+    {
+        "location": "Barcelona",
+        "coordinates": [
+            2.154,
+            41.3902
+        ]
+    },
+    {
+        "location": "Geneva",
+        "coordinates": [
+            6.1423,
+            46.2044
+        ]
+    },
+    {
+        "location": "Marseille",
+        "coordinates": [
+            5.3698,
+            43.2965
+        ]
+    },
+    {
+        "location": "Lyon",
+        "coordinates": [
+            4.8357,
+            45.764
+        ]
+    },
+    {
+        "location": "Turin",
+        "coordinates": [
+            7.6869,
+            45.0703
+        ]
+    },
+    {
+        "location": "Naples",
+        "coordinates": [
+            14.2681,
+            40.8518
+        ]
+    },
+    {
+        "location": "Glasgow",
+        "coordinates": [
+            -4.2518,
+            55.8642
+        ]
+    },
+    {
+        "location": "Seville",
+        "coordinates": [
+            -5.9845,
+            37.3891
+        ]
+    },
+    {
+        "location": "Palermo",
+        "coordinates": [
+            13.3615,
+            38.1157
+        ]
+    },
+    {
+        "location": "Bologna",
+        "coordinates": [
+            11.3426,
+            44.4949
+        ]
+    },
+    {
+        "location": "Bratislava",
+        "coordinates": [
+            17.1077,
+            48.1486
+        ]
+    },
+    {
+        "location": "Ljubljana",
+        "coordinates": [
+            14.5058,
+            46.0569
+        ]
+    },
+    {
+        "location": "Valencia",
+        "coordinates": [
+            -0.3774,
+            39.4699
+        ]
+    },
+    {
+        "location": "Leeds",
+        "coordinates": [
+            -1.5491,
+            53.8008
+        ]
+    },
+    {
+        "location": "Stuttgart",
+        "coordinates": [
+            9.1829,
+            48.7758
+        ]
+    },
+    {
+        "location": "Dortmund",
+        "coordinates": [
+            7.4653,
+            51.5136
+        ]
+    },
+    {
+        "location": "Essen",
+        "coordinates": [
+            7.0123,
+            51.4566
+        ]
+    },
+    {
+        "location": "Leipzig",
+        "coordinates": [
+            12.3731,
+            51.3397
+        ]
+    },
+    {
+        "location": "Dresden",
+        "coordinates": [
+            13.7373,
+            51.0504
+        ]
+    },
+    {
+        "location": "Hanover",
+        "coordinates": [
+            9.7332,
+            52.3705
+        ]
+    },
+    {
+        "location": "Kiev",
+        "coordinates": [
+            30.5234,
+            50.4501
+        ]
+    },
+    {
+        "location": "Minsk",
+        "coordinates": [
+            27.5611,
+            53.9045
+        ]
+    },
+    {
+        "location": "Gothenburg",
+        "coordinates": [
+            11.9746,
+            57.7089
+        ]
+    },
+    {
+        "location": "Hamburg",
+        "coordinates": [
+            9.9937,
+            53.5511
+        ]
+    },
+    {
+        "location": "Gdansk",
+        "coordinates": [
+            18.6466,
+            54.352
+        ]
+    },
+    {
+        "location": "Bilbao",
+        "coordinates": [
+            -2.9349,
+            43.263
+        ]
+    },
+    {
+        "location": "Malaga",
+        "coordinates": [
+            -4.4214,
+            36.7213
+        ]
+    },
+    {
+        "location": "Antwerp",
+        "coordinates": [
+            4.4024,
+            51.2194
+        ]
+    },
+    {
+        "location": "Rotterdam",
+        "coordinates": [
+            4.4777,
+            51.9244
+        ]
+    },
+    {
+        "location": "Bordeaux",
+        "coordinates": [
+            -0.5792,
+            44.8378
+        ]
+    },
+    {
+        "location": "Strasbourg",
+        "coordinates": [
+            7.7521,
+            48.5734
+        ]
+    },
+    {
+        "location": "Lille",
+        "coordinates": [
+            3.0573,
+            50.6292
+        ]
+    },
+    {
+        "location": "Toulouse",
+        "coordinates": [
+            1.4442,
+            43.6047
+        ]
+    },
+    {
+        "location": "Nantes",
+        "coordinates": [
+            -1.5534,
+            47.2184
+        ]
+    },
+    {
+        "location": "Montpellier",
+        "coordinates": [
+            3.8767,
+            43.6108
+        ]
+    },
+    {
+        "location": "Genoa",
+        "coordinates": [
+            8.9463,
+            44.4056
+        ]
+    },
+    {
+        "location": "Verona",
+        "coordinates": [
+            10.9917,
+            45.4384
+        ]
+    },
+    {
+        "location": "Bari",
+        "coordinates": [
+            16.8719,
+            41.1171
+        ]
+    },
+    {
+        "location": "Catania",
+        "coordinates": [
+            15.0878,
+            37.5079
+        ]
+    },
+    {
+        "location": "Thessaloniki",
+        "coordinates": [
+            22.9444,
+            40.6401
+        ]
+    },
+    {
+        "location": "Heraklion",
+        "coordinates": [
+            25.1442,
+            35.3387
+        ]
+    },
+    {
+        "location": "Odessa",
+        "coordinates": [
+            30.7233,
+            46.4825
+        ]
+    },
+    {
+        "location": "Lviv",
+        "coordinates": [
+            24.0297,
+            49.8397
+        ]
+    },
+    {
+        "location": "Wroclaw",
+        "coordinates": [
+            17.0385,
+            51.1079
+        ]
+    },
+    {
+        "location": "Poznan",
+        "coordinates": [
+            16.9252,
+            52.4064
+        ]
+    },
+    {
+        "location": "Lodz",
+        "coordinates": [
+            19.456,
+            51.7592
+        ]
+    },
+    {
+        "location": "Graz",
+        "coordinates": [
+            15.4395,
+            47.0707
+        ]
+    },
+    {
+        "location": "Linz",
+        "coordinates": [
+            14.2858,
+            48.3069
+        ]
+    },
+    {
+        "location": "Innsbruck",
+        "coordinates": [
+            11.3927,
+            47.2692
+        ]
+    },
+    {
+        "location": "Basel",
+        "coordinates": [
+            7.5886,
+            47.5596
+        ]
+    },
+    {
+        "location": "Bern",
+        "coordinates": [
+            7.4474,
+            46.948
+        ]
+    },
+    {
+        "location": "Lausanne",
+        "coordinates": [
+            6.6323,
+            46.5197
+        ]
+    },
+    {
+        "location": "Malmo",
+        "coordinates": [
+            13.0359,
+            55.605
+        ]
+    },
+    {
+        "location": "Aarhus",
+        "coordinates": [
+            10.2039,
+            56.1629
+        ]
+    },
+    {
+        "location": "Bergen",
+        "coordinates": [
+            5.3221,
+            60.3913
+        ]
+    },
+    {
+        "location": "Trondheim",
+        "coordinates": [
+            10.3951,
+            63.4305
+        ]
+    },
+    {
+        "location": "Turku",
+        "coordinates": [
+            22.2666,
+            60.4518
+        ]
+    },
+    {
+        "location": "Tampere",
+        "coordinates": [
+            23.761,
+            61.4978
+        ]
+    },
+    {
+        "location": "Cork",
+        "coordinates": [
+            -8.4656,
+            51.8985
+        ]
+    },
+    {
+        "location": "Galway",
+        "coordinates": [
+            -9.0567,
+            53.2707
+        ]
+    },
+    {
+        "location": "Tokyo",
+        "coordinates": [
+            139.6917,
+            35.6895
+        ]
+    },
+    {
+        "location": "Beijing",
+        "coordinates": [
+            116.4074,
+            39.9042
+        ]
+    },
+    {
+        "location": "Shanghai",
+        "coordinates": [
+            121.4737,
+            31.2304
+        ]
+    },
+    {
+        "location": "Hong Kong",
+        "coordinates": [
+            114.1694,
+            22.3193
+        ]
+    },
+    {
+        "location": "Seoul",
+        "coordinates": [
+            126.978,
+            37.5665
+        ]
+    },
+    {
+        "location": "Bangkok",
+        "coordinates": [
+            100.5018,
+            13.7563
+        ]
+    },
+    {
+        "location": "Singapore",
+        "coordinates": [
+            103.8198,
+            1.3521
+        ]
+    },
+    {
+        "location": "Delhi",
+        "coordinates": [
+            77.209,
+            28.6139
+        ]
+    },
+    {
+        "location": "Mumbai",
+        "coordinates": [
+            72.8777,
+            19.076
+        ]
+    },
+    {
+        "location": "Kolkata",
+        "coordinates": [
+            88.3639,
+            22.5726
+        ]
+    },
+    {
+        "location": "Bangalore",
+        "coordinates": [
+            77.5946,
+            12.9716
+        ]
+    },
+    {
+        "location": "Chennai",
+        "coordinates": [
+            80.2707,
+            13.0827
+        ]
+    },
+    {
+        "location": "Hyderabad",
+        "coordinates": [
+            78.4867,
+            17.385
+        ]
+    },
+    {
+        "location": "Dubai",
+        "coordinates": [
+            55.2708,
+            25.2048
+        ]
+    },
+    {
+        "location": "Abu Dhabi",
+        "coordinates": [
+            54.3773,
+            24.4539
+        ]
+    },
+    {
+        "location": "Cairo",
+        "coordinates": [
+            31.2357,
+            30.0444
+        ]
+    },
+    {
+        "location": "Tehran",
+        "coordinates": [
+            51.389,
+            35.6892
+        ]
+    },
+    {
+        "location": "Riyadh",
+        "coordinates": [
+            46.7219,
+            24.7136
+        ]
+    },
+    {
+        "location": "Baghdad",
+        "coordinates": [
+            44.3661,
+            33.3152
+        ]
+    },
+    {
+        "location": "Ankara",
+        "coordinates": [
+            32.8597,
+            39.9334
+        ]
+    },
+    {
+        "location": "Jerusalem",
+        "coordinates": [
+            35.2137,
+            31.7683
+        ]
+    },
+    {
+        "location": "Tel Aviv",
+        "coordinates": [
+            34.7818,
+            32.0853
+        ]
+    },
+    {
+        "location": "Amman",
+        "coordinates": [
+            35.9106,
+            31.9539
+        ]
+    },
+    {
+        "location": "Damascus",
+        "coordinates": [
+            36.2765,
+            33.5138
+        ]
+    },
+    {
+        "location": "Beirut",
+        "coordinates": [
+            35.4953,
+            33.8886
+        ]
+    },
+    {
+        "location": "Kuwait City",
+        "coordinates": [
+            47.9774,
+            29.3759
+        ]
+    },
+    {
+        "location": "Doha",
+        "coordinates": [
+            51.531,
+            25.2854
+        ]
+    },
+    {
+        "location": "Muscat",
+        "coordinates": [
+            58.4059,
+            23.588
+        ]
+    },
+    {
+        "location": "Kabul",
+        "coordinates": [
+            69.2075,
+            34.5553
+        ]
+    },
+    {
+        "location": "Islamabad",
+        "coordinates": [
+            73.0479,
+            33.6844
+        ]
+    },
+    {
+        "location": "Karachi",
+        "coordinates": [
+            67.0099,
+            24.8607
+        ]
+    },
+    {
+        "location": "Lahore",
+        "coordinates": [
+            74.3587,
+            31.5204
+        ]
+    },
+    {
+        "location": "Kathmandu",
+        "coordinates": [
+            85.324,
+            27.7172
+        ]
+    },
+    {
+        "location": "Dhaka",
+        "coordinates": [
+            90.4125,
+            23.8103
+        ]
+    },
+    {
+        "location": "Colombo",
+        "coordinates": [
+            79.8612,
+            6.9271
+        ]
+    },
+    {
+        "location": "Hanoi",
+        "coordinates": [
+            105.8342,
+            21.0285
+        ]
+    },
+    {
+        "location": "Ho Chi Minh City",
+        "coordinates": [
+            106.6297,
+            10.8231
+        ]
+    },
+    {
+        "location": "Phnom Penh",
+        "coordinates": [
+            104.916,
+            11.5564
+        ]
+    },
+    {
+        "location": "Kuala Lumpur",
+        "coordinates": [
+            101.6869,
+            3.139
+        ]
+    },
+    {
+        "location": "Jakarta",
+        "coordinates": [
+            106.8456,
+            -6.2088
+        ]
+    },
+    {
+        "location": "Manila",
+        "coordinates": [
+            120.9842,
+            14.5995
+        ]
+    },
+    {
+        "location": "Taipei",
+        "coordinates": [
+            121.5654,
+            25.033
+        ]
+    },
+    {
+        "location": "Ulaanbaatar",
+        "coordinates": [
+            106.9057,
+            47.8864
+        ]
+    },
+    {
+        "location": "Nairobi",
+        "coordinates": [
+            36.8219,
+            -1.2921
+        ]
+    },
+    {
+        "location": "Addis Ababa",
+        "coordinates": [
+            38.7469,
+            9.032
+        ]
+    },
+    {
+        "location": "Khartoum",
+        "coordinates": [
+            32.5599,
+            15.5007
+        ]
+    },
+    {
+        "location": "Kampala",
+        "coordinates": [
+            32.5825,
+            0.3476
+        ]
+    },
+    {
+        "location": "Dar es Salaam",
+        "coordinates": [
+            39.2083,
+            -6.7924
+        ]
+    },
+    {
+        "location": "Kinshasa",
+        "coordinates": [
+            15.2663,
+            -4.4419
+        ]
+    },
+    {
+        "location": "Luanda",
+        "coordinates": [
+            13.2344,
+            -8.8368
+        ]
+    },
+    {
+        "location": "Harare",
+        "coordinates": [
+            31.0492,
+            -17.8252
+        ]
+    },
+    {
+        "location": "Lusaka",
+        "coordinates": [
+            28.2871,
+            -15.3875
+        ]
+    },
+    {
+        "location": "Maputo",
+        "coordinates": [
+            32.5732,
+            -25.9692
+        ]
+    },
+    {
+        "location": "Windhoek",
+        "coordinates": [
+            17.0658,
+            -22.5597
+        ]
+    },
+    {
+        "location": "Pretoria",
+        "coordinates": [
+            28.1881,
+            -25.7479
+        ]
+    },
+    {
+        "location": "Cape Town",
+        "coordinates": [
+            18.4241,
+            -33.9249
+        ]
+    },
+    {
+        "location": "Johannesburg",
+        "coordinates": [
+            28.0473,
+            -26.2041
+        ]
+    },
+    {
+        "location": "Durban",
+        "coordinates": [
+            31.0218,
+            -29.8587
+        ]
+    },
+    {
+        "location": "Lagos",
+        "coordinates": [
+            3.3792,
+            6.5244
+        ]
+    },
+    {
+        "location": "Abuja",
+        "coordinates": [
+            7.5248,
+            9.0765
+        ]
+    },
+    {
+        "location": "Accra",
+        "coordinates": [
+            0.187,
+            5.6037
+        ]
+    },
+    {
+        "location": "Dakar",
+        "coordinates": [
+            -17.4677,
+            14.7167
+        ]
+    },
+    {
+        "location": "Casablanca",
+        "coordinates": [
+            -7.5898,
+            33.5731
+        ]
+    },
+    {
+        "location": "Rabat",
+        "coordinates": [
+            -6.8498,
+            34.0209
+        ]
+    },
+    {
+        "location": "Algiers",
+        "coordinates": [
+            3.0588,
+            36.7538
+        ]
+    },
+    {
+        "location": "Tunis",
+        "coordinates": [
+            10.1658,
+            36.8065
+        ]
+    },
+    {
+        "location": "Tripoli",
+        "coordinates": [
+            13.1913,
+            32.8872
+        ]
+    },
+    {
+        "location": "Mexico City",
+        "coordinates": [
+            -99.1332,
+            19.4326
+        ]
+    },
+    {
+        "location": "Guadalajara",
+        "coordinates": [
+            -103.3496,
+            20.6597
+        ]
+    },
+    {
+        "location": "Monterrey",
+        "coordinates": [
+            -100.3161,
+            25.6866
+        ]
+    },
+    {
+        "location": "Havana",
+        "coordinates": [
+            -82.3666,
+            23.1136
+        ]
+    },
+    {
+        "location": "Guatemala City",
+        "coordinates": [
+            -90.5069,
+            14.6349
+        ]
+    },
+    {
+        "location": "San Salvador",
+        "coordinates": [
+            -89.2182,
+            13.6929
+        ]
+    },
+    {
+        "location": "Managua",
+        "coordinates": [
+            -86.2362,
+            12.1364
+        ]
+    },
+    {
+        "location": "San Jose",
+        "coordinates": [
+            -84.0907,
+            9.9281
+        ]
+    },
+    {
+        "location": "Panama City",
+        "coordinates": [
+            -79.5199,
+            8.9824
+        ]
+    },
+    {
+        "location": "Bogota",
+        "coordinates": [
+            -74.0721,
+            4.711
+        ]
+    },
+    {
+        "location": "Medellin",
+        "coordinates": [
+            -75.5636,
+            6.2476
+        ]
+    },
+    {
+        "location": "Caracas",
+        "coordinates": [
+            -66.9036,
+            10.4806
+        ]
+    },
+    {
+        "location": "Quito",
+        "coordinates": [
+            -78.4678,
+            -0.1807
+        ]
+    },
+    {
+        "location": "Lima",
+        "coordinates": [
+            -77.0428,
+            -12.0464
+        ]
+    },
+    {
+        "location": "La Paz",
+        "coordinates": [
+            -68.1193,
+            -16.5
+        ]
+    },
+    {
+        "location": "Asuncion",
+        "coordinates": [
+            -57.5759,
+            -25.2637
+        ]
+    },
+    {
+        "location": "Montevideo",
+        "coordinates": [
+            -56.1645,
+            -34.9011
+        ]
+    },
+    {
+        "location": "Buenos Aires",
+        "coordinates": [
+            -58.3816,
+            -34.6037
+        ]
+    },
+    {
+        "location": "Santiago",
+        "coordinates": [
+            -70.6693,
+            -33.4489
+        ]
+    },
+    {
+        "location": "Brasilia",
+        "coordinates": [
+            -47.8825,
+            -15.8267
+        ]
+    },
+    {
+        "location": "Sao Paulo",
+        "coordinates": [
+            -46.6333,
+            -23.5505
+        ]
+    },
+    {
+        "location": "Rio de Janeiro",
+        "coordinates": [
+            -43.1729,
+            -22.9068
+        ]
+    },
+    {
+        "location": "Washington DC",
+        "coordinates": [
+            -77.0369,
+            38.9072
+        ]
+    },
+    {
+        "location": "New York City",
+        "coordinates": [
+            -74.006,
+            40.7128
+        ]
+    },
+    {
+        "location": "Los Angeles",
+        "coordinates": [
+            -118.2437,
+            34.0522
+        ]
+    },
+    {
+        "location": "Chicago",
+        "coordinates": [
+            -87.6298,
+            41.8781
+        ]
+    },
+    {
+        "location": "San Francisco",
+        "coordinates": [
+            -122.4194,
+            37.7749
+        ]
+    },
+    {
+        "location": "Boston",
+        "coordinates": [
+            -71.0589,
+            42.3601
+        ]
+    },
+    {
+        "location": "Seattle",
+        "coordinates": [
+            -122.3321,
+            47.6062
+        ]
+    },
+    {
+        "location": "Miami",
+        "coordinates": [
+            -80.1918,
+            25.7617
+        ]
+    },
+    {
+        "location": "Las Vegas",
+        "coordinates": [
+            -115.1398,
+            36.1699
+        ]
+    },
+    {
+        "location": "Atlanta",
+        "coordinates": [
+            -84.388,
+            33.749
+        ]
+    },
+    {
+        "location": "Philadelphia",
+        "coordinates": [
+            -75.1652,
+            39.9526
+        ]
+    },
+    {
+        "location": "Phoenix",
+        "coordinates": [
+            -112.074,
+            33.4484
+        ]
+    },
+    {
+        "location": "San Diego",
+        "coordinates": [
+            -117.1611,
+            32.7157
+        ]
+    },
+    {
+        "location": "Denver",
+        "coordinates": [
+            -104.9903,
+            39.7392
+        ]
+    },
+    {
+        "location": "Houston",
+        "coordinates": [
+            -95.3698,
+            29.7604
+        ]
+    },
+    {
+        "location": "Dallas",
+        "coordinates": [
+            -96.797,
+            32.7767
+        ]
+    },
+    {
+        "location": "Portland",
+        "coordinates": [
+            -122.6765,
+            45.5152
+        ]
+    },
+    {
+        "location": "Detroit",
+        "coordinates": [
+            -83.0458,
+            42.3314
+        ]
+    },
+    {
+        "location": "Minneapolis",
+        "coordinates": [
+            -93.265,
+            44.9778
+        ]
+    },
+    {
+        "location": "New Orleans",
+        "coordinates": [
+            -90.0715,
+            29.9511
+        ]
+    },
+    {
+        "location": "Nashville",
+        "coordinates": [
+            -86.7816,
+            36.1627
+        ]
+    },
+    {
+        "location": "Austin",
+        "coordinates": [
+            -97.7431,
+            30.2672
+        ]
+    },
+    {
+        "location": "Toronto",
+        "coordinates": [
+            -79.3832,
+            43.6532
+        ]
+    },
+    {
+        "location": "Montreal",
+        "coordinates": [
+            -73.5673,
+            45.5017
+        ]
+    },
+    {
+        "location": "Vancouver",
+        "coordinates": [
+            -123.1207,
+            49.2827
+        ]
+    },
+    {
+        "location": "Ottawa",
+        "coordinates": [
+            -75.6972,
+            45.4215
+        ]
+    },
+    {
+        "location": "Calgary",
+        "coordinates": [
+            -114.0719,
+            51.0447
+        ]
+    },
+    {
+        "location": "Edmonton",
+        "coordinates": [
+            -113.4909,
+            53.5461
+        ]
+    },
+    {
+        "location": "Quebec City",
+        "coordinates": [
+            -71.208,
+            46.8139
+        ]
+    },
+    {
+        "location": "Sydney",
+        "coordinates": [
+            151.2093,
+            -33.8688
+        ]
+    },
+    {
+        "location": "Melbourne",
+        "coordinates": [
+            144.9631,
+            -37.8136
+        ]
+    },
+    {
+        "location": "Brisbane",
+        "coordinates": [
+            153.0251,
+            -27.4698
+        ]
+    },
+    {
+        "location": "Perth",
+        "coordinates": [
+            115.8605,
+            -31.9505
+        ]
+    },
+    {
+        "location": "Adelaide",
+        "coordinates": [
+            138.6007,
+            -34.9285
+        ]
+    },
+    {
+        "location": "Canberra",
+        "coordinates": [
+            149.13,
+            -35.2809
+        ]
+    },
+    {
+        "location": "Wellington",
+        "coordinates": [
+            174.7762,
+            -41.2865
+        ]
+    },
+    {
+        "location": "Auckland",
+        "coordinates": [
+            174.7633,
+            -36.8485
+        ]
+    },
+    {
+        "location": "Christchurch",
+        "coordinates": [
+            172.6362,
+            -43.5321
+        ]
+    },
+    {
+        "location": "Guangzhou",
+        "coordinates": [
+            113.2644,
+            23.1291
+        ]
+    },
+    {
+        "location": "Shenzhen",
+        "coordinates": [
+            114.0579,
+            22.5431
+        ]
+    },
+    {
+        "location": "Chengdu",
+        "coordinates": [
+            104.0668,
+            30.5728
+        ]
+    },
+    {
+        "location": "Xi'an",
+        "coordinates": [
+            108.9398,
+            34.3416
+        ]
+    },
+    {
+        "location": "Chongqing",
+        "coordinates": [
+            106.5516,
+            29.563
+        ]
+    },
+    {
+        "location": "Wuhan",
+        "coordinates": [
+            114.3055,
+            30.5928
+        ]
+    },
+    {
+        "location": "Nanjing",
+        "coordinates": [
+            118.7969,
+            32.0603
+        ]
+    },
+    {
+        "location": "Tianjin",
+        "coordinates": [
+            117.3616,
+            39.3434
+        ]
+    },
+    {
+        "location": "Hangzhou",
+        "coordinates": [
+            120.1551,
+            30.2741
+        ]
+    },
+    {
+        "location": "Suzhou",
+        "coordinates": [
+            120.5954,
+            31.2989
+        ]
+    },
+    {
+        "location": "Osaka",
+        "coordinates": [
+            135.5022,
+            34.6937
+        ]
+    },
+    {
+        "location": "Kyoto",
+        "coordinates": [
+            135.7681,
+            35.0116
+        ]
+    },
+    {
+        "location": "Yokohama",
+        "coordinates": [
+            139.638,
+            35.4437
+        ]
+    },
+    {
+        "location": "Nagoya",
+        "coordinates": [
+            136.9066,
+            35.1815
+        ]
+    },
+    {
+        "location": "Sapporo",
+        "coordinates": [
+            141.3545,
+            43.0642
+        ]
+    },
+    {
+        "location": "Fukuoka",
+        "coordinates": [
+            130.4017,
+            33.5904
+        ]
+    },
+    {
+        "location": "Hiroshima",
+        "coordinates": [
+            132.4596,
+            34.3853
+        ]
+    },
+    {
+        "location": "Nagasaki",
+        "coordinates": [
+            129.8737,
+            32.7503
+        ]
+    },
+    {
+        "location": "Busan",
+        "coordinates": [
+            129.0756,
+            35.1796
+        ]
+    },
+    {
+        "location": "Incheon",
+        "coordinates": [
+            126.7052,
+            37.4563
+        ]
+    },
+    {
+        "location": "Pyongyang",
+        "coordinates": [
+            125.7625,
+            39.0392
+        ]
+    },
+    {
+        "location": "Lhasa",
+        "coordinates": [
+            91.132,
+            29.65
+        ]
+    },
+    {
+        "location": "Marrakech",
+        "coordinates": [
+            -7.9811,
+            31.6295
+        ]
+    },
+    {
+        "location": "Fez",
+        "coordinates": [
+            -4.9998,
+            34.0181
+        ]
+    },
+    {
+        "location": "Alexandria",
+        "coordinates": [
+            29.9187,
+            31.2001
+        ]
+    },
+    {
+        "location": "Luxor",
+        "coordinates": [
+            32.6396,
+            25.6872
+        ]
+    },
+    {
+        "location": "Wreck of the Titanic",
+        "coordinates": [
+            -49.9469,
+            41.7325
+        ]
+    },
+    {
+        "location": "Pompeii",
+        "coordinates": [
+            14.4847,
+            40.7516
+        ]
+    },
+    {
+        "location": "Mount Everest",
+        "coordinates": [
+            86.925,
+            27.9881
+        ]
+    },
+    {
+        "location": "Area 51",
+        "coordinates": [
+            -115.8111,
+            37.235
+        ]
+    },
+    {
+        "location": "First McDonald's",
+        "coordinates": [
+            -117.9532,
+            34.1379
+        ]
+    },
+    {
+        "location": "Stonehenge",
+        "coordinates": [
+            -1.8262,
+            51.1789
+        ]
+    },
+    {
+        "location": "Timbuktu",
+        "coordinates": [
+            -3.0026,
+            16.7735
+        ]
+    },
+    {
+        "location": "Cape Canaveral",
+        "coordinates": [
+            -80.6077,
+            28.3922
+        ]
+    },
+    {
+        "location": "Point Nemo",
+        "coordinates": [
+            -123.3933,
+            -48.8767
+        ]
+    },
+    {
+        "location": "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+        "coordinates": [
+            -4.1974,
+            53.2236
+        ]
+    },
+    {
+        "location": "Antipode of London",
+        "coordinates": [
+            179.8724,
+            -51.5074
+        ]
+    },
+    {
+        "location": "0,0 Coordinates",
+        "coordinates": [
+            0,
+            0
+        ]
+    },
+    {
+        "location": "K2",
+        "coordinates": [
+            76.5133,
+            35.8825
+        ]
+    },
+    {
+        "location": "Kangchenjunga",
+        "coordinates": [
+            88.1475,
+            27.7025
+        ]
+    },
+    {
+        "location": "Lhotse",
+        "coordinates": [
+            86.933,
+            27.9616
+        ]
+    },
+    {
+        "location": "Makalu",
+        "coordinates": [
+            87.0888,
+            27.8894
+        ]
+    },
+    {
+        "location": "Cho Oyu",
+        "coordinates": [
+            86.6608,
+            28.0942
+        ]
+    },
+    {
+        "location": "Dhaulagiri",
+        "coordinates": [
+            83.493,
+            28.6975
+        ]
+    },
+    {
+        "location": "Manaslu",
+        "coordinates": [
+            84.5597,
+            28.5492
+        ]
+    },
+    {
+        "location": "Nanga Parbat",
+        "coordinates": [
+            74.5892,
+            35.2375
+        ]
+    },
+    {
+        "location": "Annapurna",
+        "coordinates": [
+            83.8203,
+            28.5958
+        ]
+    },
+    {
+        "location": "Denali",
+        "coordinates": [
+            -151.0074,
+            63.0692
+        ]
+    },
+    {
+        "location": "Kilimanjaro",
+        "coordinates": [
+            37.3556,
+            -3.0674
+        ]
+    },
+    {
+        "location": "Mount Elbrus",
+        "coordinates": [
+            42.4392,
+            43.3533
+        ]
+    },
+    {
+        "location": "Mont Blanc",
+        "coordinates": [
+            6.8652,
+            45.8326
+        ]
+    },
+    {
+        "location": "Matterhorn",
+        "coordinates": [
+            7.6586,
+            45.9763
+        ]
+    },
+    {
+        "location": "Mount Fuji",
+        "coordinates": [
+            138.7274,
+            35.3606
+        ]
+    },
+    {
+        "location": "Mount Vesuvius",
+        "coordinates": [
+            14.4261,
+            40.8214
+        ]
+    },
+    {
+        "location": "Mount Etna",
+        "coordinates": [
+            14.9955,
+            37.751
+        ]
+    },
+    {
+        "location": "Krakatoa",
+        "coordinates": [
+            105.423,
+            -6.1021
+        ]
+    },
+    {
+        "location": "Mount St. Helens",
+        "coordinates": [
+            -122.1944,
+            46.1914
+        ]
+    },
+    {
+        "location": "Mauna Loa",
+        "coordinates": [
+            -155.6083,
+            19.4756
+        ]
+    },
+    {
+        "location": "Mauna Kea",
+        "coordinates": [
+            -155.4681,
+            19.8207
+        ]
+    },
+    {
+        "location": "Popocatepetl",
+        "coordinates": [
+            -98.6278,
+            19.0229
+        ]
+    },
+    {
+        "location": "Mount Rainier",
+        "coordinates": [
+            -121.7603,
+            46.8523
+        ]
+    },
+    {
+        "location": "Table Mountain",
+        "coordinates": [
+            18.4099,
+            -33.9628
+        ]
+    },
+    {
+        "location": "Uluru",
+        "coordinates": [
+            131.0369,
+            -25.3444
+        ]
+    },
+    {
+        "location": "Mount Rushmore",
+        "coordinates": [
+            -103.459,
+            43.8791
+        ]
+    },
+    {
+        "location": "Niagara Falls",
+        "coordinates": [
+            -79.0747,
+            43.0896
+        ]
+    },
+    {
+        "location": "Victoria Falls",
+        "coordinates": [
+            25.8572,
+            -17.9243
+        ]
+    },
+    {
+        "location": "Angel Falls",
+        "coordinates": [
+            -62.5369,
+            5.9678
+        ]
+    },
+    {
+        "location": "Iguazu Falls",
+        "coordinates": [
+            -54.4367,
+            -25.6953
+        ]
+    },
+    {
+        "location": "Machu Picchu",
+        "coordinates": [
+            -72.545,
+            -13.1631
+        ]
+    },
+    {
+        "location": "Petra",
+        "coordinates": [
+            35.4444,
+            30.3285
+        ]
+    },
+    {
+        "location": "Angkor Wat",
+        "coordinates": [
+            103.867,
+            13.4125
+        ]
+    },
+    {
+        "location": "Taj Mahal",
+        "coordinates": [
+            78.0421,
+            27.1751
+        ]
+    },
+    {
+        "location": "Terracotta Army",
+        "coordinates": [
+            109.2731,
+            34.3848
+        ]
+    },
+    {
+        "location": "Forbidden City",
+        "coordinates": [
+            116.3972,
+            39.9163
+        ]
+    },
+    {
+        "location": "Eiffel Tower",
+        "coordinates": [
+            2.2945,
+            48.8584
+        ]
+    },
+    {
+        "location": "Colosseum",
+        "coordinates": [
+            12.4924,
+            41.8902
+        ]
+    },
+    {
+        "location": "Acropolis",
+        "coordinates": [
+            23.7275,
+            37.9715
+        ]
+    },
+    {
+        "location": "Parthenon",
+        "coordinates": [
+            23.7266,
+            37.9715
+        ]
+    },
+    {
+        "location": "Pantheon",
+        "coordinates": [
+            12.4768,
+            41.8986
+        ]
+    },
+    {
+        "location": "Hagia Sophia",
+        "coordinates": [
+            28.9798,
+            41.0086
+        ]
+    },
+    {
+        "location": "Blue Mosque",
+        "coordinates": [
+            28.9769,
+            41.0054
+        ]
+    },
+    {
+        "location": "Notre-Dame de Paris",
+        "coordinates": [
+            2.3499,
+            48.853
+        ]
+    },
+    {
+        "location": "Westminster Abbey",
+        "coordinates": [
+            -0.1275,
+            51.4993
+        ]
+    },
+    {
+        "location": "St. Peter's Basilica",
+        "coordinates": [
+            12.4534,
+            41.9022
+        ]
+    },
+    {
+        "location": "Sagrada Familia",
+        "coordinates": [
+            2.1744,
+            41.4036
+        ]
+    },
+    {
+        "location": "Alhambra",
+        "coordinates": [
+            -3.5881,
+            37.1761
+        ]
+    },
+    {
+        "location": "Neuschwanstein Castle",
+        "coordinates": [
+            10.7498,
+            47.5576
+        ]
+    },
+    {
+        "location": "Edinburgh Castle",
+        "coordinates": [
+            -3.2008,
+            55.9486
+        ]
+    },
+    {
+        "location": "Tower of London",
+        "coordinates": [
+            -0.0759,
+            51.5081
+        ]
+    },
+    {
+        "location": "Versailles",
+        "coordinates": [
+            2.1204,
+            48.8049
+        ]
+    },
+    {
+        "location": "Buckingham Palace",
+        "coordinates": [
+            -0.1419,
+            51.5014
+        ]
+    },
+    {
+        "location": "Kremlin",
+        "coordinates": [
+            37.6173,
+            55.752
+        ]
+    },
+    {
+        "location": "Red Square",
+        "coordinates": [
+            37.62,
+            55.7539
+        ]
+    },
+    {
+        "location": "Statue of Liberty",
+        "coordinates": [
+            -74.0445,
+            40.6892
+        ]
+    },
+    {
+        "location": "Golden Gate Bridge",
+        "coordinates": [
+            -122.4783,
+            37.8199
+        ]
+    },
+    {
+        "location": "Brooklyn Bridge",
+        "coordinates": [
+            -73.9969,
+            40.7061
+        ]
+    },
+    {
+        "location": "Empire State Building",
+        "coordinates": [
+            -73.9857,
+            40.7484
+        ]
+    },
+    {
+        "location": "Times Square",
+        "coordinates": [
+            -73.9855,
+            40.758
+        ]
+    },
+    {
+        "location": "Hollywood Sign",
+        "coordinates": [
+            -118.3215,
+            34.1341
+        ]
+    },
+    {
+        "location": "Space Needle",
+        "coordinates": [
+            -122.3493,
+            47.6205
+        ]
+    },
+    {
+        "location": "CN Tower",
+        "coordinates": [
+            -79.3871,
+            43.6426
+        ]
+    },
+    {
+        "location": "Christ the Redeemer",
+        "coordinates": [
+            -43.2105,
+            -22.9519
+        ]
+    },
+    {
+        "location": "Big Ben",
+        "coordinates": [
+            -0.1246,
+            51.5007
+        ]
+    },
+    {
+        "location": "Leaning Tower of Pisa",
+        "coordinates": [
+            10.3966,
+            43.723
+        ]
+    },
+    {
+        "location": "Arc de Triomphe",
+        "coordinates": [
+            2.295,
+            48.8738
+        ]
+    },
+    {
+        "location": "Burj Khalifa",
+        "coordinates": [
+            55.2744,
+            25.1972
+        ]
+    },
+    {
+        "location": "Burj Al Arab",
+        "coordinates": [
+            55.1854,
+            25.1413
+        ]
+    },
+    {
+        "location": "Petronas Towers",
+        "coordinates": [
+            101.7117,
+            3.1578
+        ]
+    },
+    {
+        "location": "Sydney Opera House",
+        "coordinates": [
+            151.2153,
+            -33.8568
+        ]
+    },
+    {
+        "location": "Sydney Harbour Bridge",
+        "coordinates": [
+            151.2108,
+            -33.8523
+        ]
+    },
+
+    {
+        "location": "Three Gorges Dam",
+        "coordinates": [
+            111.0014,
+            30.8228
+        ]
+    },
+    {
+        "location": "Hoover Dam",
+        "coordinates": [
+            -114.7378,
+            36.0161
+        ]
+    },
+    {
+        "location": "Itaipu Dam",
+        "coordinates": [
+            -54.5882,
+            -25.4078
+        ]
+    },
+    {
+        "location": "Aswan Dam",
+        "coordinates": [
+            32.8998,
+            23.9704
+        ]
+    },
+    {
+        "location": "CERN",
+        "coordinates": [
+            6.0538,
+            46.2333
+        ]
+    },
+    {
+        "location": "Pentagon",
+        "coordinates": [
+            -77.0532,
+            38.8719
+        ]
+    },
+    {
+        "location": "White House",
+        "coordinates": [
+            -77.0365,
+            38.8977
+        ]
+    },
+    {
+        "location": "United Nations Headquarters",
+        "coordinates": [
+            -73.968,
+            40.7489
+        ]
+    },
+    {
+        "location": "Chernobyl",
+        "coordinates": [
+            30.0989,
+            51.3887
+        ]
+    },
+    {
+        "location": "Hiroshima Peace Memorial",
+        "coordinates": [
+            132.4536,
+            34.3955
+        ]
+    },
+    {
+        "location": "Pearl Harbor",
+        "coordinates": [
+            -157.9447,
+            21.3645
+        ]
+    },
+    {
+        "location": "Gettysburg",
+        "coordinates": [
+            -77.2311,
+            39.8309
+        ]
+    },
+    {
+        "location": "Waterloo",
+        "coordinates": [
+            4.4047,
+            50.68
+        ]
+    },
+    {
+        "location": "Stalingrad",
+        "coordinates": [
+            44.5018,
+            48.708
+        ]
+    },
+    {
+        "location": "Gallipoli",
+        "coordinates": [
+            26.4044,
+            40.1885
+        ]
+    },
+    {
+        "location": "Troy",
+        "coordinates": [
+            26.2389,
+            39.9575
+        ]
+    },
+    {
+        "location": "Thermopylae",
+        "coordinates": [
+            22.5464,
+            38.7969
+        ]
+    },
+    {
+        "location": "Marathon",
+        "coordinates": [
+            23.9633,
+            38.1167
+        ]
+    },
+    {
+        "location": "Masada",
+        "coordinates": [
+            35.3539,
+            31.3156
+        ]
+    },
+    {
+        "location": "Carthage",
+        "coordinates": [
+            10.3233,
+            36.8528
+        ]
+    },
+    {
+        "location": "Persepolis",
+        "coordinates": [
+            52.8906,
+            29.9344
+        ]
+    },
+    {
+        "location": "Babylon",
+        "coordinates": [
+            44.4208,
+            32.5355
+        ]
+    },
+    {
+        "location": "Thebes",
+        "coordinates": [
+            32.6396,
+            25.7188
+        ]
+    },
+    {
+        "location": "Memphis",
+        "coordinates": [
+            31.25,
+            29.8467
+        ]
+    },
+    {
+        "location": "Teotihuacan",
+        "coordinates": [
+            -98.8438,
+            19.6925
+        ]
+    },
+    {
+        "location": "Chichen Itza",
+        "coordinates": [
+            -88.5678,
+            20.6843
+        ]
+    },
+    {
+        "location": "Tikal",
+        "coordinates": [
+            -89.6233,
+            17.2221
+        ]
+    },
+    {
+        "location": "Mesa Verde",
+        "coordinates": [
+            -108.4889,
+            37.2308
+        ]
+    },
+    {
+        "location": "Cahokia",
+        "coordinates": [
+            -90.0615,
+            38.6547
+        ]
+    },
+    {
+        "location": "Great Zimbabwe",
+        "coordinates": [
+            30.9336,
+            -20.2674
+        ]
+    },
+    {
+        "location": "Borobudur",
+        "coordinates": [
+            110.2038,
+            -7.6079
+        ]
+    },
+    {
+        "location": "Bagan",
+        "coordinates": [
+            94.8586,
+            21.1717
+        ]
+    },
+    {
+        "location": "Ayutthaya",
+        "coordinates": [
+            100.5878,
+            14.3532
+        ]
+    },
+    {
+        "location": "Sukhothai",
+        "coordinates": [
+            99.7011,
+            17.0078
+        ]
+    },
+    {
+        "location": "Hampi",
+        "coordinates": [
+            76.4729,
+            15.335
+        ]
+    },
+    {
+        "location": "Ellora Caves",
+        "coordinates": [
+            75.1794,
+            20.0269
+        ]
+    },
+    {
+        "location": "Ajanta Caves",
+        "coordinates": [
+            75.7033,
+            20.5519
+        ]
+    },
+    {
+        "location": "Mecca",
+        "coordinates": [
+            39.8262,
+            21.4225
+        ]
+    },
+    {
+        "location": "Medina",
+        "coordinates": [
+            39.6142,
+            24.5247
+        ]
+    },
+    {
+        "location": "Vatican City",
+        "coordinates": [
+            12.4534,
+            41.9029
+        ]
+    },
+    {
+        "location": "Lourdes",
+        "coordinates": [
+            -0.0588,
+            43.0955
+        ]
+    },
+    {
+        "location": "Fatima",
+        "coordinates": [
+            -8.6726,
+            39.6308
+        ]
+    },
+    {
+        "location": "Santiago de Compostela",
+        "coordinates": [
+            -8.5448,
+            42.8805
+        ]
+    },
+    {
+        "location": "Bodh Gaya",
+        "coordinates": [
+            84.9911,
+            24.6958
+        ]
+    },
+    {
+        "location": "Varanasi",
+        "coordinates": [
+            82.9739,
+            25.3176
+        ]
+    },
+    {
+        "location": "Golden Temple",
+        "coordinates": [
+            74.8765,
+            31.62
+        ]
+    },
+    {
+        "location": "Mount Kailash",
+        "coordinates": [
+            81.3119,
+            31.0669
+        ]
+    },
+    {
+        "location": "Mount Athos",
+        "coordinates": [
+            24.3264,
+            40.1575
+        ]
+    },
+    {
+        "location": "Skellig Michael",
+        "coordinates": [
+            -10.5406,
+            51.7708
+        ]
+    },
+    {
+        "location": "Hobbiton",
+        "coordinates": [
+            175.6833,
+            -37.8722
+        ]
+    },
+    {
+        "location": "Monument Valley",
+        "coordinates": [
+            -110.1145,
+            37.0042
+        ]
+    },
+    {
+        "location": "Wadi Rum",
+        "coordinates": [
+            35.4167,
+            29.5833
+        ]
+    },
+    {
+        "location": "Salar de Uyuni",
+        "coordinates": [
+            -66.8275,
+            -20.3048
+        ]
+    },
+    {
+        "location": "Pamukkale",
+        "coordinates": [
+            29.1211,
+            37.9203
+        ]
+    },
+    {
+        "location": "Giza Pyramids",
+        "coordinates": [
+            31.1342,
+            29.9792
+        ]
+    },
+    {
+        "location": "Sphinx",
+        "coordinates": [
+            31.1376,
+            29.9753
+        ]
+    },
+    {
+        "location": "Dead Sea Scrolls Site",
+        "coordinates": [
+            35.4564,
+            31.7356
+        ]
+    },
+    {
+        "location": "Easter Island",
+        "coordinates": [
+            -109.3497,
+            -27.1127
+        ]
+    },
+    {
+        "location": "Mount Sinai",
+        "coordinates": [
+            33.9742,
+            28.5392
+        ]
+    },
+    {
+        "location": "Mount Ararat",
+        "coordinates": [
+            44.2983,
+            39.7019
+        ]
+    },
+    {
+        "location": "Garden of Gethsemane",
+        "coordinates": [
+            35.2397,
+            31.7794
+        ]
+    },
+    {
+        "location": "Bethlehem",
+        "coordinates": [
+            35.2033,
+            31.7054
+        ]
+    },
+    {
+        "location": "Nazareth",
+        "coordinates": [
+            35.2972,
+            32.7008
+        ]
+    },
+    {
+        "location": "Wailing Wall",
+        "coordinates": [
+            35.2345,
+            31.7768
+        ]
+    },
+    {
+        "location": "Dome of the Rock",
+        "coordinates": [
+            35.2352,
+            31.778
+        ]
+    },
+    {
+        "location": "Mount of Olives",
+        "coordinates": [
+            35.2453,
+            31.7784
+        ]
+    },
+    {
+        "location": "Sea of Galilee",
+        "coordinates": [
+            35.5831,
+            32.8156
+        ]
+    },
+    {
+        "location": "Jordan River",
+        "coordinates": [
+            35.5656,
+            31.8653
+        ]
+    },
+    {
+        "location": "Masada Fortress",
+        "coordinates": [
+            35.3539,
+            31.3156
+        ]
+    },
+    {
+        "location": "Krak des Chevaliers",
+        "coordinates": [
+            36.2942,
+            34.7567
+        ]
+    },
+    {
+        "location": "Samarkand",
+        "coordinates": [
+            66.975,
+            39.6542
+        ]
+    },
+    {
+        "location": "Bukhara",
+        "coordinates": [
+            64.4286,
+            39.7681
+        ]
+    },
+    {
+        "location": "Tashkent",
+        "coordinates": [
+            69.2401,
+            41.2995
+        ]
+    },
+    {
+        "location": "Baku",
+        "coordinates": [
+            49.8671,
+            40.4093
+        ]
+    },
+    {
+        "location": "Tbilisi",
+        "coordinates": [
+            44.7936,
+            41.7151
+        ]
+    },
+    {
+        "location": "Yerevan",
+        "coordinates": [
+            44.5152,
+            40.1872
+        ]
+    },
+    {
+        "location": "Astana",
+        "coordinates": [
+            71.4704,
+            51.1694
+        ]
+    },
+    {
+        "location": "Almaty",
+        "coordinates": [
+            76.8512,
+            43.222
+        ]
+    },
+    {
+        "location": "Bishkek",
+        "coordinates": [
+            74.5698,
+            42.8746
+        ]
+    },
+    {
+        "location": "Dushanbe",
+        "coordinates": [
+            68.7739,
+            38.5598
+        ]
+    },
+    {
+        "location": "Ashgabat",
+        "coordinates": [
+            58.326,
+            37.9601
+        ]
+    },
+    {
+        "location": "Vladivostok",
+        "coordinates": [
+            131.8855,
+            43.1056
+        ]
+    },
+    {
+        "location": "Novosibirsk",
+        "coordinates": [
+            82.9346,
+            55.0084
+        ]
+    },
+    {
+        "location": "Yekaterinburg",
+        "coordinates": [
+            60.6122,
+            56.8389
+        ]
+    },
+    {
+        "location": "Kazan",
+        "coordinates": [
+            49.1221,
+            55.8304
+        ]
+    },
+    {
+        "location": "Sochi",
+        "coordinates": [
+            39.7303,
+            43.5855
+        ]
+    },
+    {
+        "location": "Murmansk",
+        "coordinates": [
+            33.0836,
+            68.9585
+        ]
+    },
+    {
+        "location": "Yakutsk",
+        "coordinates": [
+            129.7422,
+            62.0397
+        ]
+    },
+    {
+        "location": "Petropavlovsk-Kamchatsky",
+        "coordinates": [
+            158.65,
+            53.0242
+        ]
+    },
+    {
+        "location": "Irkutsk",
+        "coordinates": [
+            104.305,
+            52.2978
+        ]
+    },
+    {
+        "location": "Krasnoyarsk",
+        "coordinates": [
+            92.8672,
+            56.0184
+        ]
+    },
+    {
+        "location": "Omsk",
+        "coordinates": [
+            73.3686,
+            54.9885
+        ]
+    },
+    {
+        "location": "Chelyabinsk",
+        "coordinates": [
+            61.4291,
+            55.1644
+        ]
+    },
+    {
+        "location": "Ufa",
+        "coordinates": [
+            55.9578,
+            54.7388
+        ]
+    },
+    {
+        "location": "Samara",
+        "coordinates": [
+            50.1502,
+            53.1952
+        ]
+    },
+    {
+        "location": "Rostov-on-Don",
+        "coordinates": [
+            39.7231,
+            47.2357
+        ]
+    },
+    {
+        "location": "Volgograd",
+        "coordinates": [
+            44.5018,
+            48.708
+        ]
+    },
+    {
+        "location": "Alert",
+        "coordinates": [
+            -62.3481,
+            82.5018
+        ]
+    },
+    {
+        "location": "Longyearbyen",
+        "coordinates": [
+            15.6333,
+            78.2167
+        ]
+    },
+    {
+        "location": "Hammerfest",
+        "coordinates": [
+            23.6828,
+            70.6634
+        ]
+    },
+    {
+        "location": "Tromso",
+        "coordinates": [
+            18.956,
+            69.6489
+        ]
+    },
+    {
+        "location": "Nuuk",
+        "coordinates": [
+            -51.7214,
+            64.1814
+        ]
+    },
+    {
+        "location": "Iqaluit",
+        "coordinates": [
+            -68.517,
+            63.7467
+        ]
+    },
+    {
+        "location": "Barrow",
+        "coordinates": [
+            -156.7886,
+            71.2906
+        ]
+    },
+    {
+        "location": "Eureka",
+        "coordinates": [
+            -85.9408,
+            79.9889
+        ]
+    },
+    {
+        "location": "Qaanaaq",
+        "coordinates": [
+            -69.3636,
+            77.484
+        ]
+    },
+    {
+        "location": "Furnace Creek, Death Valley",
+        "coordinates": [
+            -116.87,
+            36.4586
+        ]
+    },
+    {
+        "location": "Dallol",
+        "coordinates": [
+            40.2897,
+            14.2417
+        ]
+    },
+    {
+        "location": "Kebili",
+        "coordinates": [
+            8.9694,
+            33.7061
+        ]
+    },
+    {
+        "location": "Ahvaz",
+        "coordinates": [
+            48.6842,
+            31.3203
+        ]
+    },
+    {
+        "location": "Kuwait",
+        "coordinates": [
+            47.9774,
+            29.3759
+        ]
+    },
+    {
+        "location": "Basra",
+        "coordinates": [
+            47.7831,
+            30.5085
+        ]
+    },
+    {
+        "location": "Mecca",
+        "coordinates": [
+            39.8262,
+            21.4225
+        ]
+    },
+
+    {
+        "location": "Alice Springs",
+        "coordinates": [
+            133.8807,
+            -23.698
+        ]
+    },
+    {
+        "location": "Darwin",
+        "coordinates": [
+            130.8456,
+            -12.4634
+        ]
+    },
+    {
+        "location": "Hobart",
+        "coordinates": [
+            147.3257,
+            -42.8821
+        ]
+    },
+    {
+        "location": "Rotorua",
+        "coordinates": [
+            176.2497,
+            -38.1368
+        ]
+    },
+    {
+        "location": "Milford Sound",
+        "coordinates": [
+            167.925,
+            -44.6717
+        ]
+    },
+    {
+        "location": "Franz Josef Glacier",
+        "coordinates": [
+            170.1883,
+            -43.4653
+        ]
+    },
+    {
+        "location": "Twelve Apostles",
+        "coordinates": [
+            143.1042,
+            -38.6656
+        ]
+    },
+    {
+        "location": "Mount Cook",
+        "coordinates": [
+            170.0917,
+            -43.595
+        ]
+    },
+    {
+        "location": "Tongariro",
+        "coordinates": [
+            175.6428,
+            -39.13
+        ]
+    },
+    {
+        "location": "Abel Tasman",
+        "coordinates": [
+            173.0167,
+            -40.8333
+        ]
+    },
+    {
+        "location": "Stewart Island",
+        "coordinates": [
+            168.1167,
+            -46.9
+        ]
+    },
+    {
+        "location": "Chatham Islands",
+        "coordinates": [
+            -176.5,
+            -44
+        ]
+    },
+    {
+        "location": "Lord Howe Island",
+        "coordinates": [
+            159.0778,
+            -31.5556
+        ]
+    },
+    {
+        "location": "Norfolk Island",
+        "coordinates": [
+            167.9542,
+            -29.0408
+        ]
+    },
+    {
+        "location": "Pitcairn Island",
+        "coordinates": [
+            -130.1017,
+            -25.0667
+        ]
+    },
+    {
+        "location": "Tristan da Cunha",
+        "coordinates": [
+            -12.3058,
+            -37.1167
+        ]
+    },
+    {
+        "location": "Saint Helena",
+        "coordinates": [
+            -5.7089,
+            -15.965
+        ]
+    },
+    {
+        "location": "Ascension Island",
+        "coordinates": [
+            -14.3559,
+            -7.9467
+        ]
+    },
+
+
+    {
+        "location": "Jan Mayen Island",
+        "coordinates": [
+            -8.5,
+            71
+        ]
+    },
+    {
+        "location": "Bear Island",
+        "coordinates": [
+            19,
+            74.5
+        ]
+    },
+    {
+        "location": "Reunion",
+        "coordinates": [
+            55.5364,
+            -21.1151
+        ]
+    },
+    {
+        "location": "Harvard University",
+        "coordinates": [
+            -71.1167,
+            42.377
+        ]
+    },
+    {
+        "location": "MIT",
+        "coordinates": [
+            -71.0926,
+            42.3601
+        ]
+    },
+    {
+        "location": "Stanford University",
+        "coordinates": [
+            -122.1697,
+            37.4275
+        ]
+    },
+    {
+        "location": "Oxford University",
+        "coordinates": [
+            -1.2544,
+            51.7548
+        ]
+    },
+    {
+        "location": "Cambridge University",
+        "coordinates": [
+            0.1218,
+            52.2053
+        ]
+    },
+    {
+        "location": "Yale University",
+        "coordinates": [
+            -72.9223,
+            41.3163
+        ]
+    },
+    {
+        "location": "Princeton University",
+        "coordinates": [
+            -74.6672,
+            40.3431
+        ]
+    },
+    {
+        "location": "Columbia University",
+        "coordinates": [
+            -73.9626,
+            40.8075
+        ]
+    },
+    {
+        "location": "CalTech University",
+        "coordinates": [
+            -118.125,
+            34.1377
+        ]
+    },
+    {
+        "location": "Yankee Stadium",
+        "coordinates": [
+            -73.9266,
+            40.8296
+        ]
+    },
+    {
+        "location": "Dodger Stadium",
+        "coordinates": [
+            -118.24,
+            34.0739
+        ]
+    },
+    {
+        "location": "Madison Square Garden",
+        "coordinates": [
+            -73.9934,
+            40.7505
+        ]
+    },
+    {
+        "location": "Wimbledon",
+        "coordinates": [
+            -0.2145,
+            51.4344
+        ]
+    },
+    {
+        "location": "Indianapolis Motor Speedway",
+        "coordinates": [
+            -86.235,
+            39.7954
+        ]
+    },
+    {
+        "location": "Daytona International Speedway",
+        "coordinates": [
+            -81.0578,
+            29.1867
+        ]
+    },
+    {
+        "location": "JFK Airport",
+        "coordinates": [
+            -73.7781,
+            40.6413
+        ]
+    },
+    {
+        "location": "Tower of Pisa",
+        "coordinates": [
+            10.3966,
+            43.723
+        ]
+    },
+    {
+        "location": "Mont Saint-Michel",
+        "coordinates": [
+            -1.5114,
+            48.6361
+        ]
+    },
+    {
+        "location": "Palace of Versailles",
+        "coordinates": [
+            2.1204,
+            48.8049
+        ]
+    },
+    {
+        "location": "Carcassonne",
+        "coordinates": [
+            2.3641,
+            43.2061
+        ]
+    },
+    {
+        "location": "Bruges",
+        "coordinates": [
+            3.2247,
+            51.2093
+        ]
+    },
+    {
+        "location": "Giant's Causeway",
+        "coordinates": [
+            -6.5116,
+            55.2408
+        ]
+    },
+    {
+        "location": "Bath",
+        "coordinates": [
+            -2.3599,
+            51.3811
+        ]
+    },
+    {
+        "location": "Canterbury Cathedral",
+        "coordinates": [
+            1.0831,
+            51.2802
+        ]
+    },
+    {
+        "location": "Durham Cathedral",
+        "coordinates": [
+            -1.5768,
+            54.7733
+        ]
+    },
+    {
+        "location": "Skellig Islands",
+        "coordinates": [
+            -10.5406,
+            51.7708
+        ]
+    },
+    {
+        "location": "Van Gogh Museum",
+        "coordinates": [
+            4.881,
+            52.3584
+        ]
+    },
+    {
+        "location": "Anne Frank House",
+        "coordinates": [
+            4.884,
+            52.3752
+        ]
+    },
+    {
+        "location": "Guggenheim New York",
+        "coordinates": [
+            -73.959,
+            40.7829
+        ]
+    },
+    {
+        "location": "Smithsonian National Museum",
+        "coordinates": [
+            -77.02,
+            38.8913
+        ]
+    },
+    {
+        "location": "Tower Bridge",
+        "coordinates": [
+            -0.0754,
+            51.5055
+        ]
+    },
+    {
+        "location": "London Bridge",
+        "coordinates": [
+            -0.0877,
+            51.5078
+        ]
+    },
+    {
+        "location": "Charles Bridge",
+        "coordinates": [
+            14.4114,
+            50.0865
+        ]
+    },
+    {
+        "location": "Rialto Bridge",
+        "coordinates": [
+            12.3359,
+            45.438
+        ]
+    },
+    {
+        "location": "Notre-Dame Cathedral",
+        "coordinates": [
+            2.3499,
+            48.853
+        ]
+    },
+    {
+        "location": "Canterbury Cathedral England",
+        "coordinates": [
+            1.0831,
+            51.2802
+        ]
+    },
+    {
+        "location": "St Paul's Cathedral",
+        "coordinates": [
+            -0.0983,
+            51.5138
+        ]
+    },
+    {
+        "location": "Westminster Cathedral",
+        "coordinates": [
+            -0.1394,
+            51.4956
+        ]
+    },
+    {
+        "location": "Titanic Wreck Site",
+        "coordinates": [
+            -49.9469,
+            41.7325
+        ]
+    },
+    {
+        "location": "Bismarck Wreck",
+        "coordinates": [
+            -16.1167,
+            48.1
+        ]
+    },
+    {
+        "location": "Longyearbyen",
+        "coordinates": [
+            15.6333,
+            78.2167
+        ]
+    },
+    {
+        "location": "South Pole",
+        "coordinates": [
+            0,
+            -90
+        ]
+    },
+    {
+        "location": "North Pole",
+        "coordinates": [
+            0,
+            90
+        ]
+    },
+    {
+        "location": "Geographic Center of USA",
+        "coordinates": [
+            -99.3333,
+            39.8333
+        ]
+    },
+    {
+        "location": "Geographic Center of North America",
+        "coordinates": [
+            -100.3367,
+            48.1667
+        ]
+    },
+    {
+        "location": "Geographic Center of Europe",
+        "coordinates": [
+            25.3167,
+            54.9
+        ]
+    },
+    {
+        "location": "Geographic Center of Asia",
+        "coordinates": [
+            87.3167,
+            43.6833
+        ]
+    },
+    {
+        "location": "Center of Africa",
+        "coordinates": [
+            23,
+            6
+        ]
+    },
+    {
+        "location": "Boring",
+        "coordinates": [
+            -122.3756,
+            45.4301
+        ]
+    },
+    {
+        "location": "Dull",
+        "coordinates": [
+            -3.9667,
+            56.5667
+        ]
+    },
+    {
+        "location": "Bland",
+        "coordinates": [
+            147.5667,
+            -33.6333
+        ]
+    },
+    {
+        "location": "Christmas Island",
+        "coordinates": [
+            105.6167,
+            -10.4833
+        ]
+    },
+    {
+        "location": "Rockall",
+        "coordinates": [
+            -13.6833,
+            57.5967
+        ]
+    },
+    {
+        "location": "Tunguska Event Site",
+        "coordinates": [
+            101.8833,
+            60.8833
+        ]
+    },
+    {
+        "location": "Roswell, New Mexico",
+        "coordinates": [
+            -104.5228,
+            33.3943
+        ]
+    },
+    {
+        "location": "Coldest Temperature Recorded",
+        "coordinates": [
+            106.8372,
+            -78.4644
+        ]
+    },
+    {
+        "location": "Hottest Temperature Recorded",
+        "coordinates": [
+            -116.87,
+            36.4586
+        ]
+    },
+    {
+        "location": "Wettest Place on Earth",
+        "coordinates": [
+            91.7333,
+            25.2667
+        ]
+    },
+    {
+        "location": "Driest Place on Earth",
+        "coordinates": [
+            -70.3,
+            -24.5
+        ]
+    },
+    {
+        "location": "Windiest Place on Earth",
+        "coordinates": [
+            142.6667,
+            -66.6667
+        ]
+    },
+    {
+        "location": "Most Lightning Strikes",
+        "coordinates": [
+            -71.75,
+            9.0333
+        ]
+    }
 ]
