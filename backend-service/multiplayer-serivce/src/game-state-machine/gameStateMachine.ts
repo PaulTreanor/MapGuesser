@@ -53,6 +53,29 @@ const createMachine = (stateMachineDefinition: StateMachineDefinition) => {
 	}
 }
 
+const setRoundEndTimeStamp = (ctx: GameContext): void => {
+	if (!ctx.timer) return;
+	const currentRound = ctx.rounds[ctx.currentRound - 1];
+	if (currentRound) {
+		currentRound.roundEndTimeStamp = Date.now() + ctx.timer;
+	}
+}
+
+const autoSubmitMissingGuesses = (ctx: GameContext): void => {
+	const currentRound = ctx.rounds[ctx.currentRound - 1];
+	if (!currentRound) return;
+
+	const playersWhoGuessed = new Set(currentRound.playerGuesses.map((guess) => guess.playerId));
+	for (const player of ctx.players) {
+		if (!playersWhoGuessed.has(player.playerId)) {
+			currentRound.playerGuesses.push({
+				playerId: player.playerId,
+				timedOut: true,
+			});
+		}
+	}
+}
+
 const isRoundComplete = (ctx: GameContext): boolean => {
 	// if all players have guessed
 	if (ctx.rounds[ctx.currentRound - 1]?.playerGuesses?.length === ctx.players.length) {
@@ -61,7 +84,7 @@ const isRoundComplete = (ctx: GameContext): boolean => {
 	// if timer is set and time has expired
 	const roundEndTimeStamp = ctx.rounds[ctx.currentRound - 1]?.roundEndTimeStamp;
 	if (ctx.timer && roundEndTimeStamp !== undefined) {
-		if (Date.now() > roundEndTimeStamp) {
+		if (Date.now() >= roundEndTimeStamp) {
 			return true
 		}
 	}
@@ -106,6 +129,7 @@ const machine = createMachine({
 						location,
 						playerGuesses: []
 					}));
+					setRoundEndTimeStamp(ctx);
 					console.log('Starting game, currentRound set to:', ctx.currentRound);
 				}
 			},
@@ -130,6 +154,7 @@ const machine = createMachine({
 				target: 'showRoundResult',
 				guard: (ctx: GameContext) => isRoundComplete(ctx),
 				action(ctx: GameContext) {
+					autoSubmitMissingGuesses(ctx);
 					console.log('Round complete, showing round results');
 				}
 			},
@@ -154,6 +179,7 @@ const machine = createMachine({
 				guard: (ctx: GameContext) => ctx.currentRound < ctx.numberOfRounds,
 				action(ctx: GameContext) {
 					ctx.currentRound++;
+					setRoundEndTimeStamp(ctx);
 					console.log('Continuing to next round:', ctx.currentRound);
 				}
 			},

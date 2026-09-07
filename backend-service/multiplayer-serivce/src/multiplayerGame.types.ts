@@ -7,7 +7,8 @@ type Location = {
 
 type PlayerGuess = {
 	playerId: string;
-	guessCoordinates: Pin;
+	guessCoordinates?: Pin;
+	timedOut?: boolean;
 };
 
 type Round = {

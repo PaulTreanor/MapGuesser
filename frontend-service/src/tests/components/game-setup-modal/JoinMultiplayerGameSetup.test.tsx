@@ -128,9 +128,6 @@ describe('JoinMultiplayerGameSetup', () => {
 	test('sets game data and navigates to lobby on successful join', () => {
 		const mockData = {
 			roomId: 'ABC123',
-			status: 'active',
-			expiresAt: '2024-12-31',
-			wsUrl: 'ws://localhost',
 			gameOwnerId: 'user_123'
 		};
 

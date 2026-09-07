@@ -97,10 +97,8 @@ app.get('/join-game/:code', async (c) => {
 
 	return c.json({
 		roomId: code,
-		status: "...",
-		expiresAt: "...",
-		wsUrl: "...",
-		gameOwnerId: metadata.gameOwnerId
+		gameOwnerId: metadata.gameOwnerId,
+		timer: metadata.timer
 	});
 })
 

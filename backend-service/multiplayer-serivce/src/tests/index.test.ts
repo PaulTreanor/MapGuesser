@@ -95,4 +95,11 @@ describe('GET /join-game', () => {
 		expect(json).toHaveProperty('roomId', 'ABCDE')
 		expect(json).toHaveProperty('gameOwnerId', 'guest_123')
 	})
+
+	test('should return the game timer in the join response', async () => {
+		const res = await app.request('/join-game/abcde', {}, mockEnv)
+		expect(res.status).toBe(200)
+		const json = await res.json()
+		expect(json).toHaveProperty('timer', 60)
+	})
 })

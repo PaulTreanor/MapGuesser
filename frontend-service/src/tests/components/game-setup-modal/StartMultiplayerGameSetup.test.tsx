@@ -49,16 +49,16 @@ describe('StartMultiplayerGameSetup', () => {
 	test('renders heading, timer slider, and create button', () => {
 		render(<StartMultiplayerGameSetup />);
 
-		expect(screen.getByText('Timer (coming soon)')).toBeInTheDocument();
+		expect(screen.getByText('Do you want a timer for each round?')).toBeInTheDocument();
 		expect(screen.getByTestId('timer-slider')).toBeInTheDocument();
 		expect(screen.getByText('Create Game')).toBeInTheDocument();
 	});
 
-	test('timer slider is disabled for multiplayer', () => {
+	test('timer slider is not disabled for multiplayer', () => {
 		render(<StartMultiplayerGameSetup />);
 
 		const timerSlider = screen.getByTestId('timer-slider');
-		expect(timerSlider).toHaveAttribute('data-disabled', 'true');
+		expect(timerSlider).toHaveAttribute('data-disabled', 'false');
 	});
 
 	test('button is not disabled by default', () => {

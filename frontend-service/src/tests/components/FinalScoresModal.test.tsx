@@ -20,7 +20,7 @@ describe('FinalScoresModal Component', () => {
 	const createRound = (
 		location: string,
 		coordinates: Pin,
-		guesses: { playerId: string; guessCoordinates: Pin }[]
+		guesses: { playerId: string; guessCoordinates?: Pin; timedOut?: boolean }[]
 	): MultiplayerRound => ({
 		location: { location, coordinates },
 		playerGuesses: guesses,
@@ -81,6 +81,26 @@ describe('FinalScoresModal Component', () => {
 		expect(screen.getByText('Lower scores are better!')).toBeInTheDocument();
 	});
 
+	test('applies MAX_SCORE for a timed out player, keeping them below good guessers', () => {
+		const twoPlayers: Player[] = [
+			createPlayer('p1', 'Alice'),
+			createPlayer('p2', 'Bob'),
+		];
+		const roundsWithTimedOut: MultiplayerRound[] = [
+			createRound('Paris', [48.8566, 2.3522], [
+				{ playerId: 'p1', guessCoordinates: [48.8, 2.3] },   // Alice - close
+				{ playerId: 'p2', timedOut: true },                  // Bob timed out
+			]),
+		];
+
+		render(<FinalScoresModal players={twoPlayers} rounds={roundsWithTimedOut} />);
+
+		// Alice's close guess is a small distance; Bob must be 20000 km (MAX_SCORE)
+		expect(screen.getByText(/Alice/)).toBeInTheDocument();
+		expect(screen.getByText(/Bob/)).toBeInTheDocument();
+		expect(screen.getByText('20000 km')).toBeInTheDocument();
+	});
+
 	test('handles player with no guesses in some rounds', () => {
 		const roundsWithMissingGuess: MultiplayerRound[] = [
 			createRound('Paris', [48.8566, 2.3522], [
@@ -96,6 +116,8 @@ describe('FinalScoresModal Component', () => {
 		expect(screen.getByText(/Alice/)).toBeInTheDocument();
 		expect(screen.getByText(/Bob/)).toBeInTheDocument();
 		expect(screen.getByText(/Charlie/)).toBeInTheDocument();
+		// A player with no guess for a round must get MAX_SCORE, not a better score
+		expect(screen.getByText('20000 km')).toBeInTheDocument();
 	});
 
 	test('handles empty rounds array', () => {

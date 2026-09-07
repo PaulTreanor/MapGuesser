@@ -46,7 +46,7 @@ export const useFetchGameMetadata = (gameCode: string): UseFetchGameMetadataRetu
 				const data = await response.json() as JoinGameResponse;
 				setGameData({
 					gameCode: data.roomId,
-					timer: 0,
+					timer: data.timer ?? 0,
 					gameOwnerId: data.gameOwnerId,
 				});
 			} catch (error) {
