@@ -6,6 +6,7 @@ import { useGameRoom } from '../../hooks/useGameRoom';
 import { useFetchGameMetadata } from '../../hooks/useFetchGameMetadata';
 import { getPlayerIdentity, setGuestName } from '../../utils/guestIdentityUtils';
 import { ConnectionStatus } from '../../objects/connectionStatuses';
+import { getGameCodeFromHash } from '../../utils/gameHashUtils';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
 
@@ -14,8 +15,7 @@ const Lobby = () => {
 	const hasJoinedRef = useRef(false);
 	const playerIdentityRef = useRef(getPlayerIdentity());
 
-	const hash = window.location.hash;
-	const gameCode = hash.replace('#lobby-', '');
+	const gameCode = getGameCodeFromHash(window.location.hash);
 
 	useFetchGameMetadata(gameCode);
 
@@ -30,7 +30,6 @@ const Lobby = () => {
 			window.location.hash = `#game-${gameCode}`;
 		},
 	});
-
 	// Send player join message when connected (only once per connection)
 	useEffect(() => {
 		if (connectionStatus === ConnectionStatus.CONNECTED && !hasJoinedRef.current) {
@@ -66,7 +65,10 @@ const Lobby = () => {
 	// When game context updates and game has started, transition to game view
 	useEffect(() => {
 		if (gameContext && gameContext.gameStateMachinePhase === 'inRound') {
-			window.location.hash = `#game-${gameCode}`;
+			const targetHash = `#game-${gameCode}`;
+			if (window.location.hash !== targetHash) {
+				window.location.hash = targetHash;
+			}
 		}
 	}, [gameContext, gameCode]);
 

@@ -138,4 +138,14 @@ describe('Lobby', () => {
 		const button = screen.getByText('Start Game');
 		expect(button).not.toBeDisabled();
 	});
+
+	test('does not double the game prefix when transitioning to game view', () => {
+		window.location.hash = '#game-ABC123';
+		mockGameData.mockReturnValue(null);
+		mockGameContext.mockReturnValue({ gameStateMachinePhase: 'inRound' });
+
+		render(<Lobby />);
+
+		expect(window.location.hash).toBe('#game-ABC123');
+	});
 });

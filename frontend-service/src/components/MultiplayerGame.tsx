@@ -5,6 +5,7 @@ import { RoundResultsView } from './RoundResultsView';
 import { useMultiplayerStore } from '../store/multiplayerStore';
 import { useGameRoom } from '../hooks/useGameRoom';
 import { getPlayerIdentity } from '../utils/guestIdentityUtils';
+import { getGameCodeFromHash } from '../utils/gameHashUtils';
 import { Heading, Paragraph } from './typography/Typography';
 import { ConnectionStatus } from '../objects/connectionStatuses';
 import type { Pin } from '../types/Game.types';
@@ -15,8 +16,7 @@ const MultiplayerGame = () => {
 	const hasJoinedRef = useRef(false);
 
 	const gameCode = useMemo(() => {
-		const hash = window.location.hash;
-		const gameCodeFromHash = hash.startsWith('#game-') ? hash.replace('#game-', '') : '';
+		const gameCodeFromHash = getGameCodeFromHash(window.location.hash);
 		return gameData?.gameCode || gameCodeFromHash;
 	}, [gameData?.gameCode]);
 
