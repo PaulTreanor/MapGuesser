@@ -8,9 +8,6 @@ type CreateGameResponse = {
 
 type JoinGameResponse = {
 	roomId: string;
-	status: string;
-	expiresAt: string;
-	wsUrl: string;
 	gameOwnerId: string;
 	timer?: number;
 };

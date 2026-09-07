@@ -59,10 +59,8 @@ Resolves room data from a join code. Validates that the game exists in the regis
 ```json
 {
   "roomId": "ABC123",
-  "status": "...",
-  "expiresAt": "...",
-  "wsUrl": "...",
-  "gameOwnerId": "user_12345678"
+  "gameOwnerId": "user_12345678",
+  "timer": 60000
 }
 ```
 
