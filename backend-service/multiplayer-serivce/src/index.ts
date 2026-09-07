@@ -100,7 +100,8 @@ app.get('/join-game/:code', async (c) => {
 		status: "...",
 		expiresAt: "...",
 		wsUrl: "...",
-		gameOwnerId: metadata.gameOwnerId
+		gameOwnerId: metadata.gameOwnerId,
+		timer: metadata.timer
 	});
 })
 

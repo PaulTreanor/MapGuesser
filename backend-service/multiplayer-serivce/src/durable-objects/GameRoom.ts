@@ -4,6 +4,9 @@ import { Player } from './GameRoom.types';
 import { exportedMachine } from '../game-state-machine/gameStateMachine';
 import { GameContext } from '../multiplayerGame.types';
 
+// Buffer added to round-end alarms so the FSM's expiry check always passes
+const ROUND_END_ALARM_BUFFER_MS = 1000;
+
 /**
  * GameRoom DO - Each instance represents a single multiplayer game room.
  */
@@ -49,6 +52,37 @@ export class GameRoom extends DurableObject {
 				type: 'game_state',
 				gameContext: this.gameContext
 			});
+		}
+	}
+
+	/**
+	 * Schedule an alarm for when the current round's timer expires.
+	 * The alarm fires slightly after the deadline so the state machine's
+	 * expiry guard reliably passes regardless of alarm timing precision.
+	 */
+	private async scheduleRoundEndAlarm(): Promise<void> {
+		if (!this.gameContext || this.gameContext.gameStateMachinePhase !== 'inRound') return;
+		const currentRound = this.gameContext.rounds[this.gameContext.currentRound - 1];
+		if (currentRound?.roundEndTimeStamp) {
+			await this.ctx.storage.setAlarm(currentRound.roundEndTimeStamp + ROUND_END_ALARM_BUFFER_MS);
+		}
+	}
+
+	/**
+	 * Handle round timer expiry. Wakes the DO even if it was not active.
+	 */
+	async alarm(): Promise<void> {
+		await this.loadGameContext();
+		if (!this.gameContext || this.gameContext.gameStateMachinePhase !== 'inRound') return;
+
+		try {
+			const newState = await exportedMachine.machine.transition('roundComplete', this.gameContext);
+			if (newState !== 'inRound') {
+				console.log('Timer expired, moving to showRoundResult');
+				await this.saveAndBroadcastGameState();
+			}
+		} catch (error) {
+			console.error('Error completing round after timer expiry:', error);
 		}
 	}
 
@@ -184,6 +218,7 @@ export class GameRoom extends DurableObject {
 						const newState = await exportedMachine.machine.transition('startGame', this.gameContext);
 						console.log('Game started, new state:', newState);
 						await this.saveAndBroadcastGameState();
+						await this.scheduleRoundEndAlarm();
 					} catch (error) {
 						console.error('Error starting game:', error);
 						ws.send(JSON.stringify({
@@ -232,6 +267,7 @@ export class GameRoom extends DurableObject {
 						}
 
 						await this.saveAndBroadcastGameState();
+						await this.scheduleRoundEndAlarm();
 					} catch (error) {
 						console.error('Error advancing round:', error);
 						ws.send(JSON.stringify({
@@ -288,6 +324,7 @@ export class GameRoom extends DurableObject {
 
 						if (allPlayersGuessed) {
 							await exportedMachine.machine.transition('roundComplete', this.gameContext);
+							await this.ctx.storage.deleteAlarm();
 							console.log('Round complete, moving to showRoundResult');
 						}
 
