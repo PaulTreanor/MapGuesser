@@ -11,7 +11,7 @@ type RoundDetails = {
 };
 
 type MultiplayerResultsData = {
-	playerGuesses: { playerId: string; guessCoordinates: Pin }[];
+	playerGuesses: { playerId: string; guessCoordinates?: Pin }[];
 	players: Player[];
 	actualLocation: Pin;
 };
@@ -44,11 +44,11 @@ const RoundResultsView = ({
 			(guess) => guess.playerId === player.playerId
 		);
 
-		const distance = playerGuess && currentRound
+		const distance = playerGuess?.guessCoordinates && currentRound
 			? calculateKm(playerGuess.guessCoordinates, currentRound.location.coordinates)
 			: null;
 
-		return { player, distance };
+		return { player, distance, timedOut: playerGuess?.timedOut ?? false };
 	}).sort((a, b) => {
 		if (a.distance === null) return 1;
 		if (b.distance === null) return -1;
@@ -77,7 +77,7 @@ const RoundResultsView = ({
 
 				{/* Round Scoreboard */}
 				<div className="space-y-2">
-					{roundScores.map(({ player, distance }, index) => (
+					{roundScores.map(({ player, distance, timedOut }, index) => (
 						<div
 							key={player.playerId}
 							className={`flex justify-between items-center p-2 rounded-md ${
@@ -89,7 +89,7 @@ const RoundResultsView = ({
 								{player.playerName}
 							</span>
 							<span className="text-green-700 font-semibold text-sm">
-								{distance !== null ? `${Math.round(distance)} km` : 'No guess'}
+								{distance !== null ? `${Math.round(distance)} km` : timedOut ? 'Timed out' : 'No guess'}
 							</span>
 						</div>
 					))}

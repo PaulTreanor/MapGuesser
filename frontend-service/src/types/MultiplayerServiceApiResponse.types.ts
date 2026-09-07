@@ -12,6 +12,7 @@ type JoinGameResponse = {
 	expiresAt: string;
 	wsUrl: string;
 	gameOwnerId: string;
+	timer?: number;
 };
 
 type Player = {
@@ -27,7 +28,8 @@ type Location = {
 
 type PlayerGuess = {
 	playerId: string;
-	guessCoordinates: Pin;
+	guessCoordinates?: Pin;
+	timedOut?: boolean;
 };
 
 type MultiplayerRound = {

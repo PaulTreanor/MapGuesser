@@ -178,6 +178,8 @@ const displayMultiplayerResults = ({
 
 	// Add markers and lines for each player's guess
 	playerGuesses.forEach((guess) => {
+		if (!guess.guessCoordinates) return;
+
 		const playerIndex = players.findIndex((p) => p.playerId === guess.playerId);
 		const player = players[playerIndex];
 		const playerColor = getPlayerColor(playerIndex);

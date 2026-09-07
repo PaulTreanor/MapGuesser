@@ -8,6 +8,7 @@ import { getPlayerIdentity } from '../utils/guestIdentityUtils';
 import { getGameCodeFromHash } from '../utils/gameHashUtils';
 import { Heading, Paragraph } from './typography/Typography';
 import { ConnectionStatus } from '../objects/connectionStatuses';
+import CountDownProgressBar from './countDownProgressBar';
 import type { Pin } from '../types/Game.types';
 
 const MultiplayerGame = () => {
@@ -146,6 +147,14 @@ const MultiplayerGame = () => {
 	// Actual in round to round component
 	return (
 		<div className="relative h-screen">
+			{currentRound?.roundEndTimeStamp && (
+				<CountDownProgressBar
+					progressBarFullTimeStamp={currentRound.roundEndTimeStamp}
+					className="w-full fixed top-0 left-0 z-50"
+					isPaused={false}
+					isLockedIn={hasSubmittedGuess}
+				/>
+			)}
 			{/* HUD - location prompt and waiting status */}
 			<nav className="border-gray-200 pointer-events-none min-h-64">
 				<div className="mx-4 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between py-4 pointer-events-auto">

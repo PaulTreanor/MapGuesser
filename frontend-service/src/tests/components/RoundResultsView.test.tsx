@@ -147,6 +147,25 @@ describe('RoundResultsView Component', () => {
 		expect(screen.getByText('No guess')).toBeInTheDocument();
 	});
 
+	test('shows "Timed out" for a player whose guess timed out', () => {
+		const roundWithTimedOutGuess: MultiplayerRound = {
+			...currentRound,
+			playerGuesses: [
+				{ playerId: 'p1', guessCoordinates: [48.8, 2.3] as Pin },
+				{ playerId: 'p2', timedOut: true },
+			],
+		};
+
+		render(
+			<RoundResultsView
+				{...defaultProps}
+				currentRound={roundWithTimedOutGuess}
+			/>
+		);
+
+		expect(screen.getByText('Timed out')).toBeInTheDocument();
+	});
+
 	test('renders the MapboxMap component', () => {
 		render(<RoundResultsView {...defaultProps} />);
 

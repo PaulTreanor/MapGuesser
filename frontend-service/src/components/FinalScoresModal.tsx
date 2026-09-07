@@ -3,6 +3,7 @@ import Modal from './Modal';
 import { Paragraph } from './typography/Typography';
 import { MapGuesserHeading } from './typography/MapGuesserHeading';
 import { calculateKm } from '../utils/mapUtils';
+import { MAX_SCORE } from '../objects/gameConsts';
 import type { Player, MultiplayerRound } from '../types/MultiplayerServiceApiResponse.types';
 
 type FinalScoresModalProps = {
@@ -17,12 +18,12 @@ const FinalScoresModal = ({ players, rounds }: FinalScoresModalProps) => {
 				(guess) => guess.playerId === player.playerId
 			);
 
-			if (!playerGuess) return sum;
-
-			const distance = calculateKm(
-				playerGuess.guessCoordinates,
-				round.location.coordinates
-			);
+			const distance = playerGuess?.guessCoordinates
+				? calculateKm(
+					playerGuess.guessCoordinates,
+					round.location.coordinates
+				)
+				: MAX_SCORE;
 
 			return sum + distance;
 		}, 0);
