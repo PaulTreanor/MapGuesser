@@ -45,8 +45,8 @@ const recentreAndOrZoom = (map: mapboxgl.Map, customMarker: mapboxgl.Marker, dis
 const resetMapZoomAndCenter = (map: mapboxgl.Map) => {
 	map.flyTo({
 		center: [6, 54],
-		zoom: 5,
-		speed: 1,
+		zoom: 4,
+		speed: 2,
 		essential: true
 	});
 }

@@ -37,7 +37,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 			container: mapContainerRef.current,
 			style: mapBoxMapStyle,
 			center: [6, 54], 
-			zoom: 5,
+			zoom: 1,
 			attributionControl: false
 		});
 
