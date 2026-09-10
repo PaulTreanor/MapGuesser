@@ -8,13 +8,19 @@ export const STORAGE_KEYS = {
 	ROUND_TIMER_INDEX: `${STORAGE_PREFIX}round_timer_index`,
 	ROUND_TIMER_MS: `${STORAGE_PREFIX}round_timer_ms`,
 	HAS_TIMER: `${STORAGE_PREFIX}has_timer`,
+	SOUND_ENABLED: `${STORAGE_PREFIX}sound_enabled`,
+	SOUND_VOLUME: `${STORAGE_PREFIX}sound_volume`,
 };
 
-// Timer preferences
 interface TimerPreferences {
 	roundTimerIndex: number;
 	roundTimeMs: number;
 	hasTimer: boolean;
+}
+
+interface SoundPreferences {
+	soundEnabled: boolean;
+	soundVolume: number;
 }
 
 /**
@@ -44,5 +50,32 @@ export const saveTimerPreferences = (preferences: TimerPreferences): boolean => 
 	];
 	
 	// Return true only if all operations succeeded
+	return results.every(result => result === true);
+};
+
+/**
+ * Get the user's sound preferences
+ * @returns SoundPreferences object with default values if not found
+ */
+export const getSoundPreferences = (): SoundPreferences => {
+	return {
+		soundEnabled: getItem<boolean>(STORAGE_KEYS.SOUND_ENABLED, true), 
+		soundVolume: getItem<number>(STORAGE_KEYS.SOUND_VOLUME, 0.7),
+	};
+};
+
+/**
+ * Save the user's sound preferences
+ * @param preferences SoundPreferences object
+ * @returns boolean success indicator
+ */
+export const saveSoundPreferences = (preferences: SoundPreferences): boolean => {
+	const { soundEnabled, soundVolume } = preferences;
+
+	const results = [
+		setItem(STORAGE_KEYS.SOUND_ENABLED, soundEnabled),
+		setItem(STORAGE_KEYS.SOUND_VOLUME, soundVolume),
+	];
+	
 	return results.every(result => result === true);
 };

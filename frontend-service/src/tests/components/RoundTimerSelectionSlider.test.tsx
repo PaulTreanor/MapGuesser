@@ -12,7 +12,12 @@ vi.mock('../../services/userPreferences', () => ({
 		roundTimeMs: 0,
 		hasTimer: false
 	})),
-	saveTimerPreferences: vi.fn(() => true)
+	saveTimerPreferences: vi.fn(() => true),
+	getSoundPreferences: vi.fn(() => ({
+		soundEnabled: true,
+		soundVolume: 0.7
+	})),
+	saveSoundPreferences: vi.fn(() => true)
 }));
 
 describe('RoundTimerSelectionSlider Component', () => {

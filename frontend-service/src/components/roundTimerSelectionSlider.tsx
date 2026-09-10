@@ -3,6 +3,7 @@ import * as Slider from "@radix-ui/react-slider";
 import { useState, useEffect } from "react";
 import { getTimerPreferences, saveTimerPreferences } from "../services/userPreferences";
 import { TIMER_OPTIONS } from "../objects/roundTimerSliderOptions";
+import { useMapGuesserSound } from "../hooks/useMapGuesserSound";
 
 interface TimeSliderProps {
 	onChange: (hasTimer: boolean, timeMs: number) => void;
@@ -16,6 +17,7 @@ const roundTimerSelectionSlider = ({ onChange, disabled = false }: TimeSliderPro
 
     const [index, setIndex] = useState(defaultIndex);
     const [isMobile, setIsMobile] = useState(false);
+    const { playSound } = useMapGuesserSound();
 
     useEffect(() => {
         // Initially call onChange to register previous timer preference if it exists
@@ -34,6 +36,8 @@ const roundTimerSelectionSlider = ({ onChange, disabled = false }: TimeSliderPro
         setIndex(index);
         const { timeMs } = TIMER_OPTIONS[index];
         const hasTimer = timeMs > 0;
+
+        playSound('TICK');
 
         saveTimerPreferences({
             roundTimerIndex: index,

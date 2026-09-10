@@ -6,6 +6,7 @@ import { useRoundStore } from "../../store/roundStore"
 import { useMultiplayerStore } from "../../store/multiplayerStore"
 import MenuBarItem from './MenuBarItem';
 import MenuBarButtonItem from './MenuBarButtonItem';
+import MuteButton from '../MuteButton';
 import AboutModal from '../AboutModal';
 
 const MenuBar = () => {
@@ -62,6 +63,7 @@ const MenuBar = () => {
 					<MenuBarButtonItem onClick={onAboutClick}>
 						<span className="text-lg">ℹ️</span>
 					</MenuBarButtonItem>
+					<MuteButton />
 					<MenuBarItem>
 						<p className="hidden md:block font-titillium text-blue-800 font-bold">🌎 MapGuesser</p>
 					</MenuBarItem>
