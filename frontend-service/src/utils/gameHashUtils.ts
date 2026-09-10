@@ -6,7 +6,8 @@
 
 const GAME_HASH_PREFIX = '#game-';
 const LOBBY_HASH_PREFIX = '#lobby-';
-const GAME_CODE_HASH_PATTERN = /^(?:#(?:game|lobby)-)+/;
+const JOIN_GAME_HASH_PREFIX = '#join-game-';
+const GAME_CODE_HASH_PATTERN = /^(?:#(?:game|lobby|join-game)-)+/;
 
 const getGameCodeFromHash = (hash: string): string => {
 	return hash.replace(GAME_CODE_HASH_PATTERN, '');
@@ -14,6 +15,10 @@ const getGameCodeFromHash = (hash: string): string => {
 
 const isLobbyHash = (hash: string): boolean => {
 	return hash.startsWith(LOBBY_HASH_PREFIX);
+};
+
+const isJoinGameHash = (hash: string): boolean => {
+	return hash.startsWith(JOIN_GAME_HASH_PREFIX);
 };
 
 const isGameHash = (hash: string): boolean => {
@@ -24,4 +29,5 @@ export {
 	getGameCodeFromHash,
 	isLobbyHash,
 	isGameHash,
+	isJoinGameHash,
 };
