@@ -6,6 +6,7 @@ import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types'
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
+import { useMapGuesserSound } from '../../hooks/useMapGuesserSound'
 
 type JoinMultiplayerGameSetupProps = {
 	initialCode?: string;
@@ -16,6 +17,7 @@ const JoinMultiplayerGameSetup = ({ initialCode }: JoinMultiplayerGameSetupProps
 	const [code, setCode] = useState(initialCode?.toUpperCase() ?? '');
 	const [shouldFetch, setShouldFetch] = useState(() => hasInitialJoinCode);
 	const { setGameData } = useMultiplayerStore();
+	const { playSound } = useMapGuesserSound();
 
 	const { data, isPending, error } = useFetch<JoinGameResponse>(
 		`${MULTIPLAYER_SERVICE_API_URL}/join-game/${code}`,
@@ -63,6 +65,7 @@ const JoinMultiplayerGameSetup = ({ initialCode }: JoinMultiplayerGameSetupProps
 		// May need to swap to more of a validator type method here in the future
 		// but for now simple length check is fine
 		if (code.length === 6) {
+			playSound('CLICK');
 			setShouldFetch(true);
 		}
 	};
