@@ -7,9 +7,14 @@ import { notify } from '../../context/NotificationContext';
 import type { JoinGameResponse } from '../../types/MultiplayerServiceApiResponse.types'
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
 
-const JoinMultiplayerGameSetup = () => {
-	const [code, setCode] = useState('');
-	const [shouldFetch, setShouldFetch] = useState(false);
+type JoinMultiplayerGameSetupProps = {
+	initialCode?: string;
+};
+
+const JoinMultiplayerGameSetup = ({ initialCode }: JoinMultiplayerGameSetupProps) => {
+	const hasInitialJoinCode = Boolean(initialCode && initialCode.length === 6);
+	const [code, setCode] = useState(initialCode?.toUpperCase() ?? '');
+	const [shouldFetch, setShouldFetch] = useState(() => hasInitialJoinCode);
 	const { setGameData } = useMultiplayerStore();
 
 	const { data, isPending, error } = useFetch<JoinGameResponse>(

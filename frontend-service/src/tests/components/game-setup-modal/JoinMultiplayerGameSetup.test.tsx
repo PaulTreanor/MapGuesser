@@ -146,4 +146,30 @@ describe('JoinMultiplayerGameSetup', () => {
 		});
 		expect(window.location.hash).toBe('#lobby-ABC123');
 	});
+
+	test('pre-fills code when initialCode is provided', () => {
+		render(<JoinMultiplayerGameSetup initialCode="ABC123" />);
+
+		const input = screen.getByPlaceholderText('ABC123') as HTMLInputElement;
+
+		expect(input.value).toBe('ABC123');
+	});
+
+	test('auto-joins when initialCode of length 6 is provided', () => {
+		render(<JoinMultiplayerGameSetup initialCode="ABC123" />);
+
+		expect(vi.mocked(useFetchHook.useFetch)).toHaveBeenCalledWith(
+			expect.stringContaining('/join-game/ABC123'),
+			expect.objectContaining({ enabled: true })
+		);
+	});
+
+	test('does not auto-join when initialCode is not provided', () => {
+		render(<JoinMultiplayerGameSetup />);
+
+		expect(vi.mocked(useFetchHook.useFetch)).toHaveBeenCalledWith(
+			expect.any(String),
+			expect.objectContaining({ enabled: false })
+		);
+	});
 });

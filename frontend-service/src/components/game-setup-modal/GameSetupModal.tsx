@@ -9,7 +9,7 @@ import JoinMultiplayerGameSetup from './JoinMultiplayerGameSetup'
 import Lobby from './Lobby'
 import MultiplayerGame from '../MultiplayerGame'
 import { GAME_SETUP_STEPS, GameSetupStep } from '../../objects/gameSetupConsts'
-import { getGameCodeFromHash } from '../../utils/gameHashUtils'
+import { getGameCodeFromHash, isJoinGameHash } from '../../utils/gameHashUtils'
 
 /**
  * GameSetupModal is a parent component to game setup modal menus for all
@@ -24,6 +24,10 @@ import { getGameCodeFromHash } from '../../utils/gameHashUtils'
  */
 const getStepFromHash = (): { step: GameSetupStep; gameCode?: string } => {
 	const hash = window.location.hash;
+
+	if (isJoinGameHash(hash)) {
+		return { step: GAME_SETUP_STEPS.JOIN_GAME, gameCode: getGameCodeFromHash(hash) };
+	}
 
 	if (hash.startsWith('#lobby-')) {
 		return { step: GAME_SETUP_STEPS.LOBBY, gameCode: getGameCodeFromHash(hash) };
@@ -76,7 +80,7 @@ export default function GameSetupModal() {
 			case GAME_SETUP_STEPS.START_GAME:
 				return <StartMultiPlayerGameSetup />;
 			case GAME_SETUP_STEPS.JOIN_GAME:
-				return <JoinMultiplayerGameSetup />;
+				return <JoinMultiplayerGameSetup initialCode={gameCode} />;
 			case GAME_SETUP_STEPS.LOBBY:
 				return <Lobby />;
 			case GAME_SETUP_STEPS.SELECT_MODE:
