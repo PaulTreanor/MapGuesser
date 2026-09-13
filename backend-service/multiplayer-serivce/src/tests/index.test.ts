@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest'
 import app from '../index'
+import { MAX_GAME_CODE_ATTEMPTS } from '../multiplayerUtils'
 
 // Mock environment with GAME_ROOM Durable Object and database
 const mockEnv = {
@@ -84,6 +85,56 @@ describe('POST /create-game', () => {
 		expect(json).toHaveProperty('gameCode')
 		expect(json).toHaveProperty('timer', timer)
 		expect(json).toHaveProperty('gameOwnerId', hostId)
+	})
+
+	test('should retry with a new code when the generated code collides', async () => {
+		const runMock = vi.fn()
+			.mockRejectedValueOnce(new Error('UNIQUE constraint failed: games.game_code'))
+			.mockResolvedValueOnce({ success: true })
+		const collisionEnv = {
+			...mockEnv,
+			mapguesser_game_registry: {
+				prepare: vi.fn(() => ({
+					bind: vi.fn(() => ({ run: runMock }))
+				}))
+			}
+		}
+
+		const res = await app.request('/create-game', {
+			method: 'POST',
+			body: JSON.stringify({ timer: 60, hostId: 'guest_123' }),
+			headers: {
+					'Content-Type': 'application/json',
+			},
+		}, collisionEnv)
+
+		expect(res.status).toBe(200)
+		const json = await res.json()
+		expect(json).toHaveProperty('gameCode')
+		expect(runMock).toHaveBeenCalledTimes(2)
+	})
+
+	test('should return 500 when unable to generate a unique code', async () => {
+		const runMock = vi.fn().mockRejectedValue(new Error('UNIQUE constraint failed: games.game_code'))
+		const collisionEnv = {
+			...mockEnv,
+			mapguesser_game_registry: {
+				prepare: vi.fn(() => ({
+					bind: vi.fn(() => ({ run: runMock }))
+				}))
+			}
+		}
+
+		const res = await app.request('/create-game', {
+			method: 'POST',
+			body: JSON.stringify({ timer: 60, hostId: 'guest_123' }),
+			headers: {
+					'Content-Type': 'application/json',
+			},
+		}, collisionEnv)
+
+		expect(res.status).toBe(500)
+		expect(runMock).toHaveBeenCalledTimes(MAX_GAME_CODE_ATTEMPTS)
 	})
 })
 
