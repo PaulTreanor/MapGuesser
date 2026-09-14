@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { GameRoom } from './durable-objects/GameRoom'
 import { Bindings } from './index.types'
-import { generateGameCode } from './multiplayerUtils'
+import { insertGameCodeWithRetry } from './multiplayerUtils'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -46,13 +46,9 @@ app.post('/create-game', async (c) => {
 		return c.json({ error: 'Host identity required' }, 400);
 	}
 
-	const gameCode = generateGameCode();
-
-	// Register game in the registry database
+	// Register game in the registry database, regenerating the code on collision
 	const createdAt = Date.now();
-	await c.env.mapguesser_game_registry.prepare(
-		'INSERT INTO games (game_code, created_at) VALUES (?, ?)'
-	).bind(gameCode, createdAt).run();
+	const gameCode = await insertGameCodeWithRetry(c.env.mapguesser_game_registry, createdAt);
 
 	// Initialize the GameRoom with host information
 	const id = c.env.GAME_ROOM.idFromName(gameCode);
