@@ -93,21 +93,56 @@ const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
 	return el;
 };
 
-const createPlayerMarkerElement = (playerColor: string, playerIndex: number): HTMLDivElement => {
+const createLabelledPinElement = (color: string, labelText: string): HTMLDivElement => {
 	const el = document.createElement('div');
+	el.style.position = 'relative';
 	el.style.width = '28px';
 	el.style.height = '28px';
-	el.style.backgroundColor = playerColor;
-	el.style.borderRadius = '50%';
-	el.style.border = '3px solid white';
-	el.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
-	el.style.display = 'flex';
-	el.style.alignItems = 'center';
-	el.style.justifyContent = 'center';
+
+	const circle = document.createElement('div');
+	circle.style.width = '28px';
+	circle.style.height = '28px';
+	circle.style.backgroundColor = color;
+	circle.style.borderRadius = '50%';
+	circle.style.border = '3px solid white';
+	circle.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+
+	const label = document.createElement('div');
+	label.style.position = 'absolute';
+	label.style.top = '100%';
+	label.style.left = '50%';
+	label.style.transform = 'translateX(-50%)';
+	label.style.marginTop = '4px';
+	label.style.backgroundColor = color;
+	label.style.color = 'white';
+	label.style.padding = '2px 8px';
+	label.style.borderRadius = '4px';
+	label.style.fontSize = '11px';
+	label.style.fontWeight = 'bold';
+	label.style.whiteSpace = 'nowrap';
+	label.style.boxShadow = '0 1px 3px rgba(0,0,0,0.3)';
+	label.textContent = labelText;
+
+	el.appendChild(circle);
+	el.appendChild(label);
+	return el;
+};
+
+const createPlayerMarkerElement = (playerColor: string, playerName: string): HTMLDivElement => {
+	return createLabelledPinElement(playerColor, playerName || 'Unknown');
+};
+
+const createLocationLabelElement = (locationName: string): HTMLDivElement => {
+	const el = document.createElement('div');
+	el.style.backgroundColor = '#EF4444';
 	el.style.color = 'white';
+	el.style.padding = '2px 8px';
+	el.style.borderRadius = '4px';
+	el.style.fontSize = '11px';
 	el.style.fontWeight = 'bold';
-	el.style.fontSize = '12px';
-	el.textContent = (playerIndex + 1).toString();
+	el.style.whiteSpace = 'nowrap';
+	el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.3)';
+	el.textContent = locationName || 'Actual Location';
 	return el;
 };
 
@@ -149,7 +184,7 @@ const clearPlayerLines = (map: mapboxgl.Map) => {
 };
 
 const getPlayerColor = (index: number): string => {
-	return PLAYER_COLORS[index % PLAYER_COLORS.length];
+	return PLAYER_COLORS[index % PLAYER_COLORS.length].color;
 };
 
 const displayMultiplayerResults = ({
@@ -162,14 +197,14 @@ const displayMultiplayerResults = ({
 	clearMarkersAndPopups();
 	clearPlayerLines(map);
 
-	// Add actual location marker (red)
+	// Add actual location marker (default red pin, tip sits exactly on the point)
 	new mapboxgl.Marker({ color: 'red' })
 		.setLngLat(actualLocation)
-		.setPopup(
-			new mapboxgl.Popup({ offset: 25 }).setHTML(
-				`<strong>${locationName}</strong><br/>Actual Location`
-			)
-		)
+		.addTo(map);
+
+	const locationLabelEl = createLocationLabelElement(locationName);
+	new mapboxgl.Marker(locationLabelEl, { anchor: 'top', offset: [0, 4] })
+		.setLngLat(actualLocation)
 		.addTo(map);
 
 	// Create bounds to fit all markers
@@ -188,15 +223,22 @@ const displayMultiplayerResults = ({
 		// Extend bounds
 		bounds.extend(guess.guessCoordinates);
 
-		const markerEl = createPlayerMarkerElement(playerColor, playerIndex);
+		const markerEl = createPlayerMarkerElement(playerColor, player?.playerName || 'Unknown');
 
-		new mapboxgl.Marker(markerEl)
+		new mapboxgl.Marker(markerEl, { anchor: 'bottom' })
 			.setLngLat(guess.guessCoordinates)
-			.setPopup(
-				new mapboxgl.Popup({ offset: 25 }).setHTML(
-					`<strong>${player?.playerName || 'Unknown'}</strong><br/>${Math.round(distance)} km away`
-				)
-			)
+			.addTo(map);
+
+		// Add distance label at midpoint
+		const midpoint: Pin = [
+			(guess.guessCoordinates[0] + actualLocation[0]) / 2,
+			(guess.guessCoordinates[1] + actualLocation[1]) / 2,
+		];
+
+		const distanceEl = createPlayerDistanceLabelElement(distance, playerColor);
+
+		new mapboxgl.Marker(distanceEl, { offset: [0, 0] })
+			.setLngLat(midpoint)
 			.addTo(map);
 
 		// Add line from guess to actual location
@@ -220,18 +262,6 @@ const displayMultiplayerResults = ({
 				},
 			});
 		}
-
-		// Add distance label at midpoint
-		const midpoint: Pin = [
-			(guess.guessCoordinates[0] + actualLocation[0]) / 2,
-			(guess.guessCoordinates[1] + actualLocation[1]) / 2,
-		];
-
-		const distanceEl = createPlayerDistanceLabelElement(distance, playerColor);
-
-		new mapboxgl.Marker(distanceEl, { offset: [0, 0] })
-			.setLngLat(midpoint)
-			.addTo(map);
 	});
 
 	// Fit map to show all markers with padding
@@ -248,6 +278,7 @@ export {
 	addLineSourceToMap,
 	createDistanceMarkerElement,
 	createPlayerMarkerElement,
+	createLocationLabelElement,
 	createPlayerDistanceLabelElement,
 	clearMarkersAndPopups,
 	clearPlayerLines,

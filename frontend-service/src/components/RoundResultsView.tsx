@@ -2,6 +2,7 @@ import React from 'react';
 import MapboxMap from './MapBoxMap';
 import { Button } from './ui/button';
 import { calculateKm } from '../utils/mapUtils';
+import { PLAYER_COLORS } from '../objects/playerColours';
 import type { Player, MultiplayerRound } from '../types/MultiplayerServiceApiResponse.types';
 import type { Pin } from '../types/Game.types';
 
@@ -39,7 +40,7 @@ const RoundResultsView = ({
 }: RoundResultsViewProps) => {
 	const isLastRound = currentRoundNumber === numberOfRounds;
 
-	const roundScores = players.map((player) => {
+	const roundScores = players.map((player, playerIndex) => {
 		const playerGuess = currentRound?.playerGuesses.find(
 			(guess) => guess.playerId === player.playerId
 		);
@@ -48,7 +49,7 @@ const RoundResultsView = ({
 			? calculateKm(playerGuess.guessCoordinates, currentRound.location.coordinates)
 			: null;
 
-		return { player, distance, timedOut: playerGuess?.timedOut ?? false };
+		return { player, distance, timedOut: playerGuess?.timedOut ?? false, playerIndex };
 	}).sort((a, b) => {
 		if (a.distance === null) return 1;
 		if (b.distance === null) return -1;
@@ -77,16 +78,23 @@ const RoundResultsView = ({
 
 				{/* Round Scoreboard */}
 				<div className="space-y-2">
-					{roundScores.map(({ player, distance, timedOut }, index) => (
+					{roundScores.map(({ player, distance, timedOut, playerIndex }, rank) => (
 						<div
 							key={player.playerId}
 							className={`flex justify-between items-center p-2 rounded-md ${
-								index === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
+								rank === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
 							}`}
 						>
-							<span className="font-medium text-sm">
-								{index === 0 && '🎯 '}
-								{player.playerName}
+							<span className="flex items-center gap-2 min-w-0">
+								<span
+									className={`inline-block w-3 h-3 rounded-full shrink-0 ${
+										PLAYER_COLORS[playerIndex % PLAYER_COLORS.length].className
+									}`}
+								/>
+								<span className="font-medium text-sm truncate">
+									{rank === 0 && '🎯 '}
+									{player.playerName}
+								</span>
 							</span>
 							<span className="text-green-700 font-semibold text-sm">
 								{distance !== null ? `${Math.round(distance)} km` : timedOut ? 'Timed out' : 'No guess'}
