@@ -65,7 +65,7 @@ const MenuBar = () => {
 					</MenuBarButtonItem>
 					<MuteButton />
 					<MenuBarItem>
-						<p className="hidden md:block font-titillium text-blue-800 font-bold">🌎 MapGuesser</p>
+						<a href="/" className="hidden md:block font-titillium text-blue-800 font-bold hover:opacity-70 transition-opacity">🌎 MapGuesser</a>
 					</MenuBarItem>
 					<MenuBarItem className="ml-auto">
 						{renderScoreContent()}
