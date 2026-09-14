@@ -3,25 +3,30 @@ import React from 'react'
 import MapboxMap from '../../components/MapBoxMap'
 import { vi, describe, test, expect } from 'vitest'
 import { LoadingProvider } from '../../context/LoadingContext'
+import mapboxgl from 'mapbox-gl'
 
-vi.mock('mapbox-gl', () => ({
-	default: {
-		Map: vi.fn(() => ({
-			on: vi.fn(),
-			addControl: vi.fn(),
-			getCanvas: vi.fn(() => ({ style: {} })),
-            remove: vi.fn(),
-            flyTo: vi.fn(),
-            off: vi.fn(),
-		})),
-		NavigationControl: vi.fn(),
-		Marker: vi.fn(() => ({
-			setLngLat: vi.fn().mockReturnThis(),
-			addTo: vi.fn().mockReturnThis(),
-		})),
-		accessToken: null,
-	},
-}))
+vi.mock('mapbox-gl', () => {
+	const canvas = { style: {} as Record<string, string> };
+	return {
+		default: {
+			Map: vi.fn(() => ({
+				canvas,
+				on: vi.fn(),
+				addControl: vi.fn(),
+				getCanvas: vi.fn(() => canvas),
+				remove: vi.fn(),
+				flyTo: vi.fn(),
+				off: vi.fn(),
+			})),
+			NavigationControl: vi.fn(),
+			Marker: vi.fn(() => ({
+				setLngLat: vi.fn().mockReturnThis(),
+				addTo: vi.fn().mockReturnThis(),
+			})),
+			accessToken: null,
+		},
+	};
+})
 
 // Mock LoadingOverlay to prevent rendering issues in tests
 vi.mock('../../components/LoadingOverlay', () => ({
@@ -48,13 +53,23 @@ describe('MapboxMap', () => {
 		isDisabled: false,
     }
     
-    test('applies does not apply disabled class when isDisabled is false', () => {
+    test('does not apply disabled class when isDisabled is false', () => {
 		const { container } = renderWithLoading(<MapboxMap {...mockProps} isDisabled={false} />)
 		expect(container.firstChild).not.toHaveClass('pointer-events-none')
 	})
 
-	test('applies disabled class when isDisabled is true', () => {
+	test('keeps the map interactive (pan/zoom) when isDisabled is true', () => {
 		const { container } = renderWithLoading(<MapboxMap {...mockProps} isDisabled={true} />)
-		expect(container.firstChild).toHaveClass('pointer-events-none')
+		expect(container.firstChild).not.toHaveClass('pointer-events-none')
+	})
+
+	test('sets a grab cursor when isDisabled is true so the map stays pannable', () => {
+		renderWithLoading(<MapboxMap {...mockProps} isDisabled={true} />)
+
+		const mockMapInstance = vi.mocked(mapboxgl.Map).mock.results[0]?.value as {
+			getCanvas: () => { style: Record<string, string> };
+		};
+
+		expect(mockMapInstance.getCanvas().style.cursor).toBe('grab');
 	})
 })
