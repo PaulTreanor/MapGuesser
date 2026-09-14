@@ -235,7 +235,7 @@ const displayMultiplayerResults = ({
 	});
 
 	// Fit map to show all markers with padding
-	map.fitBounds(bounds, { padding: 80, maxZoom: 8 });
+	map.fitBounds(bounds, { padding: 160, maxZoom: 8, essential: true });
 
 	// Set cursor to default (not clickable)
 	map.getCanvas().style.cursor = 'default';

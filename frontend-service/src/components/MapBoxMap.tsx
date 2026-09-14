@@ -135,7 +135,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 		resetMapZoomAndCenter(map)
 
 		if (isDisabled) {
-			map.getCanvas().style.cursor = 'not-allowed';
+			map.getCanvas().style.cursor = 'grab';
 			return;
 		}
 
@@ -192,7 +192,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 		<div
 			id={WRAPPER_ID}                               
 			ref={mapContainerRef as unknown as React.RefObject<HTMLDivElement>}
-			className={`w-full min-h-full h-full relative ${isDisabled ? 'pointer-events-none' : ''}`}
+			className="w-full min-h-full h-full relative"
 		/>
 	);
 };
