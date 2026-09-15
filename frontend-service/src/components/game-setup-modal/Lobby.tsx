@@ -79,7 +79,7 @@ const Lobby = () => {
 		<div>
 			<LobbyGameCode gameCode={gameCode} connectionStatus={connectionStatus} />
 
-			<Paragraph className="text-center text-gray-600 mb-6">
+			<Paragraph className="text-center text-gray-600 mb-4">
 				Share this code with your friends to join the game!
 			</Paragraph>
 

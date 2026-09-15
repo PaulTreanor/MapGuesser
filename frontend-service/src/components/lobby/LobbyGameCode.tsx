@@ -38,26 +38,28 @@ const LobbyGameCode = ({ gameCode, connectionStatus }: LobbyGameCodeProps) => {
 	};
 
 	return (
-		<div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 mb-6">
-			<Subheading className="text-center mb-2">
-				Game Code
-			</Subheading>
-			<div className="text-center text-4xl font-bold tracking-widest text-blue-800">
-				{gameCode}
-			</div>
-			<div className="flex justify-center mt-4">
-				<Button
-					variant="mapguesser"
-					size="lg"
-					onClick={onCopyLinkClick}
-				>
-					<Link2 />
-					{isCopied ? 'Invite Link Copied!' : 'Copy Invite Link'}
-				</Button>
-			</div>
-			<div className="flex justify-center mt-4">
-				<div className={`px-3 py-1 rounded-full border text-sm font-medium ${getConnectionStatusColor(connectionStatus)}`}>
-					{getConnectionStatusText(connectionStatus)}
+		<div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 mb-4">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+				<div className="text-center sm:text-left">
+					<Subheading className="mb-1">
+						Game Code
+					</Subheading>
+					<div className="text-5xl font-bold tracking-widest text-blue-800">
+						{gameCode}
+					</div>
+				</div>
+				<div className="flex flex-col items-center sm:items-end gap-3">
+					<div className={`px-3 py-1 rounded-full border text-sm font-medium ${getConnectionStatusColor(connectionStatus)}`}>
+						{getConnectionStatusText(connectionStatus)}
+					</div>
+					<Button
+						variant="mapguesser"
+						size="lg"
+						onClick={onCopyLinkClick}
+					>
+						<Link2 />
+						{isCopied ? 'Invite Link Copied!' : 'Copy Invite Link'}
+					</Button>
 				</div>
 			</div>
 		</div>
