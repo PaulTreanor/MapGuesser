@@ -69,6 +69,7 @@ describe('GameSetupModal', () => {
 		render(<GameSetupModal />);
 
 		expect(screen.getByTestId('lobby')).toBeInTheDocument();
+		expect(screen.queryByText(/For each round, try to pinpoint the city/)).not.toBeInTheDocument();
 	});
 
 	test('renders MultiplayerGame without modal when hash is #game-GAMECODE', () => {

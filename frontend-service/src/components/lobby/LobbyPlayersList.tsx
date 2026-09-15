@@ -42,11 +42,11 @@ const LobbyPlayersList = ({ players, gameOwnerId, currentPlayerId, onNameChange 
 	};
 
 	return (
-		<div className="border-t border-gray-200 pt-6 mb-6">
-			<Subheading className="mb-4">
+		<div className="border-t border-gray-200 pt-4 mb-4">
+			<Subheading className="mb-3">
 				Players in lobby: {players.length}
 			</Subheading>
-			<div className="bg-gray-50 rounded-lg p-4 min-h-[100px]">
+			<div className="bg-gray-50 rounded-lg p-3 min-h-[100px] max-h-[35dvh] overflow-y-auto">
 				{players.length === 0 ? (
 					<Paragraph className="text-gray-500 text-center">
 						Waiting for players to join...
@@ -60,8 +60,8 @@ const LobbyPlayersList = ({ players, gameOwnerId, currentPlayerId, onNameChange 
 									key={player.playerId}
 									className="flex items-center justify-between bg-white rounded-lg p-3 border border-gray-200"
 								>
-									<div className="flex items-center gap-3">
-										<div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+									<div className="flex items-center gap-3 min-w-0">
+										<div className="w-8 h-8 shrink-0 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
 											{player.playerName.charAt(0).toUpperCase()}
 										</div>
 										{isCurrentPlayer && isEditing ? (
@@ -75,10 +75,10 @@ const LobbyPlayersList = ({ players, gameOwnerId, currentPlayerId, onNameChange 
 												maxLength={20}
 											/>
 										) : (
-											<span className="font-medium">{player.playerName}</span>
+											<span className="font-medium truncate">{player.playerName}</span>
 										)}
 									</div>
-									<div className="flex items-center gap-2">
+									<div className="flex items-center justify-end gap-2 shrink-0">
 										{isCurrentPlayer && !isEditing && (
 											<button
 												onClick={onEditClick}
