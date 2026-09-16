@@ -27,6 +27,9 @@ export const Head: HeadFC = () => (
   <>
     <title>MapGuesser</title>
     <link rel="icon" href={favicon} type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" />
     <script defer src="https://cloud.umami.is/script.js" data-website-id="442ee600-5344-4b48-b5e6-ee6e3b497171"></script>
   </>
 )
