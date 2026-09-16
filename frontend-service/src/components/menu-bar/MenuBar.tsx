@@ -7,6 +7,7 @@ import { useMultiplayerStore } from "../../store/multiplayerStore"
 import MenuBarItem from './MenuBarItem';
 import MenuBarButtonItem from './MenuBarButtonItem';
 import MuteButton from '../MuteButton';
+import BuyMeACoffeeButton from '../BuyMeACoffeeButton';
 import AboutModal from '../AboutModal';
 
 const MenuBar = () => {
@@ -60,22 +61,25 @@ const MenuBar = () => {
 		<>
 			<div className={`fixed bottom-0 left-0 right-0 bg-gray-200 backdrop-blur-sm border-t border-blue-950 ${MENU_BAR_Z_INDEX}`}>
 				<div className="flex items-stretch mx-auto">
+					<MenuBarButtonItem onClick={() => {}}>
+						<a href="/" className="hidden md:block font-titillium text-blue-800 font-bold hover:opacity-70 transition-opacity">🌎 MapGuesser</a>
+					</MenuBarButtonItem>
 					<MenuBarButtonItem onClick={onAboutClick}>
 						<span className="text-lg">ℹ️</span>
 					</MenuBarButtonItem>
 					<MuteButton />
 					<MenuBarItem>
-						<a href="/" className="hidden md:block font-titillium text-blue-800 font-bold hover:opacity-70 transition-opacity">🌎 MapGuesser</a>
+						<BuyMeACoffeeButton />
 					</MenuBarItem>
 					<MenuBarItem className="ml-auto">
 						{renderScoreContent()}
 					</MenuBarItem>
 					<MenuBarItem>
-						<div className="hidden sm:block">Round {roundNumberAsDisplayed}/{totalRounds}</div>
-						<div className="block sm:hidden">{roundNumberAsDisplayed}/{totalRounds}</div>
-					</MenuBarItem>
-				</div>
+					<div className="hidden sm:block">Round {roundNumberAsDisplayed}/{totalRounds}</div>
+					<div className="block sm:hidden">{roundNumberAsDisplayed}/{totalRounds}</div>
+				</MenuBarItem>
 			</div>
+		</div>
 
 			{isAboutModalOpen && (
 				<AboutModal onClose={onAboutModalClose} />

@@ -51,6 +51,18 @@ describe('MenuBar Component', () => {
 			expect(screen.getByText('🌎 MapGuesser')).toBeInTheDocument();
 		});
 
+		test('renders a Buy me a coffee button linking to the creator page', () => {
+			mockUseGameStore.mockReturnValue({ score: 0 } as any);
+			mockUseRoundStore.mockReturnValue({ currentRound: { index: 0 } } as any);
+
+			render(<MenuBar />);
+
+			const coffeeLink = screen.getByRole('link', { name: /buy me a coffee/i });
+			expect(coffeeLink).toBeInTheDocument();
+			expect(coffeeLink).toHaveAttribute('href', 'https://buymeacoffee.com/paultreanor');
+			expect(coffeeLink).toHaveAttribute('target', '_blank');
+		});
+
 		test('renders score and round info starting from round 0 (displayed as round 1)', () => {
 			mockUseGameStore.mockReturnValue({ score: 0 } as any);
 			mockUseRoundStore.mockReturnValue({ currentRound: { index: 0 } } as any);
