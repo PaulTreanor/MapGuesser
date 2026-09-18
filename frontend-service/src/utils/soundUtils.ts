@@ -1,10 +1,12 @@
 import tickingCountdownSound from '../sounds/ticking-countdown.mp3';
-import clickSound from '../sounds/click.mp3';
+import buttonClickSound from '../sounds/button-click.mp3';
+import pingSound from '../sounds/ping.mp3';
 
 const SOUND_FILES = {
 	COUNTDOWN: tickingCountdownSound,
-	CLICK: clickSound,
-	TICK: clickSound,
+	CLICK: buttonClickSound,
+	TICK: buttonClickSound,
+	PING: pingSound,
 } as const;
 
 type SoundType = keyof typeof SOUND_FILES;
@@ -21,6 +23,10 @@ const SOUND_CONFIG = {
 	TICK: {
 		volume: 0.4,
 		interrupt: true,
+	},
+	PING: {
+		volume: 0.6,
+		interrupt: false,
 	},
 } as const;
 

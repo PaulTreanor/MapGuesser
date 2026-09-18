@@ -21,6 +21,11 @@ const useMapGuesserSound = () => {
 		interrupt: SOUND_CONFIG.TICK.interrupt,
 	});
 
+	const [playPing] = useSound(SOUND_FILES.PING, {
+		volume: soundVolume * SOUND_CONFIG.PING.volume,
+		interrupt: SOUND_CONFIG.PING.interrupt,
+	});
+
 	const playSound = (soundType: SoundType) => {
 		if (!soundEnabled) {
 			return;
@@ -36,6 +41,9 @@ const useMapGuesserSound = () => {
 					break;
 				case 'TICK':
 					playTick();
+					break;
+				case 'PING':
+					playPing();
 					break;
 			}
 		} catch (error) {
