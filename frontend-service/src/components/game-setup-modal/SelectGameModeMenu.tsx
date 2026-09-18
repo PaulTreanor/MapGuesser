@@ -1,12 +1,16 @@
 import React from 'react'
 import { gameModeCards } from '../../objects/gameSetupConsts'
 import GameModeCard from './GameModeCard'
+import { useMapGuesserSound } from '../../hooks/useMapGuesserSound'
 import type { GameModeCardType } from '../../types/GameSetupModal.types'
 
 export default function SelectGameModeMenu() {
+	const { playSound } = useMapGuesserSound();
+
 	const handleCardClick = (card: GameModeCardType) => {
 		if (!card.enabled) return;
 
+		playSound('CLICK');
 		window.location.hash = card.fragment;
 	};
 

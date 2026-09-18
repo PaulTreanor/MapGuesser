@@ -8,7 +8,6 @@ import { notify } from '../../context/NotificationContext';
 import { CreateGameResponse } from '../../types/MultiplayerServiceApiResponse.types'
 import { MULTIPLAYER_SERVICE_API_URL } from '../../objects/endpoints'
 import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
-import { useMapGuesserSound } from '../../hooks/useMapGuesserSound';
 
 
 const StartMultiPlayerGameSetup = () => {
@@ -16,7 +15,6 @@ const StartMultiPlayerGameSetup = () => {
 	const [shouldFetch, setShouldFetch] = useState(false);
 	const { setGameData } = useMultiplayerStore();
 	const playerIdentityRef = useRef(getPlayerIdentity());
-	const { playSound } = useMapGuesserSound();
 
 	const { data, isPending, error } = useFetch<CreateGameResponse>(
 		`${MULTIPLAYER_SERVICE_API_URL}/create-game`,
@@ -54,7 +52,6 @@ const StartMultiPlayerGameSetup = () => {
 	};
 
 	const handleCreateGame = () => {
-		playSound('CLICK');
 		setShouldFetch(true);
 	};
 

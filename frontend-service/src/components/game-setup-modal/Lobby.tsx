@@ -7,7 +7,6 @@ import { useFetchGameMetadata } from '../../hooks/useFetchGameMetadata';
 import { getPlayerIdentity, setGuestName } from '../../utils/guestIdentityUtils';
 import { ConnectionStatus } from '../../objects/connectionStatuses';
 import { getGameCodeFromHash } from '../../utils/gameHashUtils';
-import { useMapGuesserSound } from '../../hooks/useMapGuesserSound';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
 
@@ -17,7 +16,6 @@ const Lobby = () => {
 	const playerIdentityRef = useRef(getPlayerIdentity());
 
 	const gameCode = getGameCodeFromHash(window.location.hash);
-	const { playSound } = useMapGuesserSound();
 
 	useFetchGameMetadata(gameCode);
 
@@ -50,7 +48,6 @@ const Lobby = () => {
 	}, [connectionStatus, sendMessage]);
 
 	const handleStartGame = () => {
-		playSound('PING');
 		sendMessage({
 			type: 'game_start',
 		});
@@ -97,6 +94,7 @@ const Lobby = () => {
 						size="xl"
 						onClick={handleStartGame}
 						disabled={connectionStatus !== ConnectionStatus.CONNECTED}
+						sound="PING"
 					>
 						Start Game
 					</Button>

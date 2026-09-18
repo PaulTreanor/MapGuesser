@@ -14,6 +14,17 @@ class ResizeObserverMock {
 
 global.ResizeObserver = ResizeObserverMock;
 
+// Mock HTMLMediaElement playback (jsdom doesn't implement play/pause)
+Object.defineProperty(window.HTMLMediaElement.prototype, 'play', {
+	configurable: true,
+	value: () => Promise.resolve(),
+});
+
+Object.defineProperty(window.HTMLMediaElement.prototype, 'pause', {
+	configurable: true,
+	value: () => undefined,
+});
+
 afterEach(() => {
 	cleanup();
 });
