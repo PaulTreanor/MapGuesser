@@ -50,7 +50,7 @@ const Lobby = () => {
 	}, [connectionStatus, sendMessage]);
 
 	const handleStartGame = () => {
-		playSound('CLICK');
+		playSound('PING');
 		sendMessage({
 			type: 'game_start',
 		});

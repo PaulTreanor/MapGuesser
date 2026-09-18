@@ -10,7 +10,7 @@ export default function SinglePlayerStartMenu() {
 	const { playSound } = useMapGuesserSound();
 
 	const handleStartGame = () => {
-		playSound('CLICK');
+		playSound('PING');
 		startGame();
 	};
 
