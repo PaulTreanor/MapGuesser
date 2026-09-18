@@ -15,6 +15,7 @@ import { MAX_SCORE } from '../objects/gameConsts'
 import { useLoading } from '../context/LoadingContext'
 import { playUiSound } from '../utils/soundPlayer'
 import { playGuessResultSound } from '../utils/guessSoundUtils'
+import { trackGameStarted } from '../utils/umamiUtils'
 
 export default function Game() {
 	// Get state and actions from stores
@@ -55,6 +56,13 @@ export default function Game() {
 			setRounds(data.data);
 		}
 	}, [data]);
+
+	// Track when a single-player game starts
+	useEffect(() => {
+		if (status === gameStatus.IN_PROGRESS) {
+			trackGameStarted('single-player');
+		}
+	}, [status]);
 
 	const handleTimeExpired = useCallback(() => {
 		if (!currentRound.completed) {
