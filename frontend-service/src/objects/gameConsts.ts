@@ -10,9 +10,15 @@ const cityBufferKm = 2;
  */
 const MAX_SCORE = 20000; 
 
+/**
+ * Distance (in km) that triggers the trombone fail sound
+ */
+const TERRIBLE_GUESS_THRESHOLD_KM = 15000;
+
 export { 
     numberOfRoundsInGame, 
     indexOfFinalRound, 
     cityBufferKm, 
-    MAX_SCORE 
+    MAX_SCORE,
+    TERRIBLE_GUESS_THRESHOLD_KM 
 };

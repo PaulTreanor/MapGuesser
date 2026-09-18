@@ -4,6 +4,7 @@ import { FinalScoresModal } from './FinalScoresModal';
 import { RoundResultsView } from './RoundResultsView';
 import { useMultiplayerStore } from '../store/multiplayerStore';
 import { useGameRoom } from '../hooks/useGameRoom';
+import { useRoundResultSound } from '../hooks/useRoundResultSound';
 import { getPlayerIdentity } from '../utils/guestIdentityUtils';
 import { getGameCodeFromHash } from '../utils/gameHashUtils';
 import { Heading, Paragraph } from './typography/Typography';
@@ -70,6 +71,9 @@ const MultiplayerGame = () => {
 	const hasSubmittedGuess = currentRound?.playerGuesses.some(
 		(guess) => guess.playerId === currentPlayerId
 	) ?? false;
+
+	// Play feedback sound for the current player's round result
+	useRoundResultSound({ gameContext, currentRoundIndex, currentPlayerId });
 
 	// Don't render game if we don't have a valid gameCode yet
 	if (!gameCode) {
