@@ -11,11 +11,17 @@ import { Heading, Paragraph } from './typography/Typography';
 import { ConnectionStatus } from '../objects/connectionStatuses';
 import CountDownProgressBar from './countDownProgressBar';
 import type { Pin } from '../types/Game.types';
+import { trackGameStarted } from '../utils/umamiUtils';
 
 const MultiplayerGame = () => {
 	const { gameData, gameContext, setPlayers, setGameContext } = useMultiplayerStore();
 	const playerIdentityRef = useRef(getPlayerIdentity());
 	const hasJoinedRef = useRef(false);
+
+	// Track whenever a player enters the multiplayer game view
+	useEffect(() => {
+		trackGameStarted('multiplayer');
+	}, []);
 
 	const gameCode = useMemo(() => {
 		const gameCodeFromHash = getGameCodeFromHash(window.location.hash);
