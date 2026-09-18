@@ -20,3 +20,6 @@ cp ./githooks/pre-commit ./.git/hooks/pre-commit
 # Make it executable
 chmod +x .git/hooks/pre-commit
 ```
+# Credits 
+Thank you crunchymaniac, mokasza, Camo1018, 
+orginaljun, and shinephoenixstormcrow for the sounds used in the games. 
