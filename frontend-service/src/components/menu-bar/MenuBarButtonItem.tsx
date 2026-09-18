@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMapGuesserSound } from '../../hooks/useMapGuesserSound';
 
 interface MenuBarButtonItemProps {
 	children: React.ReactNode;
@@ -13,9 +14,16 @@ const MenuBarButtonItem = ({
 	disabled = false, 
 	className = '' 
 }: MenuBarButtonItemProps) => {
+	const { playSound } = useMapGuesserSound();
+
+	const handleClick = () => {
+		playSound('CLICK');
+		onClick();
+	};
+
 	return (
 		<button
-			onClick={disabled ? undefined : onClick}
+			onClick={disabled ? undefined : handleClick}
 			disabled={disabled}
 			className={`flex items-center justify-center px-4 py-1 text-gray-950 hover:bg-gray-950/10 active:bg-gray-950/20 transition-colors border-r border-gray-400/50 ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
 		>

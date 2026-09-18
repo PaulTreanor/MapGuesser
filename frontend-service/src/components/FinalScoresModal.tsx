@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 import { Paragraph } from './typography/Typography';
 import { MapGuesserHeading } from './typography/MapGuesserHeading';
 import { calculateKm } from '../utils/mapUtils';
 import { MAX_SCORE } from '../objects/gameConsts';
+import { playUiSound } from '../utils/soundPlayer';
 import type { Player, MultiplayerRound } from '../types/MultiplayerServiceApiResponse.types';
 
 type FinalScoresModalProps = {
@@ -12,6 +13,11 @@ type FinalScoresModalProps = {
 };
 
 const FinalScoresModal = ({ players, rounds }: FinalScoresModalProps) => {
+
+	useEffect(() => {
+		playUiSound('APPLAUSE');
+	}, []);
+
 	const playerScores = players.map((player) => {
 		const totalScore = rounds.reduce((sum, round) => {
 			const playerGuess = round.playerGuesses.find(

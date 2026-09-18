@@ -13,6 +13,8 @@ import { useRoundStore } from '../store/roundStore'
 import { notify } from '../context/NotificationContext'
 import { MAX_SCORE } from '../objects/gameConsts'
 import { useLoading } from '../context/LoadingContext'
+import { playUiSound } from '../utils/soundPlayer'
+import { playGuessResultSound } from '../utils/guessSoundUtils'
 
 export default function Game() {
 	// Get state and actions from stores
@@ -62,7 +64,9 @@ export default function Game() {
 				duration: 5000
 			});
 			
-			handleGuess(MAX_SCORE);
+			playUiSound('TERRIBLE_GUESS');
+			updateScore(MAX_SCORE);
+			completeRound();
 		}
 	}, [currentRound.completed]);
 
@@ -71,8 +75,14 @@ export default function Game() {
 	useRoundTimer({ handleTimeExpired });
 
 	const handleGuess = (distance: number) => {
+		playGuessResultSound(distance, false);
 		updateScore(distance);
 		completeRound();
+	}
+
+	const handleFinishGame = () => {
+		playUiSound('APPLAUSE');
+		finishGame();
 	}
 
 	if (error || (data && data.data.length === 0)) {
@@ -102,7 +112,7 @@ export default function Game() {
 						gameState={{ rounds, score, status }}
 						currentRound={currentRound}
 						moveToNextRound={moveToNextRound}
-						setGameState={finishGame}
+						setGameState={handleFinishGame}
 						roundEndTimeStamp={roundEndTimeStamp}
 					/>
 				)}

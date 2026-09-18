@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Subheading, Paragraph } from '../typography/Typography';
+import { useMapGuesserSound } from '../../hooks/useMapGuesserSound';
 import type { Player } from '../../types/MultiplayerServiceApiResponse.types';
 
 type LobbyPlayersListProps = {
@@ -12,15 +13,18 @@ type LobbyPlayersListProps = {
 const LobbyPlayersList = ({ players, gameOwnerId, currentPlayerId, onNameChange }: LobbyPlayersListProps) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [editedName, setEditedName] = useState('');
+	const { playSound } = useMapGuesserSound();
 
 	const currentPlayer = players.find(p => p.playerId === currentPlayerId);
 
 	const onEditClick = () => {
+		playSound('CLICK');
 		setEditedName(currentPlayer?.playerName || '');
 		setIsEditing(true);
 	};
 
 	const onSaveClick = () => {
+		playSound('CLICK');
 		const trimmedName = editedName.trim();
 		if (trimmedName && trimmedName !== currentPlayer?.playerName) {
 			onNameChange?.(trimmedName);
@@ -29,6 +33,7 @@ const LobbyPlayersList = ({ players, gameOwnerId, currentPlayerId, onNameChange 
 	};
 
 	const onCancelClick = () => {
+		playSound('CLICK');
 		setIsEditing(false);
 		setEditedName('');
 	};
