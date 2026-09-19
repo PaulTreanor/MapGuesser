@@ -74,12 +74,23 @@ const MultiplayerGame = () => {
 	// Check if current player has already submitted a guess for this round
 	// This is derived from game state, not local state, so it's always accurate
 	const currentPlayerId = playerIdentityRef.current.playerId;
+	const isGameOwner = gameContext?.gameOwnerId === currentPlayerId;
 	const hasSubmittedGuess = currentRound?.playerGuesses.some(
 		(guess) => guess.playerId === currentPlayerId
 	) ?? false;
 
 	// Play feedback sound for the current player's round result
 	useRoundResultSound({ gameContext, currentRoundIndex, currentPlayerId });
+
+	// When the host returns everyone to the lobby for a rematch, follow them there
+	useEffect(() => {
+		if (gameContext?.gameStateMachinePhase === 'lobby' && gameCode) {
+			const targetHash = `#lobby-${gameCode}`;
+			if (window.location.hash !== targetHash) {
+				window.location.hash = targetHash;
+			}
+		}
+	}, [gameContext?.gameStateMachinePhase, gameCode]);
 
 	// Don't render game if we don't have a valid gameCode yet
 	if (!gameCode) {
@@ -105,6 +116,10 @@ const MultiplayerGame = () => {
 		});
 	};
 
+	const handlePlayAgain = () => {
+		sendMessage({ type: 'return_to_lobby' });
+	};
+
 	if (!gameContext) {
 		return (
 			<div className="flex items-center justify-center h-screen">
@@ -118,10 +133,18 @@ const MultiplayerGame = () => {
 		);
 	}
 
+	if (gameContext.gameStateMachinePhase === 'lobby') {
+		return (
+			<div className="flex items-center justify-center h-screen">
+				<div className="text-center">
+					<Heading>Returning to lobby...</Heading>
+				</div>
+			</div>
+		);
+	}
+
 	// After each round
 	if (gameContext.gameStateMachinePhase === 'showRoundResult') {
-		const isGameOwner = gameContext.gameOwnerId === currentPlayerId;
-
 		const handleNextRound = () => {
 			sendMessage({ type: 'next_round' });
 		};
@@ -146,6 +169,8 @@ const MultiplayerGame = () => {
 			<FinalScoresModal
 				players={gameContext.players}
 				rounds={gameContext.rounds}
+				isGameOwner={isGameOwner}
+				onPlayAgain={handlePlayAgain}
 			/>
 		);
 	}

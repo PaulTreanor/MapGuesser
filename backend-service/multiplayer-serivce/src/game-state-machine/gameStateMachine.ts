@@ -206,7 +206,14 @@ const machine = createMachine({
 		},
 		transitions: {
 			fatalError: globalTransitions.fatalError,
-			gameEnded: { target: 'final', action() {} }
+			gameEnded: {
+				target: 'lobby',
+				action(ctx: GameContext) {
+					ctx.rounds = [];
+					ctx.currentRound = 0;
+					console.log('Game ended, returning to lobby for a rematch');
+				}
+			}
 		}
 	},
 	final: {

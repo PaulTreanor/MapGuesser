@@ -7,6 +7,15 @@ const TIMER_OPTIONS = [
 	{ timeMs: 0, desktopLabel: "No timer", mobileLabel: "No timer" }, // 0 means no timer
 ];
 
+const NO_TIMER_INDEX = TIMER_OPTIONS.findIndex((option) => option.timeMs === 0);
+
+const getTimerIndexFromMs = (timeMs?: number): number => {
+	if (!timeMs) return NO_TIMER_INDEX;
+	const index = TIMER_OPTIONS.findIndex((option) => option.timeMs === timeMs);
+	return index === -1 ? NO_TIMER_INDEX : index;
+};
+
 export {
-    TIMER_OPTIONS
+    TIMER_OPTIONS,
+    getTimerIndexFromMs,
 }

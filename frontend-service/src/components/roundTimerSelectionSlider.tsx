@@ -8,12 +8,14 @@ import { useMapGuesserSound } from "../hooks/useMapGuesserSound";
 interface TimeSliderProps {
 	onChange: (hasTimer: boolean, timeMs: number) => void;
 	disabled?: boolean;
+	valueIndex?: number;
+	notifyOnMount?: boolean;
 }
 
-const roundTimerSelectionSlider = ({ onChange, disabled = false }: TimeSliderProps) => {
+const roundTimerSelectionSlider = ({ onChange, disabled = false, valueIndex, notifyOnMount = true }: TimeSliderProps) => {
     // Get saved preferences or default to "No timer"
     const savedPrefs = getTimerPreferences();
-    const defaultIndex = savedPrefs.roundTimerIndex;
+    const defaultIndex = valueIndex ?? savedPrefs.roundTimerIndex;
 
     const [index, setIndex] = useState(defaultIndex);
     const [isMobile, setIsMobile] = useState(false);
@@ -21,7 +23,9 @@ const roundTimerSelectionSlider = ({ onChange, disabled = false }: TimeSliderPro
 
     useEffect(() => {
         // Initially call onChange to register previous timer preference if it exists
-        onChange(savedPrefs.hasTimer, savedPrefs.roundTimeMs);
+        if (notifyOnMount) {
+            onChange(savedPrefs.hasTimer, savedPrefs.roundTimeMs);
+        }
 
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768);

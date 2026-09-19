@@ -144,13 +144,17 @@ export const useGameRoom = ({
 				}, 3000);
 			}
 		};
-	}, [gameCode]);
+	}, [gameCode, handleMessage]);
 
 	useEffect(() => {
 		if (gameCode) {
 			connect();
 		}
-	}, [connect]);
+
+		return () => {
+			disconnect();
+		};
+	}, [connect, disconnect]);
 
 	return {
 		connectionStatus,
