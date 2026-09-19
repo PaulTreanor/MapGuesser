@@ -9,6 +9,7 @@ import { ConnectionStatus } from '../../objects/connectionStatuses';
 import { getGameCodeFromHash } from '../../utils/gameHashUtils';
 import LobbyGameCode from '../lobby/LobbyGameCode';
 import LobbyPlayersList from '../lobby/LobbyPlayersList';
+import LobbyGameSettings from '../lobby/LobbyGameSettings';
 
 const Lobby = () => {
 	const { gameData, players, gameContext, setPlayers, setGameContext } = useMultiplayerStore();
@@ -62,6 +63,13 @@ const Lobby = () => {
 		});
 	};
 
+	const handleTimerChange = (timeMs: number) => {
+		sendMessage({
+			type: 'update_settings',
+			timer: timeMs,
+		});
+	};
+
 	// When game context updates and game has started, transition to game view
 	useEffect(() => {
 		if (gameContext && gameContext.gameStateMachinePhase === 'inRound') {
@@ -85,6 +93,12 @@ const Lobby = () => {
 				gameOwnerId={gameData?.gameOwnerId}
 				currentPlayerId={playerIdentityRef.current.playerId}
 				onNameChange={handleNameChange}
+			/>
+
+			<LobbyGameSettings
+				timer={gameContext?.timer ?? gameData?.timer}
+				isGameOwner={isGameOwner}
+				onTimerChange={handleTimerChange}
 			/>
 
 			{isGameOwner && (

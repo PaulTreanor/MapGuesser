@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Modal from './Modal';
+import { Button } from './ui/button';
 import { Paragraph } from './typography/Typography';
 import { MapGuesserHeading } from './typography/MapGuesserHeading';
 import { calculateKm } from '../utils/mapUtils';
@@ -10,9 +11,11 @@ import type { Player, MultiplayerRound } from '../types/MultiplayerServiceApiRes
 type FinalScoresModalProps = {
 	players: Player[];
 	rounds: MultiplayerRound[];
+	isGameOwner: boolean;
+	onPlayAgain: () => void;
 };
 
-const FinalScoresModal = ({ players, rounds }: FinalScoresModalProps) => {
+const FinalScoresModal = ({ players, rounds, isGameOwner, onPlayAgain }: FinalScoresModalProps) => {
 
 	useEffect(() => {
 		playUiSound('APPLAUSE');
@@ -65,6 +68,23 @@ const FinalScoresModal = ({ players, rounds }: FinalScoresModalProps) => {
 			<Paragraph className="mt-4 text-center text-gray-600 text-sm">
 				Lower scores are better!
 			</Paragraph>
+
+			{isGameOwner ? (
+				<div className="flex justify-center mt-6">
+					<Button
+						variant="mapguesser"
+						size="xl"
+						onClick={onPlayAgain}
+						sound="PING"
+					>
+						Play Again
+					</Button>
+				</div>
+			) : (
+				<Paragraph className="mt-6 text-center text-gray-600">
+					Waiting for host to start a new game...
+				</Paragraph>
+			)}
 		</Modal>
 	);
 };

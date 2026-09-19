@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../ui/button';
 import { Subheading } from '../typography/Typography';
-import RoundTimerSelectionSlider from '../roundTimerSelectionSlider';
 import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
@@ -11,7 +10,6 @@ import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
 
 
 const StartMultiPlayerGameSetup = () => {
-	const [timer, setTimer] = useState(0);
 	const [shouldFetch, setShouldFetch] = useState(false);
 	const { setGameData } = useMultiplayerStore();
 	const playerIdentityRef = useRef(getPlayerIdentity());
@@ -24,7 +22,7 @@ const StartMultiPlayerGameSetup = () => {
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
-				timer,
+				timer: 0,
 				hostId: playerIdentityRef.current.playerId,
 			}),
 			enabled: shouldFetch,
@@ -47,21 +45,15 @@ const StartMultiPlayerGameSetup = () => {
 		}
 	}, [error, data]);
 
-	const handleTimerChange = (hasTimer: boolean, timeMs: number) => {
-		setTimer(timeMs);
-	};
-
 	const handleCreateGame = () => {
 		setShouldFetch(true);
 	};
 
 	return (
 		<div>
-			<Subheading>
-				Do you want a timer for each round?
+			<Subheading className='text-center'>
+				Create a game room and invite your friends
 			</Subheading>
-			<br />
-			<RoundTimerSelectionSlider onChange={handleTimerChange} />
 			<br />
 
 			<div className="flex justify-end mr-2">

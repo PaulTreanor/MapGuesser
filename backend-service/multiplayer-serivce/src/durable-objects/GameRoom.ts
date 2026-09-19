@@ -2,7 +2,7 @@ import { DurableObject } from 'cloudflare:workers';
 import { Bindings } from '../index.types';
 import { Player } from './GameRoom.types';
 import { exportedMachine } from '../game-state-machine/gameStateMachine';
-import { GameContext } from '../multiplayerGame.types';
+import { GameContext, GameState } from '../multiplayerGame.types';
 
 // Buffer added to round-end alarms so the FSM's expiry check always passes
 const ROUND_END_ALARM_BUFFER_MS = 1000;
@@ -170,6 +170,38 @@ export class GameRoom extends DurableObject {
 	}
 
 	/**
+	 * Guard helpers for WebSocket commands. Each sends a specific error to the
+	 * requesting socket and returns a falsy value when the command is not allowed.
+	 */
+	private requireGameContext(ws: WebSocket): GameContext | null {
+		if (this.gameContext) return this.gameContext;
+		ws.send(JSON.stringify({
+			type: 'error',
+			message: 'Game context not initialized'
+		}));
+		return null;
+	}
+
+	private requirePhase(ws: WebSocket, gameContext: GameContext, phase: GameState, action: string): boolean {
+		if (gameContext.gameStateMachinePhase === phase) return true;
+		ws.send(JSON.stringify({
+			type: 'error',
+			message: `Cannot ${action} - wrong game phase`
+		}));
+		return false;
+	}
+
+	private requireGameOwner(ws: WebSocket, gameContext: GameContext, action: string): boolean {
+		const player = ws.deserializeAttachment() as Player | undefined;
+		if (player?.playerId === gameContext.gameOwnerId) return true;
+		ws.send(JSON.stringify({
+			type: 'error',
+			message: `Only the game owner can ${action}`
+		}));
+		return false;
+	}
+
+	/**
 	 * Handle incoming WebSocket messages
 	 */
 	async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer): Promise<void> {
@@ -204,18 +236,16 @@ export class GameRoom extends DurableObject {
 					this.broadcastPlayerList();
 					break;
 
-				case 'game_start':
-					if (!this.gameContext) {
-						ws.send(JSON.stringify({
-							type: 'error',
-							message: 'Game context not initialized'
-						}));
-						return;
-					}
+				case 'game_start': {
+					const gameContext = this.requireGameContext(ws);
+					if (!gameContext) return;
+
+					// Drop players who disconnected between games so they don't affect the next game
+					gameContext.players = this.getPlayersList();
 
 					// Trigger state machine transition from lobby to inRound
 					try {
-						const newState = await exportedMachine.machine.transition('startGame', this.gameContext);
+						const newState = await exportedMachine.machine.transition('startGame', gameContext);
 						console.log('Game started, new state:', newState);
 						await this.saveAndBroadcastGameState();
 						await this.scheduleRoundEndAlarm();
@@ -227,43 +257,23 @@ export class GameRoom extends DurableObject {
 						}));
 					}
 					break;
+				}
 
-				case 'next_round':
-					if (!this.gameContext) {
-						ws.send(JSON.stringify({
-							type: 'error',
-							message: 'Game context not initialized'
-						}));
-						return;
-					}
-
-					if (this.gameContext.gameStateMachinePhase !== 'showRoundResult') {
-						ws.send(JSON.stringify({
-							type: 'error',
-							message: 'Cannot advance round - not in round results phase'
-						}));
-						return;
-					}
-
-					// Only game owner can advance to next round
-					const player = ws.deserializeAttachment() as Player | undefined;
-					if (player?.playerId !== this.gameContext.gameOwnerId) {
-						ws.send(JSON.stringify({
-							type: 'error',
-							message: 'Only the game owner can advance to the next round'
-						}));
-						return;
-					}
+				case 'next_round': {
+					const gameContext = this.requireGameContext(ws);
+					if (!gameContext) return;
+					if (!this.requirePhase(ws, gameContext, 'showRoundResult', 'advance to the next round')) return;
+					if (!this.requireGameOwner(ws, gameContext, 'advance to the next round')) return;
 
 					try {
-						const isLastRound = this.gameContext.currentRound === this.gameContext.numberOfRounds;
+						const isLastRound = gameContext.currentRound === gameContext.numberOfRounds;
 
 						if (isLastRound) {
-							await exportedMachine.machine.transition('finishFinalRound', this.gameContext);
+							await exportedMachine.machine.transition('finishFinalRound', gameContext);
 							console.log('Final round results viewed, moving to final scores');
 						} else {
-							await exportedMachine.machine.transition('continueToNextRound', this.gameContext);
-							console.log('Continuing to next round:', this.gameContext.currentRound);
+							await exportedMachine.machine.transition('continueToNextRound', gameContext);
+							console.log('Continuing to next round:', gameContext.currentRound);
 						}
 
 						await this.saveAndBroadcastGameState();
@@ -276,28 +286,58 @@ export class GameRoom extends DurableObject {
 						}));
 					}
 					break;
+				}
 
-				case 'submit_guess':
-					if (!this.gameContext) {
+				case 'return_to_lobby': {
+					const gameContext = this.requireGameContext(ws);
+					if (!gameContext) return;
+					if (!this.requirePhase(ws, gameContext, 'showResult', 'return to the lobby')) return;
+					if (!this.requireGameOwner(ws, gameContext, 'return to the lobby')) return;
+
+					try {
+						await exportedMachine.machine.transition('gameEnded', gameContext);
+						await this.ctx.storage.deleteAlarm();
+						await this.saveAndBroadcastGameState();
+					} catch (error) {
+						console.error('Error returning to lobby:', error);
 						ws.send(JSON.stringify({
 							type: 'error',
-							message: 'Game context not initialized'
+							message: 'Failed to return to lobby'
+						}));
+					}
+					break;
+				}
+
+				case 'update_settings': {
+					const gameContext = this.requireGameContext(ws);
+					if (!gameContext) return;
+					if (!this.requirePhase(ws, gameContext, 'lobby', 'update settings')) return;
+					if (!this.requireGameOwner(ws, gameContext, 'change settings')) return;
+
+					const timer = Number(data.timer);
+					if (!Number.isFinite(timer) || timer < 0) {
+						ws.send(JSON.stringify({
+							type: 'error',
+							message: 'Invalid timer value'
 						}));
 						return;
 					}
 
-					if (this.gameContext.gameStateMachinePhase !== 'inRound') {
-						ws.send(JSON.stringify({
-							type: 'error',
-							message: 'Cannot submit guess - game is not in round'
-						}));
-						return;
-					}
+					gameContext.timer = timer > 0 ? timer : undefined;
+					await this.ctx.storage.put('timer', timer);
+					await this.saveAndBroadcastGameState();
+					break;
+				}
+
+				case 'submit_guess': {
+					const gameContext = this.requireGameContext(ws);
+					if (!gameContext) return;
+					if (!this.requirePhase(ws, gameContext, 'inRound', 'submit a guess')) return;
 
 					try {
 						const { playerId, guessCoordinates } = data;
-						const currentRoundIndex = this.gameContext.currentRound - 1;
-						const currentRound = this.gameContext.rounds[currentRoundIndex];
+						const currentRoundIndex = gameContext.currentRound - 1;
+						const currentRound = gameContext.rounds[currentRoundIndex];
 
 						if (!currentRound) {
 							throw new Error('Current round not found');
@@ -320,10 +360,10 @@ export class GameRoom extends DurableObject {
 						});
 
 						// Check if round is complete and transition to showRoundResult
-						const allPlayersGuessed = currentRound.playerGuesses.length === this.gameContext.players.length;
+						const allPlayersGuessed = currentRound.playerGuesses.length === gameContext.players.length;
 
 						if (allPlayersGuessed) {
-							await exportedMachine.machine.transition('roundComplete', this.gameContext);
+							await exportedMachine.machine.transition('roundComplete', gameContext);
 							await this.ctx.storage.deleteAlarm();
 							console.log('Round complete, moving to showRoundResult');
 						}
@@ -337,6 +377,7 @@ export class GameRoom extends DurableObject {
 						}));
 					}
 					break;
+				}
 
 				default:
 					// Echo unknown messages back to sender

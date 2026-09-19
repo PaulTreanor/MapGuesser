@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import Lobby from '../../../components/game-setup-modal/Lobby';
 
@@ -32,6 +32,15 @@ vi.mock('../../../hooks/useGameRoom', () => ({
 // Mock useFetchGameMetadata hook
 vi.mock('../../../hooks/useFetchGameMetadata', () => ({
 	useFetchGameMetadata: () => ({ isFetching: false })
+}));
+
+// Mock the timer slider so we can trigger a settings change from the lobby
+vi.mock('../../../components/roundTimerSelectionSlider', () => ({
+	default: ({ onChange }: { onChange: (hasTimer: boolean, timeMs: number) => void }) => (
+		<button data-testid="lobby-timer-slider" onClick={() => onChange(true, 30000)}>
+			timer slider
+		</button>
+	)
 }));
 
 describe('Lobby', () => {
@@ -147,5 +156,36 @@ describe('Lobby', () => {
 		render(<Lobby />);
 
 		expect(window.location.hash).toBe('#game-ABC123');
+	});
+
+	test('sends update_settings when the host changes the round timer', () => {
+		window.location.hash = '#lobby-ABC123';
+		mockGameData.mockReturnValue({
+			gameCode: 'ABC123',
+			timer: 0,
+			gameOwnerId: 'guest_player'
+		});
+		mockConnectionStatus.mockReturnValue('connected');
+
+		render(<Lobby />);
+
+		fireEvent.click(screen.getByTestId('lobby-timer-slider'));
+
+		expect(mockSendMessage).toHaveBeenCalledWith({ type: 'update_settings', timer: 30000 });
+	});
+
+	test('shows a read-only timer to non-owners instead of the slider', () => {
+		window.location.hash = '#lobby-ABC123';
+		mockGameData.mockReturnValue({
+			gameCode: 'ABC123',
+			timer: 20000,
+			gameOwnerId: 'host_999'
+		});
+		mockGameContext.mockReturnValue({ gameStateMachinePhase: 'lobby', timer: 20000 });
+
+		render(<Lobby />);
+
+		expect(screen.queryByTestId('lobby-timer-slider')).not.toBeInTheDocument();
+		expect(screen.getByText(/Round timer: 20 seconds/)).toBeInTheDocument();
 	});
 });

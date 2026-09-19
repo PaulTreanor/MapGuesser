@@ -141,4 +141,25 @@ describe('RoundTimerSelectionSlider Component', () => {
 		const container = screen.getByText('No timer').closest('.w-full');
 		expect(container).not.toHaveClass('opacity-50');
 	});
+
+	test('does not call onChange on mount when notifyOnMount is false', () => {
+		const onChange = vi.fn();
+		render(<RoundTimerSelectionSlider onChange={onChange} notifyOnMount={false} />);
+
+		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	test('initialises the selected option from valueIndex instead of saved preferences', () => {
+		mockWindowInnerWidth(1024);
+		mockGetTimerPreferences.mockReturnValue({
+			roundTimerIndex: 5,
+			roundTimeMs: 0,
+			hasTimer: false
+		});
+
+		render(<RoundTimerSelectionSlider onChange={vi.fn()} valueIndex={3} />);
+
+		// Index 3 is the 30 seconds option
+		expect(screen.getByText('30 seconds')).toHaveClass('text-foreground font-medium');
+	});
 });

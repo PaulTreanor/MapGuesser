@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { FinalScoresModal } from '../../components/FinalScoresModal';
 import type { Player, MultiplayerRound } from '../../types/MultiplayerServiceApiResponse.types';
 import type { Pin } from '../../types/Game.types';
@@ -47,13 +47,13 @@ describe('FinalScoresModal Component', () => {
 	];
 
 	test('renders the modal with game complete message', () => {
-		render(<FinalScoresModal players={players} rounds={rounds} />);
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		expect(screen.getByText('Game Complete! Here are the final scores:')).toBeInTheDocument();
 	});
 
 	test('renders all player names', () => {
-		render(<FinalScoresModal players={players} rounds={rounds} />);
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		expect(screen.getByText(/Alice/)).toBeInTheDocument();
 		expect(screen.getByText(/Bob/)).toBeInTheDocument();
@@ -61,14 +61,14 @@ describe('FinalScoresModal Component', () => {
 	});
 
 	test('displays scores in km for each player', () => {
-		render(<FinalScoresModal players={players} rounds={rounds} />);
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		const kmElements = screen.getAllByText(/km$/);
 		expect(kmElements.length).toBe(3);
 	});
 
 	test('displays trophy emoji for the winner (lowest score)', () => {
-		render(<FinalScoresModal players={players} rounds={rounds} />);
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		// Bob should be the winner with the trophy emoji since he has the lowest total distance
 		const winnerElement = screen.getByText(/🏆/);
@@ -76,7 +76,7 @@ describe('FinalScoresModal Component', () => {
 	});
 
 	test('displays lower scores are better message', () => {
-		render(<FinalScoresModal players={players} rounds={rounds} />);
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		expect(screen.getByText('Lower scores are better!')).toBeInTheDocument();
 	});
@@ -93,7 +93,7 @@ describe('FinalScoresModal Component', () => {
 			]),
 		];
 
-		render(<FinalScoresModal players={twoPlayers} rounds={roundsWithTimedOut} />);
+		render(<FinalScoresModal players={twoPlayers} rounds={roundsWithTimedOut} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		// Alice's close guess is a small distance; Bob must be 20000 km (MAX_SCORE)
 		expect(screen.getByText(/Alice/)).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe('FinalScoresModal Component', () => {
 			]),
 		];
 
-		render(<FinalScoresModal players={players} rounds={roundsWithMissingGuess} />);
+		render(<FinalScoresModal players={players} rounds={roundsWithMissingGuess} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		// Should still render all players
 		expect(screen.getByText(/Alice/)).toBeInTheDocument();
@@ -121,10 +121,29 @@ describe('FinalScoresModal Component', () => {
 	});
 
 	test('handles empty rounds array', () => {
-		render(<FinalScoresModal players={players} rounds={[]} />);
+		render(<FinalScoresModal players={players} rounds={[]} isGameOwner={false} onPlayAgain={vi.fn()} />);
 
 		// All players should show 0 km since there are no rounds
 		const zeroScores = screen.getAllByText('0 km');
 		expect(zeroScores.length).toBe(3);
+	});
+
+	test('shows Play Again for the game owner and calls onPlayAgain when clicked', () => {
+		const onPlayAgain = vi.fn();
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={true} onPlayAgain={onPlayAgain} />);
+
+		const playAgainButton = screen.getByText('Play Again');
+		expect(playAgainButton).toBeInTheDocument();
+
+		fireEvent.click(playAgainButton);
+
+		expect(onPlayAgain).toHaveBeenCalledTimes(1);
+	});
+
+	test('shows a waiting message for non-owners instead of Play Again', () => {
+		render(<FinalScoresModal players={players} rounds={rounds} isGameOwner={false} onPlayAgain={vi.fn()} />);
+
+		expect(screen.queryByText('Play Again')).not.toBeInTheDocument();
+		expect(screen.getByText('Waiting for host to start a new game...')).toBeInTheDocument();
 	});
 });
