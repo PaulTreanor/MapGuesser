@@ -92,7 +92,7 @@ export default function GameSetupModal() {
 	return (
 		<Modal>
 			<MapGuesserHeading />
-			{currentStep !== GAME_SETUP_STEPS.LOBBY && (
+			{currentStep !== GAME_SETUP_STEPS.LOBBY && currentStep !== GAME_SETUP_STEPS.START_GAME && (
 				<>
 					<br />
 					<Paragraph>

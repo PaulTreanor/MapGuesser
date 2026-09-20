@@ -23,7 +23,7 @@ describe('LobbyGameSettings', () => {
 	test('renders the timer slider for the game owner', () => {
 		render(<LobbyGameSettings timer={30000} isGameOwner={true} onTimerChange={vi.fn()} />);
 
-		expect(screen.getByText('Round timer (you can change this between games)')).toBeInTheDocument();
+		expect(screen.getByText('Round timer')).toBeInTheDocument();
 		expect(screen.getByTestId('timer-slider')).toBeInTheDocument();
 	});
 
