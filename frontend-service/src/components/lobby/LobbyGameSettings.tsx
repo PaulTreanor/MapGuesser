@@ -26,7 +26,7 @@ const LobbyGameSettings = ({ timer, isGameOwner, onTimerChange }: LobbyGameSetti
 	return (
 		<div className="mb-4">
 			<Paragraph className="text-center text-gray-600 mb-2">
-				Round timer (you can change this between games)
+				Round timer
 			</Paragraph>
 			<RoundTimerSelectionSlider
 				valueIndex={getTimerIndexFromMs(timer)}

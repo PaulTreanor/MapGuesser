@@ -32,51 +32,46 @@ describe('StartMultiplayerGameSetup', () => {
 		localStorage.setItem('mapguesser_guest_name', 'Guest Player');
 		vi.mocked(useFetchHook.useFetch).mockReturnValue({
 			data: null,
+			isPending: true,
+			error: null
+		});
+	});
+
+	test('shows a loading state while the game room is being created', () => {
+		render(<StartMultiplayerGameSetup />);
+
+		expect(screen.getByText('Creating game room...')).toBeInTheDocument();
+	});
+
+	test('creates the game room immediately on mount', () => {
+		render(<StartMultiplayerGameSetup />);
+
+		expect(useFetchHook.useFetch).toHaveBeenCalled();
+		const [, options] = vi.mocked(useFetchHook.useFetch).mock.calls[0];
+		expect(options?.enabled).toBe(true);
+		expect(options?.method).toBe('POST');
+	});
+
+	test('sets game data and navigates to the lobby on successful creation', () => {
+		const mockData = {
+			gameCode: 'XYZ789',
+			timer: 0,
+			gameOwnerId: 'guest_123'
+		};
+
+		vi.mocked(useFetchHook.useFetch).mockReturnValue({
+			data: mockData,
 			isPending: false,
 			error: null
 		});
-	});
-
-	test('renders heading and create button', () => {
-		render(<StartMultiplayerGameSetup />);
-
-		expect(screen.getByText('Create a game room and invite your friends')).toBeInTheDocument();
-		expect(screen.getByText('Create Game')).toBeInTheDocument();
-	});
-
-	test('button is not disabled by default', () => {
-		render(<StartMultiplayerGameSetup />);
-
-		const button = screen.getByText('Create Game');
-		expect(button).not.toBeDisabled();
-	});
-
-	test('shows "Creating..." when fetch is pending', () => {
-		vi.mocked(useFetchHook.useFetch).mockReturnValue({
-			data: null,
-			isPending: true,
-			error: null
-		});
 
 		render(<StartMultiplayerGameSetup />);
 
-		expect(screen.getByText('Creating...')).toBeInTheDocument();
+		expect(mockSetGameData).toHaveBeenCalledWith(mockData);
+		expect(window.location.hash).toBe('#lobby-XYZ789');
 	});
 
-	test('button is disabled when fetch is pending', () => {
-		vi.mocked(useFetchHook.useFetch).mockReturnValue({
-			data: null,
-			isPending: true,
-			error: null
-		});
-
-		render(<StartMultiplayerGameSetup />);
-
-		const button = screen.getByText('Creating...');
-		expect(button).toBeDisabled();
-	});
-
-	test('displays error notification when fetch fails', () => {
+	test('notifies and returns to the mode menu when creation fails', () => {
 		const notifySpy = vi.spyOn(NotificationContext, 'notify');
 
 		vi.mocked(useFetchHook.useFetch).mockReturnValue({
@@ -92,24 +87,6 @@ describe('StartMultiplayerGameSetup', () => {
 			message: 'Failed to create game: Network error',
 			duration: 5000
 		});
-	});
-
-	test('sets game data and navigates to lobby on successful game creation', () => {
-		const mockData = {
-			gameCode: 'XYZ789',
-			timer: 60000,
-			gameOwnerId: 'user_456'
-		};
-
-		vi.mocked(useFetchHook.useFetch).mockReturnValue({
-			data: mockData,
-			isPending: false,
-			error: null
-		});
-
-		render(<StartMultiplayerGameSetup />);
-
-		expect(mockSetGameData).toHaveBeenCalledWith(mockData);
-		expect(window.location.hash).toBe('#lobby-XYZ789');
+		expect(window.location.hash).toBe('');
 	});
 });

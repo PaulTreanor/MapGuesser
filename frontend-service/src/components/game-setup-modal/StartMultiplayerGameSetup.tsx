@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button } from '../ui/button';
-import { Subheading } from '../typography/Typography';
+import React, { useEffect, useRef } from 'react';
+import { Heading, Paragraph } from '../typography/Typography';
 import { useFetch } from '../../hooks/useFetch';
 import { useMultiplayerStore } from '../../store/multiplayerStore';
 import { notify } from '../../context/NotificationContext';
@@ -10,11 +9,10 @@ import { getPlayerIdentity } from '../../utils/guestIdentityUtils';
 
 
 const StartMultiPlayerGameSetup = () => {
-	const [shouldFetch, setShouldFetch] = useState(false);
 	const { setGameData } = useMultiplayerStore();
 	const playerIdentityRef = useRef(getPlayerIdentity());
 
-	const { data, isPending, error } = useFetch<CreateGameResponse>(
+	const { data, error } = useFetch<CreateGameResponse>(
 		`${MULTIPLAYER_SERVICE_API_URL}/create-game`,
 		{
 			method: 'POST',
@@ -25,7 +23,7 @@ const StartMultiPlayerGameSetup = () => {
 				timer: 0,
 				hostId: playerIdentityRef.current.playerId,
 			}),
-			enabled: shouldFetch,
+			enabled: true,
 		}
 	);
 
@@ -36,36 +34,20 @@ const StartMultiPlayerGameSetup = () => {
 				message: `Failed to create game: ${error}`,
 				duration: 5000
 			});
-			setShouldFetch(false);
+			window.location.hash = '';
 		}
 		if (data?.gameCode) {
 			setGameData(data);
 			window.location.hash = `#lobby-${data.gameCode}`;
-			setShouldFetch(false);
 		}
 	}, [error, data]);
 
-	const handleCreateGame = () => {
-		setShouldFetch(true);
-	};
-
 	return (
-		<div>
-			<Subheading className='text-center'>
-				Create a game room and invite your friends
-			</Subheading>
-			<br />
-
-			<div className="flex justify-end mr-2">
-				<Button
-					onClick={handleCreateGame}
-					variant="mapguesser"
-					size="xl"
-					disabled={isPending}
-				>
-					{isPending ? 'Creating...' : 'Create Game'}
-				</Button>
-			</div>
+		<div className="py-6 text-center">
+			<Heading>Creating game room...</Heading>
+			<Paragraph className="text-gray-600 mt-2">
+				Setting up your lobby
+			</Paragraph>
 		</div>
 	);
 };
