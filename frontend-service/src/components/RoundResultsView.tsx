@@ -81,7 +81,7 @@ const RoundResultsView = ({
 					{roundScores.map(({ player, distance, timedOut, playerIndex }, rank) => (
 						<div
 							key={player.playerId}
-							className={`flex justify-between items-center p-2 rounded-md ${
+							className={`flex justify-between items-center gap-2 p-2 rounded-md ${
 								rank === 0 ? 'bg-green-100 border border-green-400' : 'bg-gray-100'
 							}`}
 						>
@@ -96,7 +96,7 @@ const RoundResultsView = ({
 									{player.playerName}
 								</span>
 							</span>
-							<span className="text-green-700 font-semibold text-sm">
+							<span className="shrink-0 text-green-700 font-semibold text-sm">
 								{distance !== null ? `${Math.round(distance)} km` : timedOut ? 'Timed out' : 'No guess'}
 							</span>
 						</div>
