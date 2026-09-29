@@ -95,13 +95,13 @@ const createDistanceMarkerElement = (distance: number): HTMLDivElement => {
 
 const createLabelledPinElement = (color: string, labelText: string): HTMLDivElement => {
 	const el = document.createElement('div');
-	el.style.position = 'relative';
 	el.style.width = '28px';
 	el.style.height = '28px';
 
 	const circle = document.createElement('div');
 	circle.style.width = '28px';
 	circle.style.height = '28px';
+	circle.style.boxSizing = 'border-box';
 	circle.style.backgroundColor = color;
 	circle.style.borderRadius = '50%';
 	circle.style.border = '3px solid white';
@@ -225,7 +225,7 @@ const displayMultiplayerResults = ({
 
 		const markerEl = createPlayerMarkerElement(playerColor, player?.playerName || 'Unknown');
 
-		new mapboxgl.Marker(markerEl, { anchor: 'bottom' })
+		new mapboxgl.Marker(markerEl, { anchor: 'center' })
 			.setLngLat(guess.guessCoordinates)
 			.addTo(map);
 
