@@ -54,6 +54,16 @@ html, body, #___gatsby, #gatsby-focus-wrapper {
   text-shadow: 1px 1px 1px white;
 }
 
+/*
+ * Shown behind the setup modal while the live map is intentionally not mounted.
+ */
+.static-map-background {
+  background-color: #F3EEE5;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 
 
 @layer base {

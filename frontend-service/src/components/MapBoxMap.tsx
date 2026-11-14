@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl, { MapMouseEvent } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { MapboxMapProps } from '../types/MapBoxMap.types';
@@ -18,11 +18,12 @@ import type { Pin } from '../types/Game.types';
 import { useLoading } from '../context/LoadingContext';
 mapboxgl.accessToken = process.env.GATSBY_MAPBOX_ACCESS_TOKEN as string;
 
-const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }: MapboxMapProps) => {
+const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults, onReady }: MapboxMapProps) => {
 	const WRAPPER_ID = 'map-wrapper';     
 	const mapContainerRef = useRef<HTMLElement | null>(null)
 	const mapRef = useRef<mapboxgl.Map | null>(null)
 	const currentLineIdRef = useRef<string>('');
+	const [isReady, setIsReady] = useState(false);
 	const { setLoading } = useLoading(); 
 
 	const initialiseMap = () => {
@@ -45,6 +46,8 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 			cursorSetup(map);
 			map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 			setLoading('mapbox', false);
+			setIsReady(true);
+			onReady?.();
 		});
 
 		/* ResizeObserver – resync map when wrapper changes */
@@ -127,7 +130,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 
 	// Handle round changes (normal gameplay)
 	useEffect(() => {
-		if (!mapRef.current || multiplayerResults) return;
+		if (!mapRef.current || multiplayerResults || !isReady) return;
 		const map = mapRef.current;
 
 		clearMap(map)
@@ -158,7 +161,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 		return () => {
 			map.off('click', handleMapClick);
 		};
-	}, [roundDetails, multiplayerResults]);
+	}, [roundDetails, multiplayerResults, isReady]);
 
 	// Handle multiplayer results display
 	useEffect(() => {
@@ -193,6 +196,7 @@ const MapboxMap = ({ roundDetails, handleGuess, isDisabled, multiplayerResults }
 			id={WRAPPER_ID}                               
 			ref={mapContainerRef as unknown as React.RefObject<HTMLDivElement>}
 			className="w-full min-h-full h-full relative"
+			data-map-ready={isReady ? 'true' : 'false'}
 		/>
 	);
 };

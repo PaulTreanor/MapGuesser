@@ -11,6 +11,9 @@ test('game run through', async ({ page }) => {
 	const startGameButton = await page.getByRole('button', { name: 'Start Game!' });
     await expect(startGameButton).toBeVisible();
 
+    // The live map is intentionally not mounted behind the setup modal.
+    await expect(page.locator('.mapboxgl-canvas')).toHaveCount(0);
+
     await startGameButton.click();
 
 	const locationText = await page.getByText(/Where is .+\?/);
@@ -19,7 +22,9 @@ test('game run through', async ({ page }) => {
     const firstRoundConterText = await page.getByText("Round 1/5");
     await expect(firstRoundConterText).toBeVisible();
 
-	const mapCanvas = await page.locator('.mapboxgl-canvas');
+	const mapCanvas = page.locator('.mapboxgl-canvas');
+    await expect(mapCanvas).toBeVisible();
+    await expect(page.locator('[data-map-ready="true"]')).toBeVisible({ timeout: 15000 });
     await mapCanvas.click();
 
     const nextRoundButton = await page.getByRole('button', { name: 'Next Round' });

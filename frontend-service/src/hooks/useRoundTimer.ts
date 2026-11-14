@@ -6,15 +6,20 @@ import { generateRoundEndTimeStamp, isTimerExpired } from '../utils/timerUtils'
 
 interface UseRoundTimerProps {
 	handleTimeExpired: () => void
+	/**
+	 * Allows the timer to wait for the map to finish loading before the clock
+	 * starts. Defaults to true so other callers are unaffected.
+	 */
+	enabled?: boolean
 }
 
-export const useRoundTimer = ({ handleTimeExpired }: UseRoundTimerProps) => {
+export const useRoundTimer = ({ handleTimeExpired, enabled = true }: UseRoundTimerProps) => {
 	const { doesGameHaveTimer, status, roundTimeMs } = useGameStore()
 	const { currentRound, roundEndTimeStamp, setRoundEndTimeStamp } = useRoundStore()
 
 	// Set up timer for the round
 	useEffect(() => {
-		if (doesGameHaveTimer && status === gameStatus.IN_PROGRESS && !currentRound.completed) {
+		if (enabled && doesGameHaveTimer && status === gameStatus.IN_PROGRESS && !currentRound.completed) {
 			// Only generate a new timestamp if we don't have one yet
 			// This ensures we don't reset the timer when a round is marked as completed
 			if (!roundEndTimeStamp) {
@@ -22,11 +27,11 @@ export const useRoundTimer = ({ handleTimeExpired }: UseRoundTimerProps) => {
 				setRoundEndTimeStamp(newEndTimeStamp)
 			}
 		}
-	}, [status, currentRound.index, currentRound.completed, roundEndTimeStamp, doesGameHaveTimer, roundTimeMs, setRoundEndTimeStamp])
+	}, [status, currentRound.index, currentRound.completed, roundEndTimeStamp, doesGameHaveTimer, roundTimeMs, setRoundEndTimeStamp, enabled])
 
 	// Check if timer expired
 	useEffect(() => {
-		if (!roundEndTimeStamp || currentRound.completed) return
+		if (!enabled || !roundEndTimeStamp || currentRound.completed) return
 
 		const checkTimerInterval = setInterval(() => {
 			if (isTimerExpired(roundEndTimeStamp)) {
@@ -36,5 +41,5 @@ export const useRoundTimer = ({ handleTimeExpired }: UseRoundTimerProps) => {
 		}, 1000)
 
 		return () => clearInterval(checkTimerInterval)
-	}, [roundEndTimeStamp, currentRound.completed, handleTimeExpired])
+	}, [roundEndTimeStamp, currentRound.completed, handleTimeExpired, enabled])
 }

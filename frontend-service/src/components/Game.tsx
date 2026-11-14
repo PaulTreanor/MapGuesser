@@ -1,7 +1,8 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import type { LocationsResponse } from '../types/Game.types'
 import { gameStatus } from '../objects/gameStatuses'
 import MapboxMap from './MapBoxMap'
+import StaticMapBackground from './StaticMapBackground'
 import HUD from './HUD'
 import GameSetupModal from './game-setup-modal/GameSetupModal'
 import EndModal from './EndModal'
@@ -40,6 +41,13 @@ export default function Game() {
 	const { data, isPending, error } = useFetch<LocationsResponse>(locationsApiEndpoint);
 
 	const { setLoading } = useLoading();
+	const [mapReady, setMapReady] = useState(false);
+
+	useEffect(() => {
+		if (status === gameStatus.NOT_STARTED) {
+			setMapReady(false);
+		}
+	}, [status]);
 	
 	// Handle initial game data loading
 	useEffect(() => {
@@ -80,7 +88,7 @@ export default function Game() {
 
 	// Custom hook that manages round timer setup and expiration checking
 	// Automatically starts timer when round begins and calls handleTimeExpired when time runs out
-	useRoundTimer({ handleTimeExpired });
+	useRoundTimer({ handleTimeExpired, enabled: mapReady });
 
 	const handleGuess = (distance: number) => {
 		playGuessResultSound(distance, false);
@@ -126,11 +134,16 @@ export default function Game() {
 				)}
 				{/* Map container leaving space for MenuBar */}
 				<div className="absolute top-0 left-0 right-0 bottom-0 pb-8"> 
-					<MapboxMap
-						roundDetails={rounds[currentRound.index]}
-						handleGuess={handleGuess}
-						isDisabled={!rounds?.length || currentRound.completed}
-					/>
+					{status === gameStatus.NOT_STARTED ? (
+						<StaticMapBackground />
+					) : (
+						<MapboxMap
+							roundDetails={rounds[currentRound.index]}
+							handleGuess={handleGuess}
+							isDisabled={!rounds?.length || currentRound.completed}
+							onReady={() => setMapReady(true)}
+						/>
+					)}
 				</div>
 			</div>
 		</>

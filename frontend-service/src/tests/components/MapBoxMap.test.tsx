@@ -11,7 +11,11 @@ vi.mock('mapbox-gl', () => {
 		default: {
 			Map: vi.fn(() => ({
 				canvas,
-				on: vi.fn(),
+				// Fire the load callback synchronously so the component can mark
+				// itself ready, mirroring the real map's post-style-load state.
+				on: vi.fn((event: string, callback: () => void) => {
+					if (event === 'load') callback();
+				}),
 				addControl: vi.fn(),
 				getCanvas: vi.fn(() => canvas),
 				remove: vi.fn(),
