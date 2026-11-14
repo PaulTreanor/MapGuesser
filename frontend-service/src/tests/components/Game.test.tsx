@@ -45,14 +45,15 @@ describe('Game Component', () => {
 		vi.mocked(useFetchHook.useFetch).mockReturnValue(mockResponse);
 	});
 
-	test('should render mapbox map component', async () => {
+	test('does not mount the live map before a game starts', async () => {
 		renderWithLoading(<Game/>);
 		
 		await waitFor(() => {
 			expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument();
 		});
 		
-		expect(screen.getByTestId('mock-mapbox')).toBeInTheDocument();
+		expect(screen.queryByTestId('mock-mapbox')).not.toBeInTheDocument();
+		expect(screen.getByTestId('static-map-background')).toBeInTheDocument();
 	});
 
 	test('should render start modal', async () => {

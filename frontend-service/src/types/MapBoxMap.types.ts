@@ -12,6 +12,7 @@ interface MapboxMapProps {
 	handleGuess: (distance: number, guessCoordinates?: Pin) => void;
 	isDisabled: boolean;
 	multiplayerResults?: MultiplayerResultsData;
+	onReady?: () => void;
 }
 
 export type { MapboxMapProps, MultiplayerResultsData };
